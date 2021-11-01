@@ -8,6 +8,7 @@ x-cache-from:
 services:
 
   booking-db:
+    platform: linux/amd64
     image: mysql:5.7
     environment:
       MYSQL_DATABASE: 'booking'
@@ -45,6 +46,7 @@ services:
       - 8083:80
 
   booking-phpmyadmin:
+    platform: linux/amd64
     image: phpmyadmin/phpmyadmin:latest
     depends_on:
       - booking-db

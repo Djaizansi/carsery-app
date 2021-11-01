@@ -8,6 +8,7 @@ x-cache-from:
 services:
 
   car-db:
+    platform: linux/amd64
     image: mysql:5.7
     environment:
       MYSQL_DATABASE: 'car'
@@ -45,6 +46,7 @@ services:
       - 8081:80
 
   car-phpmyadmin:
+    platform: linux/amd64
     image: phpmyadmin/phpmyadmin:latest
     depends_on:
       - car-db

@@ -8,6 +8,7 @@ x-cache-from:
 services:
 
   order-db:
+    platform: linux/amd64
     image: mysql:5.7
     environment:
       MYSQL_DATABASE: 'order'
