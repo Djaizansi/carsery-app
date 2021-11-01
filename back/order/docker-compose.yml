@@ -1,0 +1,58 @@
+version: '3.6'
+x-cache-from:
+  - &app-cache-from
+    cache_from:
+      - ${NGINX_IMAGE:-order/nginx}
+      - ${PHP_IMAGE:-order/php}
+
+services:
+
+  order-db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: 'order'
+      MYSQL_USER: 'order'
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_PASSWORD: 'pwd'
+    volumes:
+      - order-db-data:/var/lib/mysql
+    ports:
+      - 3310:3306
+    restart: always
+
+  order-php:
+    image: ${PHP_IMAGE:-order/php}
+    build:
+      context: ./back/order/app
+      target: app_php
+      <<: *app-cache-from
+    volumes:
+      - ./back/order/app:/srv/app:rw
+      - ./back/order/app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
+      - order-app-sf-cache:/srv/app/var
+
+  order-nginx:
+    image: ${NGINX_IMAGE:-order/nginx}
+    build:
+      context: ./back/order/app
+      target: app_nginx
+      <<: *app-cache-from
+    depends_on:
+      - order-php
+    volumes:
+      - ./back/order/app/public:/srv/app/public:ro
+    ports:
+      - 8091:80
+
+  order-phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    depends_on:
+      - order-db
+    ports:
+      - 8092:80
+    environment:
+      - PMA_ARBITRARY=1
+
+volumes:
+  order-db-data: {}
+  order-app-sf-cache: {}

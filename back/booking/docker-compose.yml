@@ -1,0 +1,58 @@
+version: '3.6'
+x-cache-from:
+  - &app-cache-from
+    cache_from:
+      - ${NGINX_IMAGE:-booking/nginx}
+      - ${PHP_IMAGE:-booking/php}
+
+services:
+
+  booking-db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: 'booking'
+      MYSQL_USER: 'booking'
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_PASSWORD: 'pwd'
+    volumes:
+      - booking-db-data:/var/lib/mysql
+    ports:
+      - 3308:3306
+    restart: always
+
+  booking-php:
+    image: ${PHP_IMAGE:-booking/php}
+    build:
+      context: ./back/booking/app
+      target: app_php
+      <<: *app-cache-from
+    volumes:
+      - ./back/booking/app:/srv/app:rw
+      - ./back/booking/app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
+      - booking-app-sf-cache:/srv/app/var
+
+  booking-nginx:
+    image: ${NGINX_IMAGE:-booking/nginx}
+    build:
+      context: ./back/booking/app
+      target: app_nginx
+      <<: *app-cache-from
+    depends_on:
+      - booking-php
+    volumes:
+      - ./back/booking/app/public:/srv/app/public:ro
+    ports:
+      - 8083:80
+
+  booking-phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    depends_on:
+      - booking-db
+    ports:
+      - 8086:80
+    environment:
+      - PMA_ARBITRARY=1
+
+volumes:
+  booking-db-data: {}
+  booking-app-sf-cache: {}

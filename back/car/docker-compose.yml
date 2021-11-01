@@ -1,0 +1,58 @@
+version: '3.6'
+x-cache-from:
+  - &app-cache-from
+    cache_from:
+      - ${NGINX_IMAGE:-car/nginx}
+      - ${PHP_IMAGE:-car/php}
+
+services:
+
+  car-db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: 'car'
+      MYSQL_USER: 'car'
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_PASSWORD: 'pwd'
+    volumes:
+      - car-db-data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    restart: always
+
+  car-php:
+    image: ${PHP_IMAGE:-car/php}
+    build:
+      context: ./back/car/app
+      target: app_php
+      <<: *app-cache-from
+    volumes:
+      - ./back/car/app:/srv/app:rw
+      - ./back/car/app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
+      - car-app-sf-cache:/srv/app/var
+
+  car-nginx:
+    image: ${NGINX_IMAGE:-car/nginx}
+    build:
+      context: ./back/car/app
+      target: app_nginx
+      <<: *app-cache-from
+    depends_on:
+      - car-php
+    volumes:
+      - ./back/car/app/public:/srv/app/public:ro
+    ports:
+      - 8081:80
+
+  car-phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    depends_on:
+      - car-db
+    ports:
+      - 8080:80
+    environment:
+      - PMA_ARBITRARY=1
+
+volumes:
+  car-db-data: {}
+  car-app-sf-cache: {}

@@ -1,0 +1,58 @@
+version: '3.6'
+x-cache-from:
+  - &app-cache-from
+    cache_from:
+      - ${NGINX_IMAGE:-user/nginx}
+      - ${PHP_IMAGE:-user/php}
+
+services:
+
+  user-db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: 'user'
+      MYSQL_USER: 'user'
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_PASSWORD: 'pwd'
+    volumes:
+      - user-db-data:/var/lib/mysql
+    ports:
+      - 3311:3306
+    restart: always
+
+  user-php:
+    image: ${PHP_IMAGE:-user/php}
+    build:
+      context: ./back/user/app
+      target: app_php
+      <<: *app-cache-from
+    volumes:
+      - ./back/user/app:/srv/app:rw
+      - ./back/user/app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
+      - user-app-sf-cache:/srv/app/var
+
+  user-nginx:
+    image: ${NGINX_IMAGE:-user/nginx}
+    build:
+      context: ./back/user/app
+      target: app_nginx
+      <<: *app-cache-from
+    depends_on:
+      - user-php
+    volumes:
+      - ./back/user/app/public:/srv/app/public:ro
+    ports:
+      - 8095:80
+
+  user-phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    depends_on:
+      - user-db
+    ports:
+      - 8096:80
+    environment:
+      - PMA_ARBITRARY=1
+
+volumes:
+  user-db-data: {}
+  user-app-sf-cache: {}

@@ -1,0 +1,58 @@
+version: '3.6'
+x-cache-from:
+  - &app-cache-from
+    cache_from:
+      - ${NGINX_IMAGE:-payment/nginx}
+      - ${PHP_IMAGE:-payment/php}
+
+services:
+
+  payment-db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: 'payment'
+      MYSQL_USER: 'payment'
+      MYSQL_ROOT_PASSWORD: 'root'
+      MYSQL_PASSWORD: 'pwd'
+    volumes:
+      - payment-db-data:/var/lib/mysql
+    ports:
+      - 3312:3306
+    restart: always
+
+  payment-php:
+    image: ${PHP_IMAGE:-payment/php}
+    build:
+      context: ./back/payment/app
+      target: app_php
+      <<: *app-cache-from
+    volumes:
+      - ./back/payment/app:/srv/app:rw
+      - ./back/payment/app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
+      - payment-app-sf-cache:/srv/app/var
+
+  payment-nginx:
+    image: ${NGINX_IMAGE:-payment/nginx}
+    build:
+      context: ./back/payment/app
+      target: app_nginx
+      <<: *app-cache-from
+    depends_on:
+      - payment-php
+    volumes:
+      - ./back/payment/app/public:/srv/app/public:ro
+    ports:
+      - 8098:80
+
+  payment-phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    depends_on:
+      - payment-db
+    ports:
+      - 8099:80
+    environment:
+      - PMA_ARBITRARY=1
+
+volumes:
+  payment-db-data: {}
+  payment-app-sf-cache: {}
