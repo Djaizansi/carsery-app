@@ -8,6 +8,7 @@ x-cache-from:
 services:
 
   payment-db:
+    platform: linux/amd64
     image: mysql:5.7
     environment:
       MYSQL_DATABASE: 'payment'
@@ -45,6 +46,7 @@ services:
       - 8098:80
 
   payment-phpmyadmin:
+    platform: linux/amd64
     image: phpmyadmin/phpmyadmin:latest
     depends_on:
       - payment-db
