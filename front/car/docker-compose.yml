@@ -1,0 +1,19 @@
+version: '3.6'
+x-cache-from:
+  - &node-cache-from
+    cache_from:
+      - ${NODE_IMAGE:-car/node}
+
+services:
+  car-node:
+    image: ${NODE_IMAGE:-car/node}
+    stdin_open: true
+    build:
+      context: ./front/car/app
+      dockerfile: Dockerfile.node
+      <<: *node-cache-from
+    ports:
+      - 8101:8080
+    volumes:
+      - /front/car/app/node_modules
+      - ./front/car/app:/car/app
