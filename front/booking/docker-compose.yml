@@ -1,0 +1,19 @@
+version: '3.6'
+x-cache-from:
+  - &node-cache-from
+    cache_from:
+      - ${NODE_IMAGE:-booking/node}
+
+services:
+  booking-node:
+    image: ${NODE_IMAGE:-booking/node}
+    stdin_open: true
+    build:
+      context: ./front/booking/app
+      dockerfile: Dockerfile.node
+      <<: *node-cache-from
+    ports:
+      - 8100:8080
+    volumes:
+      - /front/booking/app/node_modules
+      - ./front/booking/app:/booking/app

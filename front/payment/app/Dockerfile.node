@@ -1,0 +1,15 @@
+FROM node:14-alpine
+
+RUN apk --no-cache add pkgconfig autoconf automake libtool nasm build-base zlib-dev libpng-dev git
+
+WORKDIR /payment/app
+
+COPY package.json /payment/app
+
+RUN yarn install
+
+COPY . /payment/app
+
+EXPOSE 8103
+
+CMD ["yarn","serve"]

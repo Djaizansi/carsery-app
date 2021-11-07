@@ -1,0 +1,19 @@
+version: '3.6'
+x-cache-from:
+  - &node-cache-from
+    cache_from:
+      - ${NODE_IMAGE:-order/node}
+
+services:
+  order-node:
+    image: ${NODE_IMAGE:-order/node}
+    stdin_open: true
+    build:
+      context: ./front/order/app
+      dockerfile: Dockerfile.node
+      <<: *node-cache-from
+    ports:
+      - 8102:8080
+    volumes:
+      - /front/order/app/node_modules
+      - ./front/order/app:/order/app
