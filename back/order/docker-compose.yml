@@ -10,6 +10,7 @@ services:
   order-db:
     platform: linux/amd64
     image: mysql:5.7
+    container_name: order-db
     environment:
       MYSQL_DATABASE: 'order'
       MYSQL_USER: 'order'
@@ -23,30 +24,33 @@ services:
 
   order-php:
     image: ${PHP_IMAGE:-order/php}
+    container_name: order-php
     build:
-      context: ./back/order/app
+      context: ./order/app
       target: app_php
       <<: *app-cache-from
     volumes:
-      - ./back/order/app:/srv/app:rw
-      - ./back/order/app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
+      - ./order/app:/srv/app:rw
+      - ./order/app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
       - order-app-sf-cache:/srv/app/var
 
   order-nginx:
     image: ${NGINX_IMAGE:-order/nginx}
+    container_name: order-nginx
     build:
-      context: ./back/order/app
+      context: ./order/app
       target: app_nginx
       <<: *app-cache-from
     depends_on:
       - order-php
     volumes:
-      - ./back/order/app/public:/srv/app/public:ro
+      - ./order/app/public:/srv/app/public:ro
     ports:
       - 8091:80
 
   order-phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
+    container_name: order-phpmyadmin
     depends_on:
       - order-db
     ports:

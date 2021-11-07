@@ -7,13 +7,14 @@ x-cache-from:
 services:
   car-node:
     image: ${NODE_IMAGE:-car/node}
+    container_name: car-node
     stdin_open: true
     build:
-      context: ./front/car/app
+      context: ./car/app
       dockerfile: Dockerfile.node
       <<: *node-cache-from
     ports:
       - 8101:8080
     volumes:
-      - /front/car/app/node_modules
-      - ./front/car/app:/car/app
+      - /car/app/node_modules
+      - ./car/app:/car/app

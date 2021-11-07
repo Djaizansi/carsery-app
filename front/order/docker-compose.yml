@@ -7,13 +7,14 @@ x-cache-from:
 services:
   order-node:
     image: ${NODE_IMAGE:-order/node}
+    container_name: order-node
     stdin_open: true
     build:
-      context: ./front/order/app
+      context: ./order/app
       dockerfile: Dockerfile.node
       <<: *node-cache-from
     ports:
       - 8102:8080
     volumes:
-      - /front/order/app/node_modules
-      - ./front/order/app:/order/app
+      - /order/app/node_modules
+      - ./order/app:/order/app

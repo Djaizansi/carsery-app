@@ -10,6 +10,7 @@ services:
   booking-db:
     platform: linux/amd64
     image: mysql:5.7
+    container_name: booking-db
     environment:
       MYSQL_DATABASE: 'booking'
       MYSQL_USER: 'booking'
@@ -23,30 +24,33 @@ services:
 
   booking-php:
     image: ${PHP_IMAGE:-booking/php}
+    container_name: booking-php
     build:
-      context: ./back/booking/app
+      context: ./booking/app
       target: app_php
       <<: *app-cache-from
     volumes:
-      - ./back/booking/app:/srv/app:rw
-      - ./back/booking/app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
+      - ./booking/app:/srv/app:rw
+      - ./booking/app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
       - booking-app-sf-cache:/srv/app/var
 
   booking-nginx:
     image: ${NGINX_IMAGE:-booking/nginx}
+    container_name: booking-nginx
     build:
-      context: ./back/booking/app
+      context: ./booking/app
       target: app_nginx
       <<: *app-cache-from
     depends_on:
       - booking-php
     volumes:
-      - ./back/booking/app/public:/srv/app/public:ro
+      - ./booking/app/public:/srv/app/public:ro
     ports:
       - 8083:80
 
   booking-phpmyadmin:
     platform: linux/amd64
+    container_name: booking-phpmyadmin
     image: phpmyadmin/phpmyadmin:latest
     depends_on:
       - booking-db

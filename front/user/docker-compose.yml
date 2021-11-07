@@ -7,13 +7,14 @@ x-cache-from:
 services:
   user-node:
     image: ${NODE_IMAGE:-user/node}
+    container_name: user-node
     stdin_open: true
     build:
-      context: ./front/user/app
+      context: ./user/app
       dockerfile: Dockerfile.node
       <<: *node-cache-from
     ports:
       - 8104:8080
     volumes:
-      - /front/user/app/node_modules
-      - ./front/user/app:/user/app
+      - /user/app/node_modules
+      - ./user/app:/user/app

@@ -10,6 +10,7 @@ services:
   payment-db:
     platform: linux/amd64
     image: mysql:5.7
+    container_name: payment-db
     environment:
       MYSQL_DATABASE: 'payment'
       MYSQL_USER: 'payment'
@@ -23,30 +24,33 @@ services:
 
   payment-php:
     image: ${PHP_IMAGE:-payment/php}
+    container_name: payment-php
     build:
-      context: ./back/payment/app
+      context: ./payment/app
       target: app_php
       <<: *app-cache-from
     volumes:
-      - ./back/payment/app:/srv/app:rw
-      - ./back/payment/app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
+      - ./payment/app:/srv/app:rw
+      - ./payment/app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
       - payment-app-sf-cache:/srv/app/var
 
   payment-nginx:
     image: ${NGINX_IMAGE:-payment/nginx}
+    container_name: payment-nginx
     build:
-      context: ./back/payment/app
+      context: ./payment/app
       target: app_nginx
       <<: *app-cache-from
     depends_on:
       - payment-php
     volumes:
-      - ./back/payment/app/public:/srv/app/public:ro
+      - ./payment/app/public:/srv/app/public:ro
     ports:
       - 8098:80
 
   payment-phpmyadmin:
     platform: linux/amd64
+    container_name: payment-phpmyadmin
     image: phpmyadmin/phpmyadmin:latest
     depends_on:
       - payment-db

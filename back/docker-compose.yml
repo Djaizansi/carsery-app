@@ -1,0 +1,8 @@
+version: '3.6'
+
+services:
+  all:
+    image: alpine:latest
+    container_name: carsery-back
+    env_file:
+      - .env
