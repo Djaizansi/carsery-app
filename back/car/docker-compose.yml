@@ -9,6 +9,7 @@ services:
 
   car-db:
     platform: linux/amd64
+    container_name: car-db
     image: mysql:5.7
     environment:
       MYSQL_DATABASE: 'car'
@@ -23,31 +24,34 @@ services:
 
   car-php:
     image: ${PHP_IMAGE:-car/php}
+    container_name: car-php
     build:
-      context: ./back/car/app
+      context: ./car/app
       target: app_php
       <<: *app-cache-from
     volumes:
-      - ./back/car/app:/srv/app:rw
-      - ./back/car/app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
+      - ./car/app:/srv/app:rw
+      - ./car/app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
       - car-app-sf-cache:/srv/app/var
 
   car-nginx:
     image: ${NGINX_IMAGE:-car/nginx}
+    container_name: car-nginx
     build:
-      context: ./back/car/app
+      context: ./car/app
       target: app_nginx
       <<: *app-cache-from
     depends_on:
       - car-php
     volumes:
-      - ./back/car/app/public:/srv/app/public:ro
+      - ./car/app/public:/srv/app/public:ro
     ports:
       - 8081:80
 
   car-phpmyadmin:
     platform: linux/amd64
     image: phpmyadmin/phpmyadmin:latest
+    container_name: car-phpmyadmin
     depends_on:
       - car-db
     ports:

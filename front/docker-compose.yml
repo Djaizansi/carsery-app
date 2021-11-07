@@ -3,6 +3,6 @@ version: '3.6'
 services:
   all:
     image: alpine:latest
-    container_name: carsery
+    container_name: carsery-front
     env_file:
       - .env

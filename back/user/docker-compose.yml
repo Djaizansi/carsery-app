@@ -10,6 +10,7 @@ services:
   user-db:
     platform: linux/x86_64
     image: mysql:5.7
+    container_name: user-db
     environment:
       MYSQL_DATABASE: 'user'
       MYSQL_USER: 'user'
@@ -23,31 +24,34 @@ services:
 
   user-php:
     image: ${PHP_IMAGE:-user/php}
+    container_name: user-php
     build:
-      context: ./back/user/app
+      context: ./user/app
       target: app_php
       <<: *app-cache-from
     volumes:
-      - ./back/user/app:/srv/app:rw
-      - ./back/user/app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
+      - ./user/app:/srv/app:rw
+      - ./user/app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
       - user-app-sf-cache:/srv/app/var
 
   user-nginx:
     image: ${NGINX_IMAGE:-user/nginx}
+    container_name: user-nginx
     build:
-      context: ./back/user/app
+      context: ./user/app
       target: app_nginx
       <<: *app-cache-from
     depends_on:
       - user-php
     volumes:
-      - ./back/user/app/public:/srv/app/public:ro
+      - ./user/app/public:/srv/app/public:ro
     ports:
       - 8095:80
 
   user-phpmyadmin:
     platform: linux/x86_64
     image: phpmyadmin/phpmyadmin:latest
+    container_name: user-phpmyadmin
     depends_on:
       - user-db
     ports:

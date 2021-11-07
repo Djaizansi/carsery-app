@@ -7,13 +7,14 @@ x-cache-from:
 services:
   booking-node:
     image: ${NODE_IMAGE:-booking/node}
+    container_name: booking-node
     stdin_open: true
     build:
-      context: ./front/booking/app
+      context: ./booking/app
       dockerfile: Dockerfile.node
       <<: *node-cache-from
     ports:
       - 8100:8080
     volumes:
-      - /front/booking/app/node_modules
-      - ./front/booking/app:/booking/app
+      - /booking/app/node_modules
+      - ./booking/app:/booking/app

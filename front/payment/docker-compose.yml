@@ -7,13 +7,14 @@ x-cache-from:
 services:
   payment-node:
     image: ${NODE_IMAGE:-payment/node}
+    container_name: payment-node
     stdin_open: true
     build:
-      context: ./front/payment/app
+      context: ./payment/app
       dockerfile: Dockerfile.node
       <<: *node-cache-from
     ports:
       - 8103:8080
     volumes:
-      - /front/payment/app/node_modules
-      - ./front/payment/app:/payment/app
+      - /payment/app/node_modules
+      - ./payment/app:/payment/app
