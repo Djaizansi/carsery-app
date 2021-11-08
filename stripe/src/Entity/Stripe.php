@@ -37,14 +37,15 @@ use App\Controller\StripeController;
                             'application/json' => [
                                 'schema' => [
                                     'type' => 'string',
-                                    'example' => 'sk_test_51IlgW2K06RcvPd5DOMWgxC9Imo4Pxei0DjB6zthEqVHsDVMKC51MIGsiIEGpQir2BoUjhDxqDDPS8eKRwUCI2slq00LonnSCkG'
+                                    'example' => 'pi_3JteEiAO5vDzLaAV0xeDJHEv_secret_XBVeuQGNdzZYDtMfjdizzIXGmGwaaaasz'
                                 ]
                             ]
                         ],
-                    ]
+                    ],
+                    '201' => null
                 ]
             ]
-        ]
+        ],
     ],
     itemOperations: [],
 )]

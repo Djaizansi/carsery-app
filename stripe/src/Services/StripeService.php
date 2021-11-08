@@ -17,10 +17,11 @@ class StripeService
     }
 
     /**
+     * @param $price
      * @return PaymentIntent
      * @throws ApiErrorException
      */
-    public function paymentIntent($price)
+    public function paymentIntent($price): PaymentIntent
     {
         \Stripe\Stripe::setApiKey($this->privateKey);
 
@@ -62,7 +63,6 @@ class StripeService
      * @param $price
      * @param $name
      * @return PaymentIntent|null
-     * @throws ApiErrorException
      */
     public function stripe(array $stripeParameter, $price, $name): ?PaymentIntent
     {
