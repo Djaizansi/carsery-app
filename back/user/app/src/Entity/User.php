@@ -14,7 +14,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 
 #[ApiResource(
-    collectionOperations: ['get','post'],
+    collectionOperations: [
+        'get',
+        'post',
+    ],
     denormalizationContext: ['groups' => ['users:post']],
     itemOperations: [
         'get',
@@ -85,6 +88,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\OneToOne(targetEntity=Address::class, inversedBy="user", cascade={"persist", "remove"})
      */
     private $address;
+
+    public function __construct(){
+        $this->createdAt = new \DateTime();
+    }
 
     public function getId(): ?int
     {
