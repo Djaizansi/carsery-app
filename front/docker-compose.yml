@@ -1,8 +1,51 @@
 version: '3.6'
-
 services:
-  all:
-    image: alpine:latest
-    container_name: carsery-front
-    env_file:
-      - .env
+  booking-front: 
+    container_name: booking-front
+    build: ./booking
+    stdin_open: true
+    ports:
+      - 8100:8080
+    volumes:
+      - /booking/node_modules
+      - ./booking:/app
+
+  car-front:
+    container_name: car-front
+    build: ./car
+    stdin_open: true
+    ports:
+      - 8101:8080
+    volumes:
+      - /car/node_modules
+      - ./car:/app
+
+  order-front:
+    container_name: order-front
+    build: ./order
+    stdin_open: true
+    ports:
+      - 8102:8080
+    volumes:
+      - /order/node_modules
+      - ./order:/app
+
+  payment-front:
+    container_name: payment-front
+    build: ./payment
+    stdin_open: true
+    ports:
+      - 8103:8080
+    volumes:
+      - /payment/node_modules
+      - ./payment:/app
+  
+  user-front:
+    container_name: user-front
+    build: ./user
+    stdin_open: true
+    ports:
+      - 8104:8080
+    volumes:
+      - /user/node_modules
+      - ./user:/app
