@@ -37,7 +37,7 @@ class Car
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $registration;
+    private $numberplate;
 
     /**
      * @ORM\Column(type="integer")
@@ -70,6 +70,11 @@ class Car
      * @ORM\JoinColumn(nullable=false)
      */
     private $category;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $date_registration;
 
     public function getId(): ?int
     {
@@ -112,14 +117,14 @@ class Car
         return $this;
     }
 
-    public function getRegistration(): ?string
+    public function getNumberplate(): ?string
     {
-        return $this->registration;
+        return $this->numberplate;
     }
 
-    public function setRegistration(string $registration): self
+    public function setNumberplate(string $numberplate): self
     {
-        $this->registration = $registration;
+        $this->numberplate = $numberplate;
 
         return $this;
     }
@@ -192,6 +197,18 @@ class Car
     public function setCategory(?Category $category): self
     {
         $this->category = $category;
+
+        return $this;
+    }
+
+    public function getDateRegistration(): ?\DateTimeInterface
+    {
+        return $this->date_registration;
+    }
+
+    public function setDateRegistration(\DateTimeInterface $date_registration): self
+    {
+        $this->date_registration = $date_registration;
 
         return $this;
     }
