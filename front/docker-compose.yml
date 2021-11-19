@@ -1,6 +1,6 @@
 version: '3.6'
 services:
-  booking-front: 
+  booking-front:
     container_name: booking-front
     build: ./booking
     stdin_open: true
@@ -39,7 +39,7 @@ services:
     volumes:
       - /payment/node_modules
       - ./payment:/app
-  
+
   user-front:
     container_name: user-front
     build: ./user
@@ -49,3 +49,13 @@ services:
     volumes:
       - /user/node_modules
       - ./user:/app
+
+  vitrine-front:
+    container_name: vitrine-front
+    build: ./vitrine
+    stdin_open: true
+    ports:
+      - 8105:8080
+    volumes:
+      - /vitrine/node_modules
+      - ./vitrine:/app
