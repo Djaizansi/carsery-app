@@ -1,10 +1,4 @@
 version: '3.6'
-x-cache-from:
-  - &app-cache-from
-    cache_from:
-      - ${NGINX_IMAGE:-order/nginx}
-      - ${PHP_IMAGE:-order/php}
-
 services:
 
   order-db:
@@ -26,37 +20,25 @@ services:
     image: ${PHP_IMAGE:-order/php}
     container_name: order-php
     build:
-      context: ./order/app
+      context: ./app
       target: app_php
-      <<: *app-cache-from
     volumes:
-      - ./order/app:/srv/app:rw
-      - ./order/app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
+      - ./app:/srv/app:rw
+      - ./app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
       - order-app-sf-cache:/srv/app/var
 
   order-nginx:
     image: ${NGINX_IMAGE:-order/nginx}
     container_name: order-nginx
     build:
-      context: ./order/app
+      context: ./app
       target: app_nginx
-      <<: *app-cache-from
     depends_on:
       - order-php
     volumes:
-      - ./order/app/public:/srv/app/public:ro
+      - ./app/public:/srv/app/public:ro
     ports:
       - 8091:80
-
-  order-phpmyadmin:
-    image: phpmyadmin/phpmyadmin:latest
-    container_name: order-phpmyadmin
-    depends_on:
-      - order-db
-    ports:
-      - 8092:80
-    environment:
-      - PMA_ARBITRARY=1
 
 volumes:
   order-db-data: {}

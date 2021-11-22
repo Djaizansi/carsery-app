@@ -1,19 +1,13 @@
 version: '3.6'
-x-cache-from:
-  - &app-cache-from
-    cache_from:
-      - ${NGINX_IMAGE:-payment/nginx}
-      - ${PHP_IMAGE:-payment/php}
-
 services:
 
   payment-db:
-    platform: linux/amd64
+    platform: linux/x86_64
     image: mysql:5.7
     container_name: payment-db
     environment:
       MYSQL_DATABASE: 'payment'
-      MYSQL_USER: 'payment'
+      MYSQL_payment: 'payment'
       MYSQL_ROOT_PASSWORD: 'root'
       MYSQL_PASSWORD: 'pwd'
     volumes:
@@ -21,44 +15,43 @@ services:
     ports:
       - 3312:3306
     restart: always
+    networks:
+      - mailer_mailer
 
   payment-php:
     image: ${PHP_IMAGE:-payment/php}
     container_name: payment-php
     build:
-      context: ./payment/app
+      context: ./app
       target: app_php
-      <<: *app-cache-from
     volumes:
-      - ./payment/app:/srv/app:rw
-      - ./payment/app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
+      - ./app:/srv/app:rw
+      - ./app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
       - payment-app-sf-cache:/srv/app/var
+    networks:
+      - mailer_mailer
 
   payment-nginx:
     image: ${NGINX_IMAGE:-payment/nginx}
     container_name: payment-nginx
     build:
-      context: ./payment/app
+      context: ./app
       target: app_nginx
-      <<: *app-cache-from
     depends_on:
       - payment-php
     volumes:
-      - ./payment/app/public:/srv/app/public:ro
+      - ./app/public:/srv/app/public:ro
     ports:
       - 8098:80
+    networks:
+      - mailer_mailer
 
-  payment-phpmyadmin:
-    platform: linux/amd64
-    container_name: payment-phpmyadmin
-    image: phpmyadmin/phpmyadmin:latest
-    depends_on:
-      - payment-db
-    ports:
-      - 8099:80
-    environment:
-      - PMA_ARBITRARY=1
+networks:
+  mailer_mailer:
+    external: true
+
 
 volumes:
-  payment-db-data: {}
-  payment-app-sf-cache: {}
+  payment-db-data: { }
+  payment-app-sf-cache: { }
+

@@ -1,10 +1,4 @@
 version: '3.6'
-x-cache-from:
-  - &app-cache-from
-    cache_from:
-      - ${NGINX_IMAGE:-booking/nginx}
-      - ${PHP_IMAGE:-booking/php}
-
 services:
 
   booking-db:
@@ -26,38 +20,25 @@ services:
     image: ${PHP_IMAGE:-booking/php}
     container_name: booking-php
     build:
-      context: ./booking/app
+      context: ./app
       target: app_php
-      <<: *app-cache-from
     volumes:
-      - ./booking/app:/srv/app:rw
-      - ./booking/app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
+      - ./app:/srv/app:rw
+      - ./app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
       - booking-app-sf-cache:/srv/app/var
 
   booking-nginx:
     image: ${NGINX_IMAGE:-booking/nginx}
     container_name: booking-nginx
     build:
-      context: ./booking/app
+      context: ./app
       target: app_nginx
-      <<: *app-cache-from
     depends_on:
       - booking-php
     volumes:
-      - ./booking/app/public:/srv/app/public:ro
+      - ./app/public:/srv/app/public:ro
     ports:
       - 8083:80
-
-  booking-phpmyadmin:
-    platform: linux/amd64
-    container_name: booking-phpmyadmin
-    image: phpmyadmin/phpmyadmin:latest
-    depends_on:
-      - booking-db
-    ports:
-      - 8086:80
-    environment:
-      - PMA_ARBITRARY=1
 
 volumes:
   booking-db-data: {}
