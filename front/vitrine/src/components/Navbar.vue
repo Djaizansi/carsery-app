@@ -31,44 +31,10 @@
             <template #trigger>
               <b-button
                   label="Login"
+                  type="is-primary"
                   icon-left="lock"
-              />
+                  @click="cardModal" />
             </template>
-            <b-dropdown-item
-                aria-role="menu-item"
-                :focusable="false"
-                custom
-                paddingless>
-              <form action="">
-                <div class="modal-card mx-auto w-full lg:w-96">
-                  <section class="modal-card-body">
-                    <b-field label="Email">
-                      <b-input
-                          type="email"
-                          placeholder="Your email"
-                          required>
-                      </b-input>
-                    </b-field>
-
-                    <b-field label="Password">
-                      <b-input
-                          type="password"
-                          password-reveal
-                          placeholder="Your password"
-                          required>
-                      </b-input>
-                    </b-field>
-
-                    <b-checkbox>Remember me</b-checkbox>
-                  </section>
-                  <footer class="modal-card-foot">
-                    <b-button
-                        label="Login"
-                        type="is-primary" />
-                  </footer>
-                </div>
-              </form>
-            </b-dropdown-item>
           </b-dropdown>
         </div>
       </b-navbar-item>
@@ -76,7 +42,23 @@
   </b-navbar>
 </template>
 
+<script>
+  import Login from './Login';
+  export default {
+    methods: {
+      cardModel() {
+        this.$buefy.modal.open({
+          parent: this,
+          component: Login,
+          hasModalCard: true,
+          customClass: 'custom-class custom-class-2',
+          trapFocus: true
+        })
+      }
+    }
+  }
+</script>
 
-<style lang="scss" scoped>
+<style>
 
 </style>
