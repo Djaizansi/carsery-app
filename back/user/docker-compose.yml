@@ -1,10 +1,4 @@
 version: '3.6'
-x-cache-from:
-  - &app-cache-from
-    cache_from:
-      - ${NGINX_IMAGE:-user/nginx}
-      - ${PHP_IMAGE:-user/php}
-
 services:
 
   user-db:
@@ -21,43 +15,41 @@ services:
     ports:
       - 3311:3306
     restart: always
+    networks:
+      - mailer_mailer
 
   user-php:
     image: ${PHP_IMAGE:-user/php}
     container_name: user-php
     build:
-      context: ./user/app
+      context: ./app
       target: app_php
-      <<: *app-cache-from
     volumes:
-      - ./user/app:/srv/app:rw
-      - ./user/app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
+      - ./app:/srv/app:rw
+      - ./app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
       - user-app-sf-cache:/srv/app/var
+    networks:
+      - mailer_mailer
 
   user-nginx:
     image: ${NGINX_IMAGE:-user/nginx}
     container_name: user-nginx
     build:
-      context: ./user/app
+      context: ./app
       target: app_nginx
-      <<: *app-cache-from
     depends_on:
       - user-php
     volumes:
-      - ./user/app/public:/srv/app/public:ro
+      - ./app/public:/srv/app/public:ro
     ports:
       - 8095:80
+    networks:
+      - mailer_mailer
 
-  user-phpmyadmin:
-    platform: linux/x86_64
-    image: phpmyadmin/phpmyadmin:latest
-    container_name: user-phpmyadmin
-    depends_on:
-      - user-db
-    ports:
-      - 8096:80
-    environment:
-      - PMA_ARBITRARY=1
+networks:
+  mailer_mailer:
+    external: true
+
 
 volumes:
   user-db-data: {}

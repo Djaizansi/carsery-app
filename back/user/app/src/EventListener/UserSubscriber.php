@@ -3,29 +3,18 @@
 namespace App\EventListener;
 
 use App\Entity\User;
-use App\Services\MailService;
+use App\Services\CurlService;
 use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class UserSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var UserPasswordHasherInterface
-     */
-    private $encoder;
-
-    /**
-     * @var MailService
-     */
-    private $mail;
-
-    public function __construct(UserPasswordHasherInterface $encoder, MailService $mailService)
-    {
-        $this->encoder = $encoder;
-        $this->mail = $mailService;
-    }
+    public function __construct(private UserPasswordHasherInterface $encoder, private CurlService $curl)
+    {}
 
     // this method can only return the event names; you cannot define a
     // custom method name to execute when each event triggers
@@ -78,6 +67,13 @@ class UserSubscriber implements EventSubscriberInterface
 
     private function sendMail(LifecycleEventArgs $args){
         $entity = $this->checkInstanceEntity($args);
-        !is_bool($entity) && $this->mail->sendMail($entity->getEmail(),'Valider votre compte','validation_account',['token' => $entity->getToken()]);
+        $data = [
+            "email" => $entity->getEmail(),
+            "subject" => 'Valider votre compte',
+            "template" => 'validation_account',
+            "data" => ['token' => $entity->getToken()]
+        ];
+
+        $this->curl->curlData('POST',"http://mailer-nginx/mail/send", json_encode($data));
     }
 }
