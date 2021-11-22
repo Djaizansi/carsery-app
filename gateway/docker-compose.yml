@@ -1,0 +1,11 @@
+version: '3.6'
+services:
+  gateway:
+      container_name: gateway
+      build: ./
+      stdin_open: true
+      ports:
+        - 3000:3000
+      volumes:
+        - ./:/app
+        - /app/node_modules
