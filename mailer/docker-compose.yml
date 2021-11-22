@@ -1,0 +1,45 @@
+version: '3.6'
+x-cache-from:
+  - &app-cache-from
+    cache_from:
+      - ${NGINX_IMAGE:-mailer/nginx}
+      - ${PHP_IMAGE:-mailer/php}
+
+services:
+  mailer-php:
+    image: ${PHP_IMAGE:-mailer/php}
+    container_name: mailer-php
+    build:
+      context: ./
+      target: app_php
+      <<: *app-cache-from
+    volumes:
+      - ./:/srv/app:rw
+      - ./docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
+      - mailer-app-sf-cache:/srv/app/var
+    networks:
+      - mailer
+
+  mailer-nginx:
+    image: ${NGINX_IMAGE:-mailer/nginx}
+    container_name: mailer-nginx
+    build:
+      context: ./
+      target: app_nginx
+      <<: *app-cache-from
+    depends_on:
+      - mailer-php
+    volumes:
+      - ./public:/srv/app/public:ro
+    ports:
+      - 8121:80
+    networks:
+      - mailer
+
+networks:
+  mailer:
+    driver: bridge
+
+volumes:
+  mailer-db-data: {}
+  mailer-app-sf-cache: {}
