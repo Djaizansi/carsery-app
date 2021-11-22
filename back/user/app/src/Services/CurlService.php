@@ -16,6 +16,6 @@ class CurlService{
             ],
             'body' => $body
         ]);
-        return new JsonResponse('envoi de mail réussi bg',200);
+        return new JsonResponse('',200);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\ActivationAccount;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -17,6 +18,31 @@ use Symfony\Component\Serializer\Annotation\Groups;
     collectionOperations: [
         'get',
         'post',
+        'activation_account' => [
+            'method' => 'POST',
+            'path' => '/activation/account',
+            'controller' => ActivationAccount::class,
+            'read' => false,
+            'write' => false,
+            'denormalization_context' => ['groups' => ['activation_account']],
+            'openapi_context' => [
+                'summary' => 'Activation du compte',
+                'responses' => [
+                    '200' => [
+                        'description' => 'Activation réussi',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'string',
+                                    'example' => 'Votre compte a été activé'
+                                ]
+                            ]
+                        ],
+                    ],
+                    '201' => null
+                ]
+            ]
+        ]
     ],
     denormalizationContext: ['groups' => ['users:post']],
     itemOperations: [
@@ -72,6 +98,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
+    #[Groups(['activation_account'])]
     private $token;
 
     /**
