@@ -1,42 +1,53 @@
 <template>
-  <form action="">
-    <div class="modal-card" style="width: auto">
+  <form @submit.prevent="handleSubmit">
+    <div class="modal-card xs:px-7">
       <header class="modal-card-head">
-        <p class="modal-card-title">Login</p>
+        <p class="modal-card-title">Connectez-vous</p>
         <button
             type="button"
             class="delete"
-            @click="$emit('close')"/>
+            @click="$emit('close')"
+        />
       </header>
       <section class="modal-card-body">
+        
         <b-field label="Email">
           <b-input
               type="email"
+              name="email"
               :value="email"
-              placeholder="Your email"
+              message="coucou"
+              placeholder="Votre email"
               required>
           </b-input>
         </b-field>
 
-        <b-field label="Password">
+        <b-field label="Mot de passe">
           <b-input
               type="password"
+              name="password"
               :value="password"
               password-reveal
-              placeholder="Your password"
-              required>
+              placeholder="Votre mot de passe"
+              required
+          >
           </b-input>
         </b-field>
 
-        <b-checkbox>Remember me</b-checkbox>
+        <b-checkbox native-value="check" name="rememberme">Se souvenir de moi</b-checkbox>
       </section>
       <footer class="modal-card-foot">
-        <b-button
-            label="Close"
-            @click="$emit('close')" />
-        <b-button
-            label="Login"
-            type="is-primary" />
+        <b-button v-if="!loading"
+            label="Connexion"
+            type="is-primary"
+            native-type="submit"
+            class="w-full"
+        />
+        <b-button v-else
+            loading
+            type="is-primary"
+            class="w-full"
+        />
       </footer>
     </div>
   </form>
@@ -44,6 +55,30 @@
 
 <script>
   export default {
-    data: () => ({email: "", password: ""}),
+    data: () => ({email: "", password: "", rememberme: false, loading: false}),
+    methods: {
+      async handleSubmit(event) {
+        this.loading = true;
+        const { email,password,rememberme } = Object.fromEntries(new FormData(event.target));
+        const response = await fetch("http://localhost:8095/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ email: email, password: password })
+        });
+        const data = await response.json();
+        if(data){
+          if(data.code === 401){
+            !this.loading;
+          }else{
+            const typeStorage = {session: sessionStorage, local: localStorage}
+            rememberme !== 'undefined' && rememberme === 'check' ? typeStorage.local.setItem('user',data.token) : typeStorage.session.setItem('user',data.token);
+            !this.loading;
+            //this.$router.push('/');
+          }
+        }
+      }
+    }
   }
 </script>

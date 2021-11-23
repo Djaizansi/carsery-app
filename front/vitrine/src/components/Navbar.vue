@@ -23,19 +23,11 @@
           <a class="button is-primary">
             <strong>Sign up</strong>
           </a>
-          <b-dropdown
-              position="is-bottom-left"
-              aria-role="menu"
-              trap-focus
-          >
-            <template #trigger>
-              <b-button
+          <b-button
                   label="Login"
                   type="is-primary"
                   icon-left="lock"
                   @click="cardModal" />
-            </template>
-          </b-dropdown>
         </div>
       </b-navbar-item>
     </template>
@@ -44,9 +36,10 @@
 
 <script>
   import Login from './Login';
+  console.log(localStorage.getItem('user'));
   export default {
     methods: {
-      cardModel() {
+      cardModal() {
         this.$buefy.modal.open({
           parent: this,
           component: Login,
