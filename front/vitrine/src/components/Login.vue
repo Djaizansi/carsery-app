@@ -15,7 +15,6 @@
           <b-input
               type="email"
               name="email"
-              :value="email"
               message="coucou"
               placeholder="Votre email"
               required>
@@ -26,7 +25,6 @@
           <b-input
               type="password"
               name="password"
-              :value="password"
               password-reveal
               placeholder="Votre mot de passe"
               required
@@ -55,7 +53,7 @@
 
 <script>
   export default {
-    data: () => ({email: "", password: "", rememberme: false, loading: false}),
+    data: () => ({rememberme: false, loading: false}),
     methods: {
       async handleSubmit(event) {
         this.loading = true;

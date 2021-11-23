@@ -20,14 +20,17 @@
     <template #end>
       <b-navbar-item tag="div">
         <div class="buttons">
-          <a class="button is-primary">
-            <strong>Sign up</strong>
-          </a>
           <b-button
-                  label="Login"
-                  type="is-primary"
-                  icon-left="lock"
-                  @click="cardModal" />
+              name="register"
+              label="S'inscrire"
+              type="is-primary"
+              icon-left="account-plus"
+              @click="cardModal('register')" />
+          <b-button
+              variant="login"
+              label="Connexion"
+              icon-left="lock"
+              @click="cardModal('login')" />
         </div>
       </b-navbar-item>
     </template>
@@ -36,13 +39,15 @@
 
 <script>
   import Login from './Login';
+  import Register from './Register';
   console.log(localStorage.getItem('user'));
   export default {
     methods: {
-      cardModal() {
+      cardModal(val) {
+        console.log(val);
         this.$buefy.modal.open({
           parent: this,
-          component: Login,
+          component: val === 'login' ? Login : Register,
           hasModalCard: true,
           customClass: 'custom-class custom-class-2',
           trapFocus: true
