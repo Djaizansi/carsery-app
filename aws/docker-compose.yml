@@ -1,0 +1,37 @@
+version: '3.6'
+x-cache-from:
+  - &app-cache-from
+    cache_from:
+      - ${NGINX_IMAGE:-aws/nginx}
+      - ${PHP_IMAGE:-aws/php}
+
+services:
+  aws-php:
+    image: ${PHP_IMAGE:-aws/php}
+    container_name: aws-php
+    build:
+      context: ./
+      target: app_php
+      <<: *app-cache-from
+    volumes:
+      - ./:/srv/app:rw
+      - ./docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
+      - aws-app-sf-cache:/srv/app/var
+
+  aws-nginx:
+    image: ${NGINX_IMAGE:-aws/nginx}
+    container_name: aws-nginx
+    build:
+      context: ./
+      target: app_nginx
+      <<: *app-cache-from
+    depends_on:
+      - aws-php
+    volumes:
+      - ./public:/srv/app/public:ro
+    ports:
+      - 8300:80
+
+volumes:
+  aws-db-data: {}
+  aws-app-sf-cache: {}

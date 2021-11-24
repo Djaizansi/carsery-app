@@ -1,0 +1,8 @@
+vich_uploader:
+    db_driver: orm
+    storage: flysystem
+
+    mappings:
+        aws:
+            uri_prefix: /carsery
+            upload_destination: aws.storage
