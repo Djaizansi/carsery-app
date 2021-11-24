@@ -1,4 +1,5 @@
 <template>
+  <div>
   <b-navbar class="p-4">
     <template #brand>
       <b-navbar-item tag="router-link" :to="{ path: '/' }">
@@ -20,63 +21,44 @@
     <template #end>
       <b-navbar-item tag="div">
         <div class="buttons">
-          <a class="button is-primary">
-            <strong>Sign up</strong>
-          </a>
-          <b-dropdown
-              position="is-bottom-left"
-              aria-role="menu"
-              trap-focus
-          >
-            <template #trigger>
-              <b-button
-                  label="Login"
-                  icon-left="lock"
-              />
-            </template>
-            <b-dropdown-item
-                aria-role="menu-item"
-                :focusable="false"
-                custom
-                paddingless>
-              <form action="">
-                <div class="modal-card mx-auto w-full lg:w-96">
-                  <section class="modal-card-body">
-                    <b-field label="Email">
-                      <b-input
-                          type="email"
-                          placeholder="Your email"
-                          required>
-                      </b-input>
-                    </b-field>
-
-                    <b-field label="Password">
-                      <b-input
-                          type="password"
-                          password-reveal
-                          placeholder="Your password"
-                          required>
-                      </b-input>
-                    </b-field>
-
-                    <b-checkbox>Remember me</b-checkbox>
-                  </section>
-                  <footer class="modal-card-foot">
-                    <b-button
-                        label="Login"
-                        type="is-primary" />
-                  </footer>
-                </div>
-              </form>
-            </b-dropdown-item>
-          </b-dropdown>
+          <b-button
+              name="register"
+              label="S'inscrire"
+              type="is-primary"
+              icon-left="account-plus"
+              @click="cardModal('register')" />
+          <b-button
+              variant="login"
+              label="Connexion"
+              icon-left="lock"
+              @click="cardModal('login')" />
         </div>
       </b-navbar-item>
     </template>
   </b-navbar>
+  </div>
 </template>
 
+<script>
+  import Login from './Login';
+  import Register from './Register';
+  console.log(localStorage.getItem('user'));
+  export default {
+    methods: {
+      cardModal(val) {
+        console.log(val);
+        this.$buefy.modal.open({
+          parent: this,
+          component: val === 'login' ? Login : Register,
+          hasModalCard: true,
+          customClass: 'custom-class custom-class-2',
+          trapFocus: true
+        })
+      }
+    }
+  }
+</script>
 
-<style lang="scss" scoped>
+<style>
 
 </style>
