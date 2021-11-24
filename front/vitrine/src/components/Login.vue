@@ -10,7 +10,7 @@
         />
       </header>
       <section class="modal-card-body">
-        
+
         <b-field label="Email">
           <b-input
               type="email"
@@ -58,16 +58,16 @@
       async handleSubmit(event) {
         this.loading = true;
         const { email,password,rememberme } = Object.fromEntries(new FormData(event.target));
-        const response = await fetch("http://localhost:8095/login", {
+        const res = await fetch("http://localhost:8095/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({ email: email, password: password })
         });
-        const data = await response.json();
+        const data = await res.json();
         if(data){
-          if(data.code === 401){
+          if(res.status === 401){
             !this.loading;
           }else{
             const typeStorage = {session: sessionStorage, local: localStorage}

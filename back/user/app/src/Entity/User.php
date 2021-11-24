@@ -6,12 +6,15 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\ActivationAccount;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @UniqueEntity("email",message="L'email existe déjà. Veuillez réessayer")
  */
 
 #[ApiResource(
@@ -61,6 +64,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="string", length=180, unique=true)
+     * @Assert\Email(message="Votre email est invalide")
      */
     #[Groups(['users:post'])]
     private $email;

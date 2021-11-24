@@ -1,4 +1,5 @@
 <template>
+  <div>
   <b-navbar class="p-4">
     <template #brand>
       <b-navbar-item tag="router-link" :to="{ path: '/' }">
@@ -35,6 +36,7 @@
       </b-navbar-item>
     </template>
   </b-navbar>
+  </div>
 </template>
 
 <script>

@@ -2,7 +2,7 @@
 <form @submit.prevent="handleSubmit">
     <div class="modal-card xs:px-7">
       <header class="modal-card-head">
-        <p class="modal-card-title">Connectez-vous</p>
+        <p class="modal-card-title">Inscrivez-vous</p>
         <button
             type="button"
             class="delete"
@@ -28,7 +28,11 @@
             </b-input>
           </b-field>
         </div>
-        <b-field label="Email">
+        <b-field
+            label="Email"
+            :type="message !== '' && targetMessage === 'email' ? 'is-danger' : ''"
+            :message="message !== '' && targetMessage === 'email' ? message : ''"
+        >
           <b-input
               type="email"
               name="email"
@@ -37,7 +41,11 @@
           </b-input>
         </b-field>
 
-        <b-field label="Mot de passe">
+        <b-field
+            label="Mot de passe"
+            :type="message !== '' && targetMessage === 'pwd' ? 'is-danger' : ''"
+            :message="message !== '' && targetMessage === 'pwd'? message : ''"
+        >
           <b-input
               type="password"
               name="password"
@@ -94,14 +102,14 @@
 
 <script>
 export default {
-  data: () => ({typeUser: "", loading: false}),
+  data: () => ({typeUser: "", loading: false, message:"", targetMessage:""}),
   methods: {
     async handleSubmit(event) {
         this.loading = true;
         const { firstname,lastname,email,password,passwordConfirm,typeUser } = Object.fromEntries(new FormData(event.target));
         if(password === passwordConfirm){
           const conditionRole = typeUser === 'client';
-          const infoUser = { 
+          const infoUser = {
             email: email,
             password: password,
             roles: [
@@ -114,25 +122,35 @@ export default {
             ...infoUser
           } : infoUser;
 
-          const response = await fetch("http://localhost:8095/users", {
+          const res = await fetch("http://localhost:8095/users", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
             },
             body: JSON.stringify(dataSend)
           });
-          const data = await response.json();
+          const data = await res.json();
+          const code = res.status;
           if(data){
-            if(data.code === 401){
+            if(code === 401){
               !this.loading;
-            }else{
-              !this.loading;
-              //this.$router.push('/');
+            }else if(code === 422){
+              this.loading = !this.loading;
+              this.message = data['violations'][0].message;
+              this.targetMessage = "email"
+            }else {
+              this.loading = !this.loading;
+              this.$emit('close');
+              this.$buefy.toast.open({
+                message: 'Inscription réussi. Vérifiez votre adresse mail en checkez vos mails',
+                type: 'is-success'
+              })
             }
           }
         }else{
           this.loading = false;
-          console.log('Les mots de passe ne correspondent pas, veuillez réessayez');
+          this.message = 'Les mots de passe ne correspondent pas. Veuillez réessayez';
+          this.targetMessage = "pwd";
         }
       }
     }
