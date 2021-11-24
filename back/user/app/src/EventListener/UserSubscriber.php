@@ -74,6 +74,6 @@ class UserSubscriber implements EventSubscriberInterface
             "data" => ['token' => $entity->getToken()]
         ];
 
-        //$this->curl->curlData('POST',"http://mailer-nginx/mail/send", json_encode($data));
+        $this->curl->curlData('POST',"http://mailer-nginx/mail/send", json_encode($data));
     }
 }
