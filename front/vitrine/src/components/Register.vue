@@ -15,6 +15,8 @@
             <b-input
                 type="text"
                 name="firstname"
+                min="3"
+                validation-message="Minimum 3 caractères"
                 placeholder="Votre prénom"
                 required>
             </b-input>
@@ -23,6 +25,8 @@
             <b-input
                 type="text"
                 name="lastname"
+                min="2"
+                validation-message="Minimum 2 caractères"
                 placeholder="Votre nom"
                 required>
             </b-input>
@@ -50,6 +54,7 @@
               type="password"
               name="password"
               password-reveal
+
               placeholder="Votre mot de passe"
               required
           >
@@ -67,7 +72,8 @@
           </b-input>
         </b-field>
         <div class="flex justify-center mt-6">
-            <b-radio v-model="typeUser"
+            <b-radio
+                v-model="typeUser"
                 name="typeUser"
                 native-value="client"
                 required
@@ -82,6 +88,7 @@
                 Professionnel
             </b-radio>
         </div>
+        <p class="flex justify-center text-red-600 text-sm" :class="targetMessage === 'roles' ? '' : 'hidden'"><span class="mdi mdi-alert-outline"></span> {{targetMessage === 'roles' && message}}</p>
       </section>
       <footer class="modal-card-foot">
         <b-button v-if="!loading"
@@ -110,10 +117,10 @@ export default {
         if(password === passwordConfirm){
           const conditionRole = typeUser === 'client';
           const infoUser = {
-            email: email,
+            email: email.toLowerCase(),
             password: password,
             roles: [
-              conditionRole ? 'ROLE_USER' : 'ROLE_PROFESIONNAL'
+              conditionRole ? 'ROLE_CLIENT' : 'ROLE_PROFESIONNAL'
             ]
           }
           const dataSend = conditionRole ? {
@@ -135,9 +142,23 @@ export default {
             if(code === 401){
               !this.loading;
             }else if(code === 422){
+              const error = data['violations'][0];
               this.loading = !this.loading;
-              this.message = data['violations'][0].message;
-              this.targetMessage = "email"
+              if(error.propertyPath === "email"){
+                this.message = data['violations'][0].message;
+                this.targetMessage = "email"
+              }else if(error.propertyPath === "roles"){
+                this.message = data['violations'][0].message;
+                this.targetMessage = "roles"
+              }else if(error.propertyPath === "password"){
+                this.message = `
+                  Votre mot de passe doit contenir : \n\n
+                      - Minimum 8 caractères \n
+                      - Au moins 1 chifffre \n
+                      - Au moins un caractère majuscule et minuscule
+                `;
+                this.targetMessage = "pwd"
+              }
             }else {
               this.loading = !this.loading;
               this.$emit('close');

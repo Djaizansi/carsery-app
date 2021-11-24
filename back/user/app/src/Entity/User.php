@@ -55,6 +55,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    const ROLES = [['ROLE_CLIENT'],['ROLE_PROFESIONNAL']];
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -71,6 +72,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @ORM\Column(type="json")
+     * @Assert\Choice(choices=User::ROLES, message="Choisissez un role valide")
      */
     #[Groups(['users:post'])]
     private $roles = [];
@@ -78,18 +80,31 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
+     * @Assert\Regex("/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/")
      */
     #[Groups(['users:post'])]
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *      min = 3,
+     *      max = 30,
+     *      minMessage = "Votre prénom doit contenir minimum {{ limit }} caractères",
+     *      maxMessage = "Votre prénom doit contenir minimum {{ limit }} caractères"
+     * )
      */
     #[Groups(['users:post'])]
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 50,
+     *      minMessage = "Votre nom doit contenir minimum {{ limit }} caractères",
+     *      maxMessage = "Votre nom doit contenir maximum {{ limit }} caractères"
+     * )
      */
     #[Groups(['users:post'])]
     private $lastname;

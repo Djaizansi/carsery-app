@@ -10,7 +10,7 @@
         />
       </header>
       <section class="modal-card-body">
-
+        <p class="flex justify-center text-red-600 text-sm" :class="message === '' && 'hidden'"><span class="mdi mdi-alert-outline"></span> {{message}}</p>
         <b-field label="Email">
           <b-input
               type="email"
@@ -53,7 +53,7 @@
 
 <script>
   export default {
-    data: () => ({rememberme: false, loading: false}),
+    data: () => ({rememberme: false, loading: false, message: ""}),
     methods: {
       async handleSubmit(event) {
         this.loading = true;
@@ -68,11 +68,17 @@
         const data = await res.json();
         if(data){
           if(res.status === 401){
-            !this.loading;
+            this.loading = !this.loading;
+            this.message = "L'email et/ou le mot de passe est incorrect";
           }else{
             const typeStorage = {session: sessionStorage, local: localStorage}
             rememberme !== 'undefined' && rememberme === 'check' ? typeStorage.local.setItem('user',data.token) : typeStorage.session.setItem('user',data.token);
-            !this.loading;
+            this.loading = !this.loading;
+            this.$emit('close');
+            this.$buefy.toast.open({
+              message: 'Connecté',
+              type: 'is-success'
+            })
             //this.$router.push('/');
           }
         }
