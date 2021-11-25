@@ -3,5 +3,5 @@ vich_uploader:
     storage: flysystem
 
     mappings:
-        aws:
+        assets:
             upload_destination: aws.storage

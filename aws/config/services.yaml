@@ -4,7 +4,12 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-
+    assets_uri: 'https://carsery.s3.us-east-2.amazonaws.com'
+    assets_endpoint: 'http://s3.us-east-2.amazonaws.com'
+    assets_bucket: 'carsery'
+    assets_region: 'us-east-2'
+    assets_key: 'AKIAUQDXPIUT3CX4ZFN6'
+    assets_secret: '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'
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -26,11 +31,12 @@ services:
     Aws\S3\S3Client:
         arguments:
             - version: 'latest'
-              region: 'us-east-2'
-              endpoint: '%env(AWS_S3_BASE_URL)%'
+              region: '%assets_region%'
+              endpoint: '%assets_endpoint%'
               credentials:
-                  key: '%env(AWS_S3_ACCESS_ID)%'
-                  secret: '%env(AWS_S3_ACCESS_SECRET)%'
+                  key: '%assets_key%'
+                  secret: '%assets_secret%'
+
     App\Controller\:
       resource: '../src/Controller/'
       tags: [ 'controller.service_arguments' ]

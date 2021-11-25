@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\UploadController;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -46,9 +47,9 @@ class Document
 
     /**
      * @var File
-     * @Vich\UploadableField(mapping="aws", fileNameProperty="filePath")
+     * @Vich\UploadableField(mapping="assets", fileNameProperty="filePath")
      */
-    public $file;
+    private $file;
 
     /**
      * @var \DateTime
@@ -116,17 +117,9 @@ class Document
     /**
      * @param File $file
      */
-    public function setFile(File $file): void
+    public function setFile(File $file): File
     {
-        $this->file = $file;
-
-        // VERY IMPORTANT:
-        // It is required that at least one field changes if you are using Doctrine,
-        // otherwise the event listeners won't be called and the file is lost
-        if ($file) {
-            // if 'updatedAt' is not defined in your entity, use another property
-            $this->updatedAt = new \DateTime('now');
-        }
+        return $this->file = $file;
     }
 }
 
