@@ -46,9 +46,9 @@ class Document
 
     /**
      * @var File
-     * @Vich\UploadableField(mapping="document", fileNameProperty="documentFileName")
+     * @Vich\UploadableField(mapping="aws", fileNameProperty="filePath")
      */
-    private $file;
+    public $file;
 
     /**
      * @var \DateTime
@@ -119,6 +119,14 @@ class Document
     public function setFile(File $file): void
     {
         $this->file = $file;
+
+        // VERY IMPORTANT:
+        // It is required that at least one field changes if you are using Doctrine,
+        // otherwise the event listeners won't be called and the file is lost
+        if ($file) {
+            // if 'updatedAt' is not defined in your entity, use another property
+            $this->updatedAt = new \DateTime('now');
+        }
     }
 }
 

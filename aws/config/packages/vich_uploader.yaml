@@ -4,5 +4,4 @@ vich_uploader:
 
     mappings:
         aws:
-            uri_prefix: /carsery
             upload_destination: aws.storage

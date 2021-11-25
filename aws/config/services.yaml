@@ -25,10 +25,12 @@ services:
     # please note that last definitions always *replace* previous ones
     Aws\S3\S3Client:
         arguments:
-            -
-              version: 'latest'
+            - version: 'latest'
               region: 'us-east-2'
-              endpoint: '%env(AWS_BASE_URL)%'
+              endpoint: '%env(AWS_S3_BASE_URL)%'
               credentials:
-                  key: '%env(AWS_KEY)%'
-                  secret: '%env(AWS_SECRET_KEY)%'
+                  key: '%env(AWS_S3_ACCESS_ID)%'
+                  secret: '%env(AWS_S3_ACCESS_SECRET)%'
+    App\Controller\:
+      resource: '../src/Controller/'
+      tags: [ 'controller.service_arguments' ]
