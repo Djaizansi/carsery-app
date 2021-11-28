@@ -2,14 +2,17 @@ const axios = require('axios');
 
 module.exports = async function(url,req,res){
     try {
-        const response = await axios({
+        let headers = url.split('/');
+        //After in the last, remove this line and put req.headers in headers
+        headers = headers[headers.length - 1] === 'login' ? {'Content-Type': 'application/json'} : req.headers;
+        return await axios({
             method: req.method,
             url: url,
-            headers: {headers: req.headers},
+            headers: headers,
             data: req.body
         });
-        return response.data;
     }catch(e){
-        console.log(e);
+        res.status(e.response.data.code);
+        return res.json(e.response.data);
     }
 }

@@ -58,7 +58,7 @@
       async handleSubmit(event) {
         this.loading = true;
         const { email,password,rememberme } = Object.fromEntries(new FormData(event.target));
-        const res = await fetch("http://localhost:8095/login", {
+        const res = await fetch("http://localhost:3000/users/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"

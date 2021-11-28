@@ -7,11 +7,9 @@ const authJwt = require('../middleware/authJwt');
 /* GET users listing. */
 router.post('/login', async function(req, res, next) {
   const url = routesList.BASE_URL + routesList.users.routes.login;
-  const data = await getRequest(url,req,res);
-  res.json({
-    logged: true,
-    token: data.token
-  });
+  const response = await getRequest(url,req,res);
+  res.status(response.status);
+  res.json(response.data);
 });
 
 router.get('/', authJwt, async function(req,res,next){
