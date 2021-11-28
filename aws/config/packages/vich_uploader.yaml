@@ -1,0 +1,7 @@
+vich_uploader:
+    db_driver: orm
+    storage: flysystem
+
+    mappings:
+        assets:
+            upload_destination: aws.storage
