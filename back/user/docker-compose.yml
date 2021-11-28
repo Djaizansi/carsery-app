@@ -17,6 +17,7 @@ services:
     restart: always
     networks:
       - mailer_mailer
+      - all-network
 
   user-php:
     image: ${PHP_IMAGE:-user/php}
@@ -30,6 +31,7 @@ services:
       - user-app-sf-cache:/srv/app/var
     networks:
       - mailer_mailer
+      - all-network
 
   user-nginx:
     image: ${NGINX_IMAGE:-user/nginx}
@@ -45,10 +47,13 @@ services:
       - 8095:80
     networks:
       - mailer_mailer
+      - all-network
 
 networks:
   mailer_mailer:
     external: true
+  all-network:
+    driver: bridge
 
 
 volumes:
