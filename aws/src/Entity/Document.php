@@ -3,10 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\DownloadController;
 use App\Controller\UploadController;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -23,8 +25,24 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'path' => '/upload',
             'controller' => UploadController::class,
             'deserialize' => false,
-        ]
-    ]
+        ],
+        'getOneElement' => [
+            'method' => 'GET',
+            'path' => '/download/get/{id}',
+            'controller' => DownloadController::class,
+            'write' => false,
+            'read' => false,
+        ],
+        'getList' => [
+            'method' => 'POST',
+            'path' => '/download/list',
+            'controller' => DownloadController::class,
+            'write' => false,
+            'read' => false,
+            'denormalization_context' => ['groups' => ['aws_search_list:post']]
+        ],
+    ],
+    itemOperations: []
 )]
 
 class Document
@@ -43,6 +61,7 @@ class Document
      *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
+    #[Groups(['aws_search_list:post'])]
     private $filePath;
 
     /**
