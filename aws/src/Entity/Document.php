@@ -3,10 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\DownloadController;
 use App\Controller\UploadController;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -23,8 +25,17 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'path' => '/upload',
             'controller' => UploadController::class,
             'deserialize' => false,
-        ]
-    ]
+        ],
+        'getImg' => [
+            'method' => 'POST',
+            'path' => '/download/list',
+            'controller' => DownloadController::class,
+            'write' => false,
+            'read' => false,
+            'denormalization_context' => ['groups' => ['aws_search_list:post']]
+        ],
+    ],
+    itemOperations: []
 )]
 
 class Document
@@ -39,10 +50,17 @@ class Document
     private $id;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    #[Groups(['aws_search_list:post'])]
+    private $name;
+
+    /**
      * @var string
      *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
+    #[Groups(['aws_search_list:post'])]
     private $filePath;
 
     /**
@@ -120,6 +138,18 @@ class Document
     public function setFile(File $file): File
     {
         return $this->file = $file;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
     }
 }
 

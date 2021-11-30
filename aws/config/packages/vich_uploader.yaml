@@ -5,3 +5,4 @@ vich_uploader:
     mappings:
         assets:
             upload_destination: aws.storage
+            namer: vich_uploader.namer_uniqid
