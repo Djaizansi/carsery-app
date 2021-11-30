@@ -26,14 +26,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
             'controller' => UploadController::class,
             'deserialize' => false,
         ],
-        'getOneElement' => [
-            'method' => 'GET',
-            'path' => '/download/get/{id}',
-            'controller' => DownloadController::class,
-            'write' => false,
-            'read' => false,
-        ],
-        'getList' => [
+        'getImg' => [
             'method' => 'POST',
             'path' => '/download/list',
             'controller' => DownloadController::class,
@@ -55,6 +48,12 @@ class Document
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    #[Groups(['aws_search_list:post'])]
+    private $name;
 
     /**
      * @var string
@@ -139,6 +138,18 @@ class Document
     public function setFile(File $file): File
     {
         return $this->file = $file;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
     }
 }
 

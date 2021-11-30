@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use Aws\Exception\AwsException;
 use Aws\S3\Exception\S3Exception;
 use Aws\S3\S3Client;
 
@@ -20,11 +19,11 @@ class AmazonService {
         ]);
     }
 
-    public function putObjectFunc($path, $name, $data, $typeFile=null){
+    public function putObjectFunc($path,$data){
         try {
             $this->s3Client->putObject([
                 'Bucket' => $_ENV['AWS_BUCKET'],
-                'Key' => $path.'/'.$name.($typeFile ? '.'.$typeFile : ''),
+                'Key' => $path,
                 'Body'   => fopen($data, 'r')
             ]);
             return 1;
@@ -33,12 +32,13 @@ class AmazonService {
         }
     }
 
-    public function getObjectFunc($path,$documentName=null){
+    public function getObjectFunc($path,$nameFile){
         try {
-            return $this->s3Client->getObject([
+            $data = $this->s3Client->getObject([
                 'Bucket' => $_ENV['AWS_BUCKET'],
-                'Key' => $path.(!is_null($documentName) ? $documentName : '')
+                'Key' => $path.$nameFile
             ]);
+            return $data["@metadata"]["effectiveUri"];
         }catch(S3Exception $e){
             return $e->getMessage();
         }
