@@ -1,9 +1,10 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const request = require('../middleware/request')
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.send('test');
-});
+router.all('*', async function (req, res, next) {
+  await request(req, res, next);
+  next();
+})
 
 module.exports = router;
