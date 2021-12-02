@@ -1,13 +1,11 @@
-var express = require('express');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 const cors = require('cors');
+const authJwt = require('./middleware/authJwt');
+const login = require('./routes/login');
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-// var carsRouter = require('./routes/cars');
-// var ordersRouter = require('./routes/orders');
-// var paymentsRouter = require('./routes/payments');
 
 var app = express();
 
@@ -22,12 +20,7 @@ app.use((req,res,next) => {
     next();
 });
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-// app.use('/cars', carsRouter);
-// app.use('/orders', ordersRouter);
-// app.use('/payments', paymentsRouter);
-
-
+app.use('/login', login);
+app.use('/', authJwt, indexRouter);
 
 module.exports = app;

@@ -1,9 +1,5 @@
 module.exports = {
-    BASE_URL: "http://user-nginx",
-    users: {
-        routes: {
-            login: '/login',
-            getUsers: '/users',
-        }
-    }
+    // USER MICROSERVICE
+    login: "http://user-nginx/login",
+    users: "http://user-nginx/users",
 }
