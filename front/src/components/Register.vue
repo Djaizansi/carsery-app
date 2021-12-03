@@ -10,21 +10,33 @@
         />
       </header>
       <section class="modal-card-body">
-        <div class="flex space-x-3" v-if="typeUser === 'client'">
-          <b-field label="Prénom" class="w-1/2">
+        <div class="flex space-x-3" v-if="roles === 'ROLE_CLIENT'">
+          <b-field
+              label="Prénom"
+              class="w-1/2"
+              :type="errorData['firstname'] ? 'is-danger' : ''"
+              :message="errorData['firstname'] ? errorData['firstname'] : ''"
+          >
             <b-input
                 type="text"
                 name="firstname"
+                v-model="User.firstname"
                 min="3"
                 validation-message="Minimum 3 caractères"
                 placeholder="Votre prénom"
                 required>
             </b-input>
           </b-field>
-          <b-field label="Nom" class="w-1/2">
+          <b-field
+              label="Nom"
+              class="w-1/2"
+              :type="errorData['lastname'] ? 'is-danger' : ''"
+              :message="errorData['lastname'] ? errorData['lastname'] : ''"
+          >
             <b-input
                 type="text"
                 name="lastname"
+                v-model="User.lastname"
                 min="2"
                 validation-message="Minimum 2 caractères"
                 placeholder="Votre nom"
@@ -34,12 +46,13 @@
         </div>
         <b-field
             label="Email"
-            :type="message !== '' && targetMessage === 'email' ? 'is-danger' : ''"
-            :message="message !== '' && targetMessage === 'email' ? message : ''"
+            :type="errorData['email'] ? 'is-danger' : ''"
+            :message="errorData['email'] ? errorData['email'] : ''"
         >
           <b-input
               type="email"
               name="email"
+              v-model="User.email"
               placeholder="Votre email"
               required>
           </b-input>
@@ -47,14 +60,14 @@
 
         <b-field
             label="Mot de passe"
-            :type="message !== '' && targetMessage === 'pwd' ? 'is-danger' : ''"
-            :message="message !== '' && targetMessage === 'pwd'? message : ''"
+            :type="errorData.password ? 'is-danger' : ''"
+            :message="errorData.password ? errorData.password : ''"
         >
           <b-input
               type="password"
               name="password"
+              v-model="User.password"
               password-reveal
-
               placeholder="Votre mot de passe"
               required
           >
@@ -65,6 +78,7 @@
           <b-input
               type="password"
               name="passwordConfirm"
+              v-model="passwordConfirm"
               password-reveal
               placeholder="Confirmez votre mot de passe"
               required
@@ -73,22 +87,22 @@
         </b-field>
         <div class="flex justify-center mt-6">
             <b-radio
-                v-model="typeUser"
-                name="typeUser"
-                native-value="client"
+                v-model="roles"
+                name="roles"
+                native-value="ROLE_CLIENT"
                 required
                 >
                 Client
             </b-radio>
-            <b-radio v-model="typeUser"
-                name="typeUser"
-                native-value="pro"
+            <b-radio v-model="roles"
+                name="roles"
+                native-value="ROLE_PRO"
                 required
                 >
                 Professionnel
             </b-radio>
         </div>
-        <p class="flex justify-center text-red-600 text-sm" :class="targetMessage === 'roles' ? '' : 'hidden'"><span class="mdi mdi-alert-outline"></span> {{targetMessage === 'roles' && message}}</p>
+        <p class="flex justify-center text-red-600 text-sm" :class="errorData['roles'] === [] ? '' : 'hidden'"><span class="mdi mdi-alert-outline"></span> {{errorData['roles'] !== [] ? errorData['roles'] : ''}}</p>
       </section>
       <footer class="modal-card-foot">
         <b-button v-if="!loading"
@@ -108,72 +122,50 @@
 </template>
 
 <script>
+import User from '../Entity/User/User';
+import ErrorUser from '../Entity/User/ErrorUser';
+import resetObject from '../Utils/resetObject';
 export default {
-  data: () => ({typeUser: "", loading: false, message:"", targetMessage:""}),
+  data: () => ({User, passwordConfirm: "", roles: "", loading: false, errorData: {...ErrorUser}}),
   methods: {
-    async handleSubmit(event) {
-        this.loading = true;
-        const { firstname,lastname,email,password,passwordConfirm,typeUser } = Object.fromEntries(new FormData(event.target));
-        if(password === passwordConfirm){
-          const conditionRole = typeUser === 'client';
-          const infoUser = {
-            email: email.toLowerCase(),
-            password: password,
-            roles: [
-              conditionRole ? 'ROLE_CLIENT' : 'ROLE_PROFESIONNAL'
-            ]
-          }
-          const dataSend = conditionRole ? {
-            firstname: firstname,
-            lastname: lastname,
-            ...infoUser
-          } : infoUser;
-
-          const res = await fetch("http://localhost:8095/users", {
+    async handleSubmit() {
+      this.loading = true;
+      resetObject(this.errorData);
+      if (User.password === this.passwordConfirm) {
+        User.roles = [];
+        User.roles.push(this.roles);
+        if(User.roles.includes('ROLE_PRO')) {
+          delete User.firstname;
+          delete User.lastname;
+        }
+        try {
+          const res = await fetch("http://localhost:3000/users", {
             method: "POST",
             headers: {
               "Content-Type": "application/json"
             },
-            body: JSON.stringify(dataSend)
+            body: JSON.stringify(User)
           });
           const data = await res.json();
-          const code = res.status;
-          if(data){
-            if(code === 401){
-              !this.loading;
-            }else if(code === 422){
-              const error = data['violations'][0];
-              this.loading = !this.loading;
-              if(error.propertyPath === "email"){
-                this.message = data['violations'][0].message;
-                this.targetMessage = "email"
-              }else if(error.propertyPath === "roles"){
-                this.message = data['violations'][0].message;
-                this.targetMessage = "roles"
-              }else if(error.propertyPath === "password"){
-                this.message = `
-                  Votre mot de passe doit contenir : \n\n
-                      - Minimum 8 caractères \n
-                      - Au moins 1 chifffre \n
-                      - Au moins un caractère majuscule et minuscule
-                `;
-                this.targetMessage = "pwd"
-              }
-            }else {
-              this.loading = !this.loading;
-              this.$emit('close');
-              this.$buefy.toast.open({
-                message: 'Inscription réussi. Vérifiez votre adresse mail en checkez vos mails',
-                type: 'is-success'
-              })
-            }
+          if (res.status === 422) {
+            this.loading = false;
+            data['violations'].forEach(err => this.errorData[err.propertyPath] = err.message);
+          }else if(res.status === 201) {
+            this.$emit('close');
+            this.$buefy.toast.open({
+              message: 'Inscription réussi. Vérifiez votre adresse mail en checkez vos mails',
+              type: 'is-success'
+            })
           }
-        }else{
-          this.loading = false;
-          this.message = 'Les mots de passe ne correspondent pas. Veuillez réessayez';
-          this.targetMessage = "pwd";
+        } catch (e) {
+          console.log(e.response);
         }
+      } else {
+        this.loading = false;
+        this.errorData['password'] = 'Les mots de passe ne correspondent pas. Veuillez réessayez';
       }
     }
   }
+}
 </script>
+

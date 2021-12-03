@@ -9,7 +9,7 @@ module.exports = async function(url,req,res,headers){
             data: req.body
         });
     }catch(e){
-        res.status(e.response.data.code);
+        res.status(e.response.status);
         return res.json(e.response.data);
     }
 }

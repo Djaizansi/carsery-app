@@ -57,8 +57,8 @@
     methods: {
       async handleSubmit(event) {
         this.loading = true;
-        const { email,password,rememberme } = Object.fromEntries(new FormData(event.target));
-        const res = await fetch("http://localhost:3000/users/login", {
+        const { email,password } = Object.fromEntries(new FormData(event.target));
+        const res = await fetch("http://localhost:3000/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
@@ -71,8 +71,8 @@
             this.loading = !this.loading;
             this.message = "L'email et/ou le mot de passe est incorrect";
           }else{
-            const typeStorage = {session: sessionStorage, local: localStorage}
-            rememberme !== 'undefined' && rememberme === 'check' ? typeStorage.local.setItem('user',data.token) : typeStorage.session.setItem('user',data.token);
+            //const typeStorage = {session: sessionStorage, local: localStorage}
+            //rememberme !== 'undefined' && rememberme === 'check' ? typeStorage.local.setItem('user',data.token) : typeStorage.session.setItem('user',data.token);
             this.loading = !this.loading;
             this.$emit('close');
             this.$buefy.toast.open({
