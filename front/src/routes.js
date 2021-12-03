@@ -1,9 +1,15 @@
 import NotFound from "./components/NotFound.vue";
-import Payment from "./components/payment.vue";
+import Home from "./components/Home.vue";
+import Payment from "./components/Payment";
 
 export default [
   {
     path: "/",
+    component: Home,
+    name: "home",
+  },
+  {
+    path: "/payment",
     component: Payment,
   },
   {
