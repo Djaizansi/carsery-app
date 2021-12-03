@@ -1,6 +1,8 @@
 <template>
   <div>
     <Navbar />
+    <Hero />
+    <!--
     <button
         class="button is-primary"
         @click="test"
@@ -9,13 +11,18 @@
     <div v-for="(index,item) in data" :key="item">
       <img :src="index" alt="img"/>
     </div>
+    -->
   </div>
 </template>
 <script>
 import Navbar from './Navbar';
+import Hero from './Hero';
 
 export default{
-  components: {Navbar},
+  components: {
+    Navbar,
+    Hero,
+  },
   data: () => ({data: ""}),
   methods: {
     async test(){
