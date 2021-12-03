@@ -5,9 +5,11 @@ import routes from "./routes";
 import Buefy from "buefy";
 import "buefy/dist/buefy.css";
 import "./index.css";
+import VueTyperPlugin from 'vue-typer'
 
 Vue.use(Buefy);
 Vue.use(VueRouter);
+Vue.use(VueTyperPlugin);
 
 const router = new VueRouter({
   routes: routes,
