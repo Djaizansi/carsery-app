@@ -95,7 +95,6 @@ RUN apk --update --no-cache add \
     qt5-qtbase \
     qt5-qtbase-x11 \
     qt5-qtsvg \
-    qt5-qtwebkit \
     ttf-freefont \
     ttf-dejavu \
     ttf-droid \

@@ -1,10 +1,4 @@
 version: '3.6'
-x-cache-from:
-  - &app-cache-from
-    cache_from:
-      - ${NGINX_IMAGE:-stripe/nginx}
-      - ${PHP_IMAGE:-stripe/php}
-
 services:
   stripe-php:
     image: ${PHP_IMAGE:-stripe/php}
@@ -12,7 +6,6 @@ services:
     build:
       context: ./
       target: app_php
-      <<: *app-cache-from
     volumes:
       - ./:/srv/app:rw
       - ./docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
@@ -24,7 +17,6 @@ services:
     build:
       context: ./
       target: app_nginx
-      <<: *app-cache-from
     depends_on:
       - stripe-php
     volumes:
