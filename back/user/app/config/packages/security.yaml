@@ -21,6 +21,9 @@ security:
         dev:
             pattern: ^/_(profiler|wdt)
             security: false
+        token_refresh:
+            pattern: ^/token/refresh
+            stateless: true
         login:
             pattern: ^/login$
             stateless: true
@@ -44,3 +47,4 @@ security:
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: /users, roles: PUBLIC_ACCESS, methods: [POST]}
         - { path: ^/users, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/token/refresh, roles: PUBLIC_ACCESS }

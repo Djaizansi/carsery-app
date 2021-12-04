@@ -7,9 +7,7 @@ use App\Services\CurlService;
 use Doctrine\Bundle\DoctrineBundle\EventSubscriber\EventSubscriberInterface;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 class UserSubscriber implements EventSubscriberInterface
 {
@@ -23,7 +21,7 @@ class UserSubscriber implements EventSubscriberInterface
         return [
             Events::prePersist,
             Events::preUpdate,
-            Events::postPersist
+            Events::postPersist,
         ];
     }
 
@@ -56,24 +54,26 @@ class UserSubscriber implements EventSubscriberInterface
     private function addTokenAccount(LifecycleEventArgs $args): void
     {
         $entity = $this->checkInstanceEntity($args);
-        !is_bool($entity) && $entity->setToken(md5(uniqid()));
+        $entity && $entity->setTokenAccount(md5(uniqid()));
     }
 
     private function encodePassword(LifecycleEventArgs $args): void
     {
         $entity = $this->checkInstanceEntity($args);
-        !is_bool($entity) && $entity->setPassword($this->encoder->hashPassword($entity, $entity->getPassword()));
+        $entity && $entity->setPassword($this->encoder->hashPassword($entity, $entity->getPassword()));
     }
 
     private function sendMail(LifecycleEventArgs $args){
         $entity = $this->checkInstanceEntity($args);
-        $data = [
-            "email" => $entity->getEmail(),
-            "subject" => 'Valider votre compte',
-            "template" => 'validation_account',
-            "data" => ['token' => $entity->getToken()]
-        ];
+        if($entity){
+            $data = [
+                "email" => $entity->getEmail(),
+                "subject" => 'Valider votre compte',
+                "template" => 'validation_account',
+                "data" => ['token' => $entity->getTokenAccount()]
+            ];
 
-        $this->curl->curlData('POST',"http://mailer-nginx/mail/send", json_encode($data));
+            $this->curl->curlData('POST',"http://mailer-nginx/mail/send", json_encode($data));
+        }
     }
 }

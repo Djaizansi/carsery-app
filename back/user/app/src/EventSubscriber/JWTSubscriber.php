@@ -13,6 +13,8 @@ class JWTSubscriber implements EventSubscriberInterface
         $data = $event->getData();
         $user = $event->getUser();
         if ($user instanceof User) {
+            $data['id'] = $user->getId();
+            $data['username'] = $event->getUser()->getUsername();
             if (in_array('ROLE_CLIENT', $data['roles'])) {
                 $data['firstname'] = $user->getFirstname();
                 $data['lastname'] = $user->getLastname();
@@ -22,7 +24,6 @@ class JWTSubscriber implements EventSubscriberInterface
                 $data['siret'] = $user->getSiret();
             }
         }
-        $data['username'] = $event->getUser()->getUsername();
         $event->setData($data);
     }
 

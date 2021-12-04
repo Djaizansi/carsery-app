@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\ActivationAccount;
-use App\Controller\MeController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
@@ -141,7 +140,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     #[Groups(['activation_account'])]
-    private $token;
+    private $tokenAccount;
 
     /**
      * @ORM\OneToOne(targetEntity=Address::class, inversedBy="user", cascade={"persist", "remove"})
@@ -283,14 +282,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
         return $this;
     }
 
-    public function getToken(): ?string
+    public function getTokenAccount(): ?string
     {
-        return $this->token;
+        return $this->tokenAccount;
     }
 
-    public function setToken(?string $token): self
+    public function setTokenAccount(?string $tokenAccount): self
     {
-        $this->token = $token;
+        $this->tokenAccount = $tokenAccount;
 
         return $this;
     }
