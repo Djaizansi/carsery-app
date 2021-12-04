@@ -4,8 +4,10 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\ActivationAccount;
+use App\Controller\MeController;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Lexik\Bundle\JWTAuthenticationBundle\Security\User\JWTUserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -53,9 +55,10 @@ use Symfony\Component\Validator\Constraints as Assert;
         'patch'
     ]
 )]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
 {
     const ROLES = [['ROLE_CLIENT'],['ROLE_PRO']];
+    const GENDER = ['M', 'F'];
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -110,6 +113,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $lastname;
 
     /**
+     * @ORM\Column(type="string", length=1, nullable=true)
+     * @Assert\Choice(choices=User::GENDER, message="Choisissez un genre valide")
+     */
+    #[Groups(['users:post'])]
+    private $gender;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    #[Groups(['users:post'])]
+    private $company;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    #[Groups(['users:post'])]
+    private $siret;
+
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
@@ -119,16 +142,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[Groups(['activation_account'])]
     private $token;
-
-    /**
-     * @ORM\OneToOne(targetEntity=Client::class, inversedBy="user", cascade={"persist", "remove"})
-     */
-    private $client;
-
-    /**
-     * @ORM\OneToOne(targetEntity=Professional::class, inversedBy="user", cascade={"persist", "remove"})
-     */
-    private $professional;
 
     /**
      * @ORM\OneToOne(targetEntity=Address::class, inversedBy="user", cascade={"persist", "remove"})
@@ -142,6 +155,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getEmail(): ?string
@@ -276,30 +295,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getClient(): ?Client
-    {
-        return $this->client;
-    }
-
-    public function setClient(?Client $client): self
-    {
-        $this->client = $client;
-
-        return $this;
-    }
-
-    public function getProfessional(): ?Professional
-    {
-        return $this->professional;
-    }
-
-    public function setProfessional(?Professional $professional): self
-    {
-        $this->professional = $professional;
-
-        return $this;
-    }
-
     public function getAddress(): ?Address
     {
         return $this->address;
@@ -310,5 +305,54 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->address = $address;
 
         return $this;
+    }
+
+    public function getGender(): ?string
+    {
+        return $this->gender;
+    }
+
+    public function setGender($gender): self
+    {
+        $this->gender = $gender;
+
+        return $this;
+    }
+
+    public function getCompany(): ?string
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?string $company): self
+    {
+        $this->company = $company;
+
+        return $this;
+    }
+
+    public function getSiret(): ?string
+    {
+        return $this->siret;
+    }
+
+    public function setSiret(?string $siret): self
+    {
+        $this->siret = $siret;
+
+        return $this;
+    }
+
+    public static function createFromPayload($id, array $payload)
+    {
+        $user = (new User())
+            ->setId($id)
+            ->setEmail($payload['username'] ?? '')
+            ->setFirstname($payload['firstname'] ?? '')
+            ->setLastname($payload['lastname'] ?? '')
+            ->setGender($payload['gender'] ?? '')
+            ->setCompany($payload['company'] ?? '')
+            ->setSiret($payload['siret'] ?? '');
+        return $user;
     }
 }
