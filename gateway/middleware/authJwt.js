@@ -1,12 +1,14 @@
 const fs = require('fs');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const refreshToken = require('./refreshToken');
 
-module.exports = (req,res,next) => {
+module.exports = (req, res, next) => {
     const cert = fs.readFileSync('./jwt/public.pem');  // get public key
-    jwt.verify(req.headers?.authorization?.split(' ')[1], cert, function(err, decoded) {
-        if(decoded || (req.path === "/users" && req.method === "POST")){
+    jwt.verify(req.headers?.authorization?.split(' ')[1], cert, async function (err, decoded) {
+        if (decoded || (req.path === "/users" && req.method === "POST")) {
+            await refreshToken(req, res, decoded);
             next();
-        }else{
+        } else {
             res.status(401);
             res.json({message: "Unauthorized JWT expire or not valid"});
         }
