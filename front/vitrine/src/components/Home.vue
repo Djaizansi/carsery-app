@@ -2,6 +2,8 @@
   <div>
     <Navbar />
     <Hero />
+    <Section />
+    <Section_2 />
     <!--
     <button
         class="button is-primary"
@@ -17,11 +19,15 @@
 <script>
 import Navbar from './Navbar';
 import Hero from './Hero';
+import Section from "./Section";
+import Section_2 from "./Section_2";
 
 export default{
   components: {
     Navbar,
     Hero,
+    Section,
+    Section_2
   },
   data: () => ({data: ""}),
   methods: {
