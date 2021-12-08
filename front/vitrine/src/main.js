@@ -6,10 +6,15 @@ import Buefy from "buefy";
 import "buefy/dist/buefy.css";
 import "./index.css";
 import VueTyperPlugin from 'vue-typer'
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 Vue.use(Buefy);
 Vue.use(VueRouter);
 Vue.use(VueTyperPlugin);
+AOS.init({
+  once: true
+});
 
 const router = new VueRouter({
   routes: routes,
