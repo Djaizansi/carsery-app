@@ -1,11 +1,8 @@
 <template>
   <section class="hero is-medium is-link">
     <div class="hero-body">
-      <p class="title">
-        Le système de location de voiture repensé pour <vue-typer :text="string"></vue-typer>
-      </p>
-      <p class="subtitle">
-        lorem
+      <p class="is-size-2">
+        Le système de location de voiture repensé pour <vue-typer :text="string" :shuffle='true'></vue-typer>
       </p>
     </div>
   </section>
@@ -20,3 +17,10 @@ module.exports = {
   }
 }
 </script>
+
+<style>
+.custom.char {
+  color: aqua;
+
+}
+</style>
