@@ -4,6 +4,7 @@
     <Hero />
     <Section />
     <Section_2 />
+    <Footer />
     <!--
     <button
         class="button is-primary"
@@ -21,9 +22,11 @@ import Navbar from './Navbar';
 import Hero from './Hero';
 import Section from "./Section";
 import Section_2 from "./Section_2";
+import Footer from "./Footer";
 
 export default{
   components: {
+    Footer,
     Navbar,
     Hero,
     Section,
