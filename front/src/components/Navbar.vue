@@ -40,8 +40,8 @@
 </template>
 
 <script>
-  import Login from './Login';
-  import Register from './Register';
+  import Login from './Auth/Login';
+  import Register from './Auth/Register';
   console.log(localStorage.getItem('user'));
   export default {
     methods: {

@@ -1,21 +1,92 @@
 <template>
   <div>
     <Navbar />
-    <button
-        class="button is-primary"
-        @click="test"
-    >Test</button>
-    <div v-if="data === ''">No img in data</div>
-    <div v-for="(index,item) in data" :key="item">
-      <img :src="index" alt="img"/>
-    </div>
+    <Hero />
+    <section class="hero is-white is-fullheight">
+      <div class="hero-body" data-aos="zoom-in-down">
+        <div class="container">
+          <div class="columns  is-vcentered">
+            <div data-aos="fade-left" class="column
+          is-10-mobile is-offset-1-mobile
+          is-10-tablet is-offset-1-tablet
+          is-4-desktop is-offset-1-desktop
+          is-4-widescreen is-offset-1-widescreen
+          is-4-fullhd is-offset-1-fullhd">
+              <figure class="image is-square">
+                <img src="https://www.svgrepo.com/show/24109/car.svg" alt="car">
+              </figure>
+            </div>
+            <div data-aos="fade-down" class="column
+          is-10-mobile is-offset-1-mobile
+          is-10-tablet is-offset-1-tablet
+          is-5-desktop is-offset-1-desktop
+          is-5-widescreen is-offset-1-widescreen
+          is-5-fullhd is-offset-1-fullhd">
+              <h1 class="titled title is-2 mb-6">
+                Un tout nouveau système &#128175;
+              </h1>
+              <h2 class="subtitled subtitle m-1">
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laborum cupiditate dolorum vitae dolores
+                nesciunt totam magni quas. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laborum cupiditate dolorum vitae dolores
+                nesciunt totam magni quas.
+              </h2>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="hero is-white is-fullheight">
+      <div class="hero-body" data-aos="zoom-in-left">
+        <div class="container">
+          <div class="columns  is-vcentered reverse-columns">
+            <div data-aos="fade-right" class="column
+          is-10-mobile is-offset-1-mobile
+          is-10-tablet is-offset-1-tablet
+          is-5-desktop is-offset-1-desktop
+          is-5-widescreen is-offset-1-widescreen
+          is-5-fullhd is-offset-1-fullhd">
+              <h1 class="title titled is-2 mb-6">
+                Pour tout le monde, même les débutants &#128513;
+              </h1>
+              <h2 class="subtitle subtitled m-1">
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Laborum cupiditate dolorum vitae dolores
+                nesciunt totam magni quas.
+              </h2>
+            </div>
+            <div data-aos="fade-down" class="column
+          is-10-mobile is-offset-1-mobile
+          is-10-tablet is-offset-1-tablet
+          is-4-desktop is-offset-1-desktop
+          is-4-widescreen is-offset-1-widescreen
+          is-4-fullhd is-offset-1-fullhd">
+              <figure class="image is-square">
+                <img src="https://www.svgrepo.com/show/138892/users.svg" alt="user">
+              </figure>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <Footer />
+<!--    <button-->
+<!--        class="button is-primary"-->
+<!--        @click="test"-->
+<!--    >Test</button>-->
+<!--    <div v-if="data === ''">No img in data</div>-->
+<!--    <div v-for="(index,item) in data" :key="item">-->
+<!--      <img :src="index" alt="img"/>-->
+<!--    </div>-->
+
   </div>
 </template>
 <script>
 import Navbar from './Navbar';
+import Hero from './Hero';
+import Footer from "./Footer";
 
 export default{
-  components: {Navbar},
+  components: {Footer, Navbar, Hero},
   data: () => ({data: ""}),
   methods: {
     async test(){
@@ -26,8 +97,7 @@ export default{
         },
         body: JSON.stringify({filePath:"voitures/"})
       });
-      const data = await res.json();
-      this.data = data;
+      this.data = await res.json();
     }
   }
 }
