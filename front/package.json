@@ -8,12 +8,14 @@
     "lint": "node_modules/.bin/vue-cli-service lint"
   },
   "dependencies": {
+    "aos": "^3.0.0-beta.6",
     "@vue-stripe/vue-stripe": "^4.2.8",
     "buefy": "^0.9.13",
     "core-js": "^3.6.5",
     "jwt-decode": "^3.1.2",
     "vue": "^2.6.11",
-    "vue-router": "^3.5.3"
+    "vue-router": "^3.5.3",
+    "vue-typer": "^1.2.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

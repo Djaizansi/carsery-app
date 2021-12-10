@@ -122,9 +122,9 @@
 </template>
 
 <script>
-import User from '../Entity/User/User';
-import ErrorUser from '../Entity/User/ErrorUser';
-import resetObject from '../Utils/resetObject';
+import User from '../../Entity/User/User';
+import ErrorUser from '../../Entity/User/ErrorUser';
+import resetObject from '../../Utils/resetObject';
 export default {
   data: () => ({User, passwordConfirm: "", roles: "", loading: false, errorData: {...ErrorUser}}),
   methods: {
