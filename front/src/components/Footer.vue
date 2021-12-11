@@ -2,7 +2,7 @@
   <footer class="footer">
     <div class="content has-text-centered">
       <p class="has-text-white">
-        <strong class="has-text-white">CARSERY</strong> by <a href="https://jgthms.com">MBLH & DZTN</a>. The source code is licensed
+        <strong class="has-text-white">CARSERY</strong> by <a href="https://github.com/BOUABDELLAHM">MBLH</a> && <a href="https://github.com/Djaizansi">DZTN</a>. The source code is licensed
       </p>
     </div>
   </footer>

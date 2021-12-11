@@ -10,11 +10,11 @@
       </b-navbar-item>
     </template>
     <template #start>
-      <b-navbar-item href="#">
-        Home
+      <b-navbar-item>
+        <router-link to="/louer">Louer</router-link>
       </b-navbar-item>
       <b-navbar-item href="#">
-        Documentation
+        Voitures
       </b-navbar-item>
     </template>
 
