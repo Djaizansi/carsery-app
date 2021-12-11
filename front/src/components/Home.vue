@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Navbar />
     <Hero />
     <section class="hero is-white is-fullheight">
       <div class="hero-body" data-aos="zoom-in-down">
@@ -68,7 +67,6 @@
         </div>
       </div>
     </section>
-    <Footer />
 <!--    <button-->
 <!--        class="button is-primary"-->
 <!--        @click="test"-->
@@ -81,12 +79,10 @@
   </div>
 </template>
 <script>
-import Navbar from './Navbar';
 import Hero from './Hero';
-import Footer from "./Footer";
 
 export default{
-  components: {Footer, Navbar, Hero},
+  components: {Hero},
   data: () => ({data: ""}),
   methods: {
     async test(){
