@@ -9,6 +9,9 @@ import { StripePlugin } from "@vue-stripe/vue-stripe";
 import "buefy/dist/buefy.css";
 import "./index.css";
 import 'aos/dist/aos.css';
+import axiosConfig from './Utils/axiosConfig';
+import store from './store';
+import VueCookies from "vue-cookies";
 
 const options = {
   pk: process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY,
@@ -16,8 +19,8 @@ const options = {
 };
 
 Vue.use(StripePlugin, options);
-
 Vue.use(Buefy);
+Vue.use(VueCookies);
 Vue.use(VueRouter);
 Vue.use(VueTyperPlugin);
 AOS.init({
@@ -29,9 +32,12 @@ const router = new VueRouter({
   mode: "history",
 });
 
+axiosConfig();
+
 Vue.config.productionTip = false;
 
 new Vue({
   router,
+  store,
   render: (h) => h(App),
 }).$mount("#app");

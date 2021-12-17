@@ -67,21 +67,14 @@
         </div>
       </div>
     </section>
-<!--    <button-->
-<!--        class="button is-primary"-->
-<!--        @click="test"-->
-<!--    >Test</button>-->
-<!--    <div v-if="data === ''">No img in data</div>-->
-<!--    <div v-for="(index,item) in data" :key="item">-->
-<!--      <img :src="index" alt="img"/>-->
-<!--    </div>-->
 
   </div>
 </template>
 <script>
-import Hero from './Hero';
+import Hero from '../components/Hero';
 
 export default{
+  name: "Home",
   components: {Hero},
   data: () => ({data: ""}),
   methods: {

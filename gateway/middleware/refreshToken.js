@@ -1,14 +1,17 @@
 const routeLists = require('../routes/routeLists');
 const axios = require('axios');
 
-module.exports = async function (req, res, decoded) {
+module.exports = function (req, res) {
     try {
-        if (decoded && req.headers.authorization && req.headers['refresh-token']) {
+        if (req.headers.authorization && req.headers['x-refresh-token']) {
             const url = routeLists.refreshToken;
-            const body = {refresh_token: req.headers['refresh-token']};
-            const response = await axios.post(url, body);
-            res.setHeader("Authorization", `Bearer ${response.data.token}`)
-                .setHeader('refresh-token', response.data.refresh_token);
+            const body = {refresh_token: req.headers['x-refresh-token']};
+            axios.post(url, body)
+                .then(response => {
+                    res.setHeader('Access-Control-Expose-Headers','authorization,x-refresh-token')
+                        .setHeader("Authorization", `Bearer ${response.data.token}`)
+                        .setHeader('x-refresh-token', response.data.refresh_token);
+                });
         }
     } catch (e) {
         console.log(e);

@@ -4,4 +4,5 @@ module.exports= {
     email: "",
     password: "",
     roles: [],
+    address: {}
 }

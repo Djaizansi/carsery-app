@@ -1,10 +1,10 @@
 <template>
-  <div className="App">
+  <div>
     <Stripe />
   </div>
 </template>
 <script>
-import Stripe from './Stripe.vue';
+import Stripe from '../components/Stripe.vue';
 
 export default{
   components: { Stripe },
