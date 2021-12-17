@@ -2,12 +2,18 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\AddressRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=AddressRepository::class)
  */
+#[ApiResource(
+    collectionOperations: ['get','post'],
+    itemOperations: ['get'],
+)]
 class Address
 {
     /**
@@ -20,26 +26,31 @@ class Address
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[Groups(['users:post'])]
     private $city;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[Groups(['users:post'])]
     private $postalCode;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[Groups(['users:post'])]
     private $street;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[Groups(['users:post'])]
     private $region;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[Groups(['users:post'])]
     private $country;
 
     /**

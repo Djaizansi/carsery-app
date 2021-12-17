@@ -85,6 +85,16 @@
           >
           </b-input>
         </b-field>
+        <b-field label="Votre adresse">
+          <vue-google-autocomplete
+              id="map"
+              classname="py-2 px-2 border rounded w-full text-center"
+              placeholder="Votre adresse"
+              v-on:placechanged="getAddressData"
+              country="fr"
+          >
+          </vue-google-autocomplete>
+        </b-field>
         <div class="flex justify-center mt-6">
             <b-radio
                 v-model="roles"
@@ -125,7 +135,10 @@
 import User from '../../Entity/User/User';
 import ErrorUser from '../../Entity/User/ErrorUser';
 import resetObject from '../../Utils/resetObject';
+import VueGoogleAutocomplete from 'vue-google-autocomplete';
+
 export default {
+  components: {VueGoogleAutocomplete},
   data: () => ({User, passwordConfirm: "", roles: "", loading: false, errorData: {...ErrorUser}}),
   methods: {
     async handleSubmit() {
@@ -164,6 +177,13 @@ export default {
         this.loading = false;
         this.errorData['password'] = 'Les mots de passe ne correspondent pas. Veuillez réessayez';
       }
+    },
+    getAddressData: function (addressData) {
+      User.address.city = addressData.locality;
+      User.address.street = addressData.street_number + ' ' + addressData.route;
+      User.address.country = addressData.country;
+      User.address.postalCode = addressData.postal_code;
+      User.address.region = addressData.administrative_area_level_1;
     }
   }
 }

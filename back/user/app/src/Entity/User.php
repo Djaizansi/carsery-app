@@ -145,6 +145,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
     /**
      * @ORM\OneToOne(targetEntity=Address::class, inversedBy="user", cascade={"persist", "remove"})
      */
+    #[Groups(['users:post','address:post'])]
     private $address;
 
     public function __construct(){

@@ -30,7 +30,7 @@
 
 <script>
 import dateFormat from '../Utils/dateFormat';
-import Card from './Card';
+import Card from '../components/Card';
 
 export default {
   components: {Card},
