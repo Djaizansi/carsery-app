@@ -3,9 +3,9 @@ var router = express.Router();
 const routesList = require('./routeLists');
 const axiosRequest = require('../middleware/axiosRequest');
 
-/* POST login */
+/* POST ActivationAccount */
 router.post('/', function(req, res) {
-    const url = routesList.login;
+    const url = routesList.activationAccount;
     axiosRequest(url,req,res)
         .then(response => {
             res.status(response.status);

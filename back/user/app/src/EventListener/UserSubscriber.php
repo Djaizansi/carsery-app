@@ -60,7 +60,9 @@ class UserSubscriber implements EventSubscriberInterface
     private function encodePassword(LifecycleEventArgs $args): void
     {
         $entity = $this->checkInstanceEntity($args);
-        $entity && $entity->setPassword($this->encoder->hashPassword($entity, $entity->getPassword()));
+        if($entity) {
+            if(!is_null($entity->getPlainPassword())) $entity->setPassword($this->encoder->hashPassword($entity, $entity->getPlainPassword()));
+        }
     }
 
     private function sendMail(LifecycleEventArgs $args){

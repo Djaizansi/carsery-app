@@ -2,6 +2,7 @@ import NotFound from "./pages/NotFound.vue";
 import Home from "./pages/Home.vue";
 import Payment from "./pages/Payment";
 import Rent from "./pages/Rent";
+import Activation from "./pages/Auth/Activation";
 
 export default [
   {
@@ -13,6 +14,11 @@ export default [
     path: "/louer",
     component: Rent,
     name: "rent",
+  },
+  {
+    path: "/activation/:token",
+    component: Activation,
+    name: "activation",
   },
   {
     path: "/payment",

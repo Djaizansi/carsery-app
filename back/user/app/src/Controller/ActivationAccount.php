@@ -11,13 +11,13 @@ class ActivationAccount {
     public function __construct(private EntityManagerInterface $em){}
 
     public function __invoke(Request $request){
-        $token = $request->attributes->get('data')->getToken();
-        $user = $this->em->getRepository(User::class)->findBy(['token' => $token]);
+        $token = $request->attributes->get('data')->getTokenAccount();
+        $user = $this->em->getRepository(User::class)->findBy(['tokenAccount' => $token]);
         if($user){
-            $user[0]->setToken(null);
+            $user[0]->setTokenAccount(null);
             $this->em->flush();
             return new JsonResponse('',200);
         }
-        return new JsonResponse('',400);
+        return new JsonResponse('',404);
     }
 }
