@@ -10,39 +10,58 @@
         />
       </header>
       <section class="modal-card-body">
-        <div class="flex space-x-3" v-if="roles === 'ROLE_CLIENT'">
-          <b-field
-              label="Prénom"
-              class="w-1/2"
-              :type="errorData['firstname'] ? 'is-danger' : ''"
-              :message="errorData['firstname'] ? errorData['firstname'] : ''"
-          >
-            <b-input
-                type="text"
-                name="firstname"
-                v-model="User.firstname"
-                min="3"
-                validation-message="Minimum 3 caractères"
-                placeholder="Votre prénom"
-                required>
-            </b-input>
-          </b-field>
-          <b-field
-              label="Nom"
-              class="w-1/2"
-              :type="errorData['lastname'] ? 'is-danger' : ''"
-              :message="errorData['lastname'] ? errorData['lastname'] : ''"
-          >
-            <b-input
-                type="text"
-                name="lastname"
-                v-model="User.lastname"
-                min="2"
-                validation-message="Minimum 2 caractères"
-                placeholder="Votre nom"
-                required>
-            </b-input>
-          </b-field>
+        <div v-if="roles === 'ROLE_CLIENT'">
+          <div class="flex space-x-3">
+            <b-field
+                label="Prénom"
+                class="w-1/2"
+                :type="errorData['firstname'] ? 'is-danger' : ''"
+                :message="errorData['firstname'] ? errorData['firstname'] : ''"
+            >
+              <b-input
+                  type="text"
+                  name="firstname"
+                  v-model="User.firstname"
+                  min="3"
+                  validation-message="Minimum 3 caractères"
+                  placeholder="Votre prénom"
+                  required>
+              </b-input>
+            </b-field>
+            <b-field
+                label="Nom"
+                class="w-1/2"
+                :type="errorData['lastname'] ? 'is-danger' : ''"
+                :message="errorData['lastname'] ? errorData['lastname'] : ''"
+            >
+              <b-input
+                  type="text"
+                  name="lastname"
+                  v-model="User.lastname"
+                  min="2"
+                  validation-message="Minimum 2 caractères"
+                  placeholder="Votre nom"
+                  required>
+              </b-input>
+            </b-field>
+          </div>
+          <div class="flex justify-center mt-6">
+            <b-radio
+                v-model="User.gender"
+                name="gender"
+                native-value="M"
+                required
+            >
+              Masculin
+            </b-radio>
+            <b-radio v-model="User.gender"
+                     name="gender"
+                     native-value="F"
+                     required
+            >
+              Féminin
+            </b-radio>
+          </div>
         </div>
         <b-field
             label="Email"
@@ -150,6 +169,7 @@ export default {
         if(User.roles.includes('ROLE_PRO')) {
           delete User.firstname;
           delete User.lastname;
+          delete User.gender;
         }
         try {
           const res = await fetch("http://localhost:3000/users", {
