@@ -2,5 +2,4 @@ gesdinet_jwt_refresh_token:
   #ttl: -> time to live -> change durée du refresh token -> look readme doc
   #add condition -> suppression de compte -> redemander le mot de passe pour vérifier l'accès.
   user_provider: security.user.provider.concrete.app_user_provider
-  single_use: true
   ttl: 1200

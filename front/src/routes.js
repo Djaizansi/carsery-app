@@ -3,6 +3,8 @@ import Home from "./pages/Home.vue";
 import Payment from "./pages/Payment";
 import Rent from "./pages/Rent";
 import Activation from "./pages/Auth/Activation";
+import Profile from "./pages/Profile";
+import store from "./store";
 
 export default [
   {
@@ -19,6 +21,17 @@ export default [
     path: "/activation/:token",
     component: Activation,
     name: "activation",
+  },
+  {
+    path: "/mon-profil",
+    component: Profile,
+    name: "profile",
+    beforeEnter: (to, from, next) => {
+      if(store.state.user === ''){
+        next({name: 'home'});
+      }
+      next();
+    }
   },
   {
     path: "/payment",

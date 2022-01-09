@@ -9,8 +9,12 @@ export default new Vuex.Store({
     },
     mutations: {
         SET_USER(state,payload){
-            state.user = payload
-        }
+            if(payload !== ''){
+                state.user = JSON.parse(payload);
+            }else {
+                state.user = payload;
+            }
+        },
     },
     actions: {
 

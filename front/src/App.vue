@@ -11,8 +11,8 @@
   import Footer from "./components/Footer";
   export default {
     mounted() {
-      if(this.$cookies.get('user_get') && this.$cookies.get('token')){
-        this.$store.commit('SET_USER', this.$cookies.get('user_get'));
+      if(this.$cookie.get('user_get') && this.$cookie.get('token')){
+        this.$store.commit('SET_USER', this.$cookie.get('user_get'));
       }
     },
     name: 'App',

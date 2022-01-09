@@ -3,19 +3,17 @@ const axios = require('axios');
 
 module.exports = function (req, res) {
     try {
-        if (req.headers.authorization && req.headers['x-refresh-token']) {
+        if ((req.headers["x-refresh-token"] !== null || req.headers["x-refresh-token"] !== undefined)) {
             const url = routeLists.refreshToken;
-            const body = {refresh_token: req.headers['x-refresh-token']};
-            axios.post(url, body)
-                .then(response => {
-                    res.setHeader('Access-Control-Expose-Headers','authorization,x-refresh-token')
-                        .setHeader("Authorization", `Bearer ${response.data.token}`)
-                        .setHeader('x-refresh-token', response.data.refresh_token);
+            const data = {refresh_token: req.headers["x-refresh-token"]};
+            return axios.post(url, data)
+                .then(newRefresh => {
+                    req.headers['authorization'] = "Bearer " + newRefresh.data.token;
+                    res.setHeader("Access-Control-Expose-Headers", 'authorization')
+                        .setHeader("authorization", newRefresh.data.token)
                 });
         }
     } catch (e) {
         console.log(e);
-        return res.status(e.response.data.code)
-            .json(e.response.data.message);
     }
 }

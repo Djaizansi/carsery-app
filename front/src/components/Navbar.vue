@@ -16,7 +16,7 @@
       <b-navbar-item href="#">
         Voitures
       </b-navbar-item>
-      <b-navbar-item href="#" v-if="user !== '' && (user.roles.includes('ROLE_PRO') || user.roles.includes('ROLE_ADMIN'))">
+      <b-navbar-item href="#" v-if="user && (user.roles.includes('ROLE_PRO') || user.roles.includes('ROLE_ADMIN'))">
         Ajouter véhicule
       </b-navbar-item>
     </template>
@@ -24,7 +24,7 @@
     <template #end>
       <b-navbar-item tag="div">
         <div class="buttons">
-          <div class="user" v-if="user == ''">
+          <div class="user" v-if="!user">
             <b-button
                 name="register"
                 label="S'inscrire"
@@ -77,12 +77,13 @@
         })
       },
       logout(){
-        ['user_get','token','refresh_token'].map(cookie => this.$cookies.remove(cookie));
-        this.$store.commit('SET_USER','');
+        ['user_get','token','refresh_token'].map(cookie => this.$cookie.delete(cookie));
+        this.$store.commit('SET_USER',"");
         this.$buefy.toast.open({
           message: 'Vous êtes déconnecté',
           type: 'is-success'
-        })
+        });
+        this.$router.push('/');
       }
     }
   }
