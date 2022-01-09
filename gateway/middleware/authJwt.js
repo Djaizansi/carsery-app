@@ -4,16 +4,23 @@ const refreshToken = require('./refreshToken');
 
 module.exports = (req, res, next) => {
     const cert = fs.readFileSync('./jwt/public.pem');  // get public key
-    jwt.verify(req.headers?.authorization?.split(' ')[1], cert, async function (err, decoded) {
+    const token = req.headers?.authorization?.split(' ')[1]; // BEARER Token -> get only token
+    jwt.verify(token, cert, async function (err, decoded) {
         if (decoded || (req.path === "/users" && req.method === "POST")) {
+            if (!(req.path === "/users" && req.method === "POST")) {
+                req.headers['authorization'] = "Bearer " + token;
+                res.setHeader("Access-Control-Expose-Headers", 'authorization').setHeader("authorization", null)
+                    .setHeader("x-refresh-token", null);
+            }
             next();
         } else {
             if(!decoded){
                 await refreshToken(req, res, decoded);
                 next();
+            }else{
+                res.status(401);
+                res.json({message: "Unauthorized JWT expire or not valid"});
             }
-            res.status(401);
-            res.json({message: "Unauthorized JWT expire or not valid"});
         }
     });
 }

@@ -1,11 +1,11 @@
 const axios = require('axios');
 
-module.exports = async function(url,req,res/*,headers*/){
+module.exports = async function(url,req,res,headers = null){
     try {
         return await axios({
             method: req.method,
             url: url,
-            headers: req.headers,//headers,
+            headers: headers === null ? req.headers : headers,
             data: req.body
         });
     }catch(e){

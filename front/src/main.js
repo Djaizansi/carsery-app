@@ -11,7 +11,7 @@ import "./index.css";
 import 'aos/dist/aos.css';
 import axiosConfig from './Utils/axiosConfig';
 import store from './store';
-import VueCookies from "vue-cookies";
+import VueCookie from "vue-cookie";
 
 const options = {
   pk: process.env.VUE_APP_STRIPE_PUBLISHABLE_KEY,
@@ -20,7 +20,7 @@ const options = {
 
 Vue.use(StripePlugin, options);
 Vue.use(Buefy);
-Vue.use(VueCookies);
+Vue.use(VueCookie);
 Vue.use(VueRouter);
 Vue.use(VueTyperPlugin);
 AOS.init({
@@ -32,7 +32,7 @@ const router = new VueRouter({
   mode: "history",
 });
 
-axiosConfig();
+axiosConfig(router);
 
 Vue.config.productionTip = false;
 

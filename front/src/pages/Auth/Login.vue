@@ -74,10 +74,10 @@ export default {
             }else {
               this.loading = !this.loading;
               this.$emit('close');
-              this.$cookies.set('token', res.data.token);
-              this.$cookies.set('refresh_token', res.data.refresh_token);
-              this.$cookies.set('user_get', atob(res.data.token.split('.')[1]));
-              this.$store.commit('SET_USER', this.$cookies.get('user_get'));
+              this.$cookie.set('token', res.data.token);
+              this.$cookie.set('refresh_token', res.data.refresh_token);
+              this.$cookie.set('user_get', atob(res.data.token.split('.')[1]));
+              this.$store.commit('SET_USER', this.$cookie.get('user_get'));
               this.$buefy.toast.open({
                 message: 'Connecté',
                 type: 'is-success'
