@@ -3,7 +3,6 @@ const axios = require('axios');
 
 module.exports = function (req, res) {
     try {
-        console.log(req.headers);
         if ((req.headers["x-refresh-token"] !== null || req.headers["x-refresh-token"] !== undefined)) {
             const url = routeLists.refreshToken;
             const data = {refresh_token: req.headers["x-refresh-token"]};
