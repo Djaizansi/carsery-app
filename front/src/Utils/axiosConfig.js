@@ -5,7 +5,7 @@ export default function(){
     axios.interceptors.response.use(function(response){
         return response;
     }, function (error){
-        if (401 === error.response.status){
+        if (401 === error.response.status || 403 === error.response.status || 400 === error.response.status || 404 === error.response.status){
             return Promise.resolve(error.response);
         }else{
             return Promise.reject(error);

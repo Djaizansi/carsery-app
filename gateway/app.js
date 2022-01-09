@@ -4,6 +4,7 @@ const logger = require('morgan');
 const cors = require('cors');
 const authJwt = require('./middleware/authJwt');
 const login = require('./routes/login');
+const activationAccount = require('./routes/activationAccount');
 
 var indexRouter = require('./routes/index');
 
@@ -20,7 +21,8 @@ app.use((req,res,next) => {
     next();
 });
 
-app.use('/login', login);
+app.use('/login',login);
+app.use('/activation',activationAccount);
 app.use('/', authJwt, indexRouter);
 
 module.exports = app;

@@ -60,13 +60,13 @@
 
         <b-field
             label="Mot de passe"
-            :type="errorData.password ? 'is-danger' : ''"
-            :message="errorData.password ? errorData.password : ''"
+            :type="errorData.plainPassword ? 'is-danger' : ''"
+            :message="errorData.plainPassword ? errorData.plainPassword : ''"
         >
           <b-input
               type="password"
-              name="password"
-              v-model="User.password"
+              name="plainPassword"
+              v-model="User.plainPassword"
               password-reveal
               placeholder="Votre mot de passe"
               required
@@ -144,7 +144,7 @@ export default {
     async handleSubmit() {
       this.loading = true;
       resetObject(this.errorData);
-      if (User.password === this.passwordConfirm) {
+      if (User.plainPassword === this.passwordConfirm) {
         User.roles = [];
         User.roles.push(this.roles);
         if(User.roles.includes('ROLE_PRO')) {

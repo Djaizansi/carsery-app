@@ -148,6 +148,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
     #[Groups(['users:post','address:post'])]
     private $address;
 
+    #[Groups(['users:post'])]
+    private $plainPassword;
+
     public function __construct(){
         $this->createdAt = new \DateTime();
     }
@@ -347,5 +350,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
     {
         $user = new User();
         return $user;
+    }
+
+    public function getPlainPassword(): ?string
+    {
+        return $this->plainPassword;
+    }
+
+    public function setPlainPassword(?string $plainPassword): self
+    {
+        $this->plainPassword = $plainPassword;
+
+        return $this;
     }
 }

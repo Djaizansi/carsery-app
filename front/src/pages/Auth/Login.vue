@@ -58,15 +58,20 @@ import axios from 'axios';
 export default {
   data: () => ({rememberme: false, loading: false, message: ""}),
   methods: {
+    showErrorMessage(message){
+      this.loading = !this.loading;
+      this.message = message;
+    },
     handleSubmit(event) {
       this.loading = true;
       const {email, password} = Object.fromEntries(new FormData(event.target));
       axios.post("http://localhost:3000/login", {email, password})
           .then(res => {
             if (res.status === 401) {
-              this.loading = !this.loading;
-              this.message = "L'email et/ou le mot de passe est incorrect";
-            } else {
+              this.showErrorMessage("L'email et/ou le mot de passe est incorrect");
+            } else if (res.status === 403) {
+              this.showErrorMessage("Votre compte n'est pas valide");
+            }else {
               this.loading = !this.loading;
               this.$emit('close');
               this.$cookies.set('token', res.data.token);
