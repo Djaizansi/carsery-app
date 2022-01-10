@@ -63,6 +63,43 @@
             </b-radio>
           </div>
         </div>
+        <div class="" v-else>
+          <div class="flex space-x-3">
+            <b-field
+                label="Entreprise"
+                class="w-1/2"
+                :type="errorData['company'] ? 'is-danger' : ''"
+                :message="errorData['company'] ? errorData['company'] : ''"
+            >
+              <b-input
+                  type="text"
+                  name="company"
+                  v-model="User.company"
+                  min="3"
+                  validation-message="Minimum 3 caractères"
+                  placeholder="Votre entreprise"
+                  required>
+              </b-input>
+            </b-field>
+            <b-field
+                label="Siret"
+                class="w-1/2"
+                :type="errorData['siret'] ? 'is-danger' : ''"
+                :message="errorData['siret'] ? errorData['siret'] : ''"
+            >
+              <b-input
+                  type="text"
+                  name="siret"
+                  v-model="User.siret"
+                  min="14"
+                  max="14"
+                  validation-message="Un siren comporte 14 chiffres"
+                  placeholder="Numéro de SIRET"
+                  required>
+              </b-input>
+            </b-field>
+          </div>
+        </div>
         <b-field
             label="Email"
             :type="errorData['email'] ? 'is-danger' : ''"
@@ -163,6 +200,7 @@ export default {
     async handleSubmit() {
       this.loading = true;
       resetObject(this.errorData);
+      //Check password is same that passwordConfirm
       if (User.plainPassword === this.passwordConfirm) {
         User.roles = [];
         User.roles.push(this.roles);
@@ -170,7 +208,12 @@ export default {
           delete User.firstname;
           delete User.lastname;
           delete User.gender;
+        }else if(User.roles.includes('ROLE_CLIENT')){
+          delete User.company;
+          delete User.siret;
         }
+
+        //Send data
         try {
           const res = await fetch("http://localhost:3000/users", {
             method: "POST",

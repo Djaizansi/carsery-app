@@ -126,6 +126,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *     min = 14,
+     *     max = 14,
+     *     exactMessage="Le numéro de siret doit comporter exactement 14 chiffres"
+     * )
      */
     #[Groups(['users:post'])]
     private $siret;
