@@ -3,6 +3,8 @@ module.exports= {
     lastname: "",
     email: "",
     plainPassword: "",
+    company: "",
+    siret: "",
     roles: [],
     gender: "",
     address: {}

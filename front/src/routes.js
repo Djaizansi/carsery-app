@@ -4,7 +4,7 @@ import Payment from "./pages/Payment";
 import Rent from "./pages/Rent";
 import Activation from "./pages/Auth/Activation";
 import Profile from "./pages/Profile";
-import store from "./store";
+import VueCookie from "vue-cookie";
 
 export default [
   {
@@ -27,7 +27,7 @@ export default [
     component: Profile,
     name: "profile",
     beforeEnter: (to, from, next) => {
-      if(store.state.user === ''){
+      if(VueCookie.get('user_get') === null){
         next({name: 'home'});
       }
       next();

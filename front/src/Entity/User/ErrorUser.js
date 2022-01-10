@@ -4,5 +4,7 @@ module.exports= {
     email: "",
     gender: "",
     plainPassword: "",
+    company: "",
+    siret: "",
     roles: "",
 }

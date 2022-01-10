@@ -82,10 +82,10 @@ export default {
                 message: 'Connecté',
                 type: 'is-success'
               })
+              this.$router.push('/');
             }
           })
           .catch(e => console.log(e));
-      //this.$router.push('/');
     }
   }
 }
