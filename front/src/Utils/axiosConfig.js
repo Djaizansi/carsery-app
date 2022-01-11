@@ -1,6 +1,6 @@
 import axios from "axios";
 import VueCookie from "vue-cookie";
-//import store from '../store';
+import store from '../store';
 
 export default function(router){
     axios.interceptors.response.use(function(response){
@@ -9,9 +9,9 @@ export default function(router){
         }
         return response;
     }, function (error){
-        if (router.currentRoute.name !== 'home') {
-            //['user_get','token'].map(cookie => VueCookie.delete(cookie));
-            //store.commit('SET_USER','');
+        if (error.response.status === 401 && error.response.data.message === "Expired JWT Token") {
+            ['user_get','token','refresh_token'].map(cookie => VueCookie.delete(cookie));
+            store.commit('SET_USER','');
             return router.push('/');
         }
         return Promise.resolve(error.response);

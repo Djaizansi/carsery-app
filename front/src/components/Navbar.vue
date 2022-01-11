@@ -83,7 +83,7 @@
           message: 'Vous êtes déconnecté',
           type: 'is-success'
         });
-        this.$router.push('/');
+        if(this.$route.name !== 'home') this.$router.push('/');
       }
     }
   }

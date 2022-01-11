@@ -11,9 +11,10 @@ module.exports = function (req, res) {
                     req.headers['authorization'] = "Bearer " + newRefresh.data.token;
                     res.setHeader("Access-Control-Expose-Headers", 'authorization')
                         .setHeader("authorization", newRefresh.data.token)
-                });
+                })
+                .catch((e) => console.log(e));
         }
     } catch (e) {
-        console.log(e);
+        res.status(e.response.status).json(e.response.message);
     }
 }
