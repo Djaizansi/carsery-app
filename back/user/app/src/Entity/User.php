@@ -50,7 +50,9 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     denormalizationContext: ['groups' => ['users:post']],
     itemOperations: [
-        'get',
+        'get' => [
+            "normalization_context" => ["groups" => ['user:get']]
+        ],
         'patch'
     ]
 )]
@@ -69,7 +71,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\Email(message="Votre email est invalide")
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get'])]
     private $email;
 
     /**
@@ -96,7 +98,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
      *      maxMessage = "Votre prénom doit contenir minimum {{ limit }} caractères"
      * )
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get'])]
     private $firstname;
 
     /**
@@ -108,20 +110,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
      *      maxMessage = "Votre nom doit contenir maximum {{ limit }} caractères"
      * )
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get'])]
     private $lastname;
 
     /**
      * @ORM\Column(type="string", length=1, nullable=true)
      * @Assert\Choice(choices=User::GENDER, message="Choisissez un genre valide")
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get'])]
     private $gender;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get'])]
     private $company;
 
     /**
@@ -132,7 +134,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
      *     exactMessage="Le numéro de siret doit comporter exactement 14 chiffres"
      * )
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get'])]
     private $siret;
 
 
@@ -150,7 +152,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
     /**
      * @ORM\OneToOne(targetEntity=Address::class, inversedBy="user", cascade={"persist", "remove"})
      */
-    #[Groups(['users:post','address:post'])]
+    #[Groups(['users:post','address:post','user:get'])]
     private $address;
 
     #[Groups(['users:post'])]

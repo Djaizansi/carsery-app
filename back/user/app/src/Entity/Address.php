@@ -26,31 +26,31 @@ class Address
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get'])]
     private $city;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get'])]
     private $postalCode;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get'])]
     private $street;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get'])]
     private $region;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get'])]
     private $country;
 
     /**
