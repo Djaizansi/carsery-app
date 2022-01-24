@@ -31,6 +31,11 @@ export default {
         if(this.type === "checkbox"){
           component.checked = data;
         }
+
+        if(this.type === "radio" && data === component.value){
+          component.checked = true;
+        }
+
         if(this.component === "textarea"){
           component.value = data;
         }else if(this.component === "select"){

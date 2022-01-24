@@ -1,62 +1,51 @@
 <template>
-  <div class="flex flex-col items-center">
-    <h1 class="text-center text-3xl font-bold mb-5">Votre profil</h1>
-    <b-tabs v-model="activeTab" type="is-toggle-rounded">
-      <template v-for="tab in tabs">
-        <b-tab-item
-            v-if="tab.displayed"
-            :key="tab.id"
-            :value="tab.id"
-            :icon="tab.icon"
-            :label="tab.label">
-          {{ tab.content }}
-        </b-tab-item>
-      </template>
-    </b-tabs>
-    <Vuemik
-        :initialValues="{
-      select: 2,
-      checkbox: true,
-      textarea: 'coucou',
-      text: 'text',
-      number: 123,
-      password: 'test',
-    }"
-        :onSubmit="onSubmit"
-        v-slot="{ handleSubmit }"
-        class="flex flex-col justify-between"
-    >
-      <Field name="select" component="select" class="border p-3">
-        <option value="1">Choice 1</option>
-        <option value="2">Choice 2</option>
-      </Field>
-      <Field name="textarea" component="textarea" class="border p-3" />
-      <div class="">
-        <label>True or False ?</label>
-        <Field name="checkbox" component="input" type="checkbox" />
-      </div>
-      <Field name="text" component="input" class="border p-3" placeholder="votre text ici" />
-      <Field name="number" component="input" class="border p-3" type="number"/>
-      <Field name="password" component="input" class="border p-3" type="password" />
-      <b-button @click="handleSubmit">Envoyer</b-button>
-    </Vuemik>
+  <div>
+    <div v-if="loading" class="is-flex is-justify-content-center w-full" ref="element">
+      <b-loading :is-full-page="true" v-model="loading" :can-cancel="false"></b-loading>
+    </div>
+    <div v-else-if="!loading" class="flex flex-col items-center">
+      <h1 class="text-center text-3xl font-bold mb-5">Votre profil</h1>
+      <b-tabs v-model="activeTab" type="is-toggle-rounded">
+        <template v-for="tab in tabs">
+          <b-tab-item
+              v-if="tab.displayed"
+              :key="tab.id"
+              :value="tab.id"
+              :icon="tab.icon"
+              :label="tab.label">
+            <component :is="tab.component" :initialValues="tab.content"></component>
+          </b-tab-item>
+        </template>
+      </b-tabs>
+    </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import Vuemik from "../components/Vuemik/Vuemik";
-import Field from "../components/Vuemik/Field";
+import UserForm from "../components/Vuemik/EntityForm/UserForm";
+import PasswordForm from "../components/Vuemik/EntityForm/PasswordForm";
+import AddressForm from "../components/Vuemik/EntityForm/AddressForm";
+import CompanyForm from "../components/Vuemik/EntityForm/CompanyForm";
 
 export default {
-  components: {Vuemik,Field},
-  data: () => ({activeTab: 'pictures',roles:null}),
+  data: () => ({activeTab: null,roles:null,user:null,loading:null}),
+  components: {UserForm,PasswordForm,AddressForm,CompanyForm},
   created() {
     this.roles = this.$store.state.user.roles;
+    this.activeTab = this.roles.includes('ROLE_CLIENT') ? 'user' : 'company';
+    this.loading = true;
   },
   mounted() {
     const id = JSON.parse(this.$cookie.get('user_get')).id;
-    axios.get(`http://localhost:3000/users/${id}`);
+    setTimeout(() => {
+      axios.get(`http://localhost:3000/users/${id}`)
+          .then(res => res.data)
+          .then(data => {
+            this.loading = false;
+            this.user = data;
+          });
+    },1000);
   },
   methods: {
     onSubmit: (event) => {
@@ -69,31 +58,50 @@ export default {
         {
           id: 'user',
           label: 'Utilisateur',
-          content: 'FormBuilder User',
+          component: UserForm,
+          content: {
+            'firstname': this.user.firstname,
+            'lastname': this.user.lastname,
+            'gender': this.user.gender
+          },
           icon: "account",
           displayed: this.roles.includes('ROLE_CLIENT'),
         },
         {
+          id: 'company',
+          label: 'Entreprise',
+          component: CompanyForm,
+          content: {
+            "company": this.user.company,
+            "siret": this.user.siret
+          },
+          icon: "domain",
+          displayed: this.roles.includes('ROLE_PRO'),
+        },
+        {
           id: 'password',
           label: 'Mot de passe',
-          content: 'FormBuilder Password',
+          component: PasswordForm,
+          content: {},
           icon: "form-textbox-password",
           displayed: true,
         },
         {
           id: 'address',
           label: 'Adresse',
-          content: 'FormBuilder Address',
+          component: AddressForm,
+          content: {
+            address: {
+              "city":this.user.address.city,
+              "country":this.user.address.country,
+              "postalCode":this.user.address.postalCode,
+              "region":this.user.address.region,
+              "street":this.user.address.street,
+            }
+          },
           icon: "map-marker",
           displayed: true,
-        },
-        {
-          id: 'company',
-          label: 'Entreprise',
-          content: 'FormBuilder Company',
-          icon: "domain",
-          displayed: this.roles.includes('ROLE_PRO'),
-        },
+        }
       ]
     },
     tabs() {
