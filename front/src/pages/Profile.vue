@@ -13,7 +13,7 @@
               :value="tab.id"
               :icon="tab.icon"
               :label="tab.label">
-            <component :is="tab.component" :initialValues="tab.content"></component>
+            <component :is="tab.component" :initialValues="tab.content" :id="tab.idUpdate"></component>
           </b-tab-item>
         </template>
       </b-tabs>
@@ -29,7 +29,7 @@ import AddressForm from "../components/Vuemik/EntityForm/AddressForm";
 import CompanyForm from "../components/Vuemik/EntityForm/CompanyForm";
 
 export default {
-  data: () => ({activeTab: null,roles:null,user:null,loading:null}),
+  data: () => ({activeTab: null,roles:null,user:null,loading:null,id:null}),
   components: {UserForm,PasswordForm,AddressForm,CompanyForm},
   created() {
     this.roles = this.$store.state.user.roles;
@@ -37,20 +37,15 @@ export default {
     this.loading = true;
   },
   mounted() {
-    const id = JSON.parse(this.$cookie.get('user_get')).id;
+    this.id = JSON.parse(this.$cookie.get('user_get')).id;
     setTimeout(() => {
-      axios.get(`http://localhost:3000/users/${id}`)
+      axios.get(`http://localhost:3000/users/${this.id}`)
           .then(res => res.data)
           .then(data => {
             this.loading = false;
             this.user = data;
           });
-    },1000);
-  },
-  methods: {
-    onSubmit: (event) => {
-      console.log(event);
-    }
+    },500);
   },
   computed: {
     baseTabs() {
@@ -59,6 +54,7 @@ export default {
           id: 'user',
           label: 'Utilisateur',
           component: UserForm,
+          idUpdate: this.id,
           content: {
             'firstname': this.user.firstname,
             'lastname': this.user.lastname,
@@ -70,6 +66,7 @@ export default {
         {
           id: 'company',
           label: 'Entreprise',
+          idUpdate: this.id,
           component: CompanyForm,
           content: {
             "company": this.user.company,
@@ -81,6 +78,7 @@ export default {
         {
           id: 'password',
           label: 'Mot de passe',
+          idUpdate: this.id,
           component: PasswordForm,
           content: {},
           icon: "form-textbox-password",
@@ -88,6 +86,7 @@ export default {
         },
         {
           id: 'address',
+          idUpdate: this.user.address.id,
           label: 'Adresse',
           component: AddressForm,
           content: {

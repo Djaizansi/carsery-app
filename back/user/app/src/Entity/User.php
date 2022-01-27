@@ -53,7 +53,11 @@ use Symfony\Component\Validator\Constraints as Assert;
         'get' => [
             "normalization_context" => ["groups" => ['user:get']]
         ],
-        'patch'
+        'put' => [
+            "security" => "is_granted('edit',object)",
+            "security_message" => "Modification impossible",
+            "denormalization_context" => ['groups' => ['user:put','users:post']]
+        ]
     ]
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
@@ -84,7 +88,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
-     * @Assert\Regex("/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/", message=" Votre mot de passe doit contenir : Min 8 caractères | Min 1 chifffre | Min caractère majuscule et minuscule")
      */
     #[Groups(['users:post'])]
     private $password;
@@ -122,6 +125,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *     min = 2,
+     *     minMessage="Le nom de l'entreprise ne peut pas être inférieur à 2 caractères"
+     * )
      */
     #[Groups(['users:post','user:get'])]
     private $company;
@@ -155,8 +162,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
     #[Groups(['users:post','address:post','user:get'])]
     private $address;
 
+    /**
+     * @Assert\Regex("/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/", message=" Votre mot de passe doit contenir : Min 8 caractères | Min 1 chifffre | Min caractère majuscule et minuscule")
+     */
     #[Groups(['users:post'])]
     private $plainPassword;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    #[Groups(['user:put'])]
+    private $oldPassword;
 
     public function __construct(){
         $this->createdAt = new \DateTime();
@@ -367,6 +383,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
     public function setPlainPassword(?string $plainPassword): self
     {
         $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
+
+    public function getOldPassword(): ?string
+    {
+        return $this->oldPassword;
+    }
+
+    public function setOldPassword(?string $oldPassword): self
+    {
+        $this->oldPassword = $oldPassword;
 
         return $this;
     }

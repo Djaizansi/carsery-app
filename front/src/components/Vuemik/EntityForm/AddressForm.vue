@@ -16,13 +16,19 @@
         :value="Object.keys(address).length !== 0 ? address.street+', '+address.city+', '+address.country : ''"
     >
     </vue-google-autocomplete>
-    <b-button @click="handleSubmit" class="is-primary">Envoyer</b-button>
+    <b-button v-if="!loadingPut" @click="handleSubmit" class="is-primary">Envoyer</b-button>
+    <b-button v-else
+              loading
+              type="is-primary"
+    />
   </Vuemik>
 </template>
 
 <script>
 import Vuemik from "../Vuemik";
 import VueGoogleAutocomplete from "vue-google-autocomplete";
+import axios from "axios";
+import {ToastProgrammatic as Toast} from 'buefy';
 
 export default {
   name: "AddressForm",
@@ -30,14 +36,30 @@ export default {
   mounted() {
     this.address = this.initialValues.address;
   },
-  data: () => ({address:{}}),
+  data: () => ({address:{},loadingPut:false}),
   props: {
-    initialValues: {type: Object, required: true}
+    initialValues: {type: Object, required: true},
+    id: {type: Number}
   },
 
   methods: {
-    onSubmit: (event) => {
-      console.log(event.address);
+    onSubmit: function(event) {
+      this.loadingPut = true;
+      axios.put(`http://localhost:3000/addresses/${this.id}`,event.address)
+          .then(res => {
+            this.loadingPut = false;
+            if(res.status === 200){
+              Toast.open({
+                message: 'Modification réussi',
+                type: 'is-success'
+              })
+            }else if(res.status === 403){
+              Toast.open({
+                message: res.data.detail,
+                type: 'is-danger'
+              })
+            }
+          });
     },
     getAddressData(addressData) {
       this.address.city = addressData.locality;
