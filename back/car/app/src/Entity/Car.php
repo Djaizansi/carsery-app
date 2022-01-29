@@ -22,11 +22,6 @@ class Car
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $name;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
     private $color;
 
     /**
@@ -60,12 +55,6 @@ class Car
     private $user_id;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Brand::class, inversedBy="car")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $brand;
-
-    /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="car")
      * @ORM\JoinColumn(nullable=false)
      */
@@ -76,21 +65,15 @@ class Car
      */
     private $date_registration;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Model::class, inversedBy="cars")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $model;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
     }
 
     public function getColor(): ?string
@@ -177,18 +160,6 @@ class Car
         return $this;
     }
 
-    public function getBrand(): ?Brand
-    {
-        return $this->brand;
-    }
-
-    public function setBrand(?Brand $brand): self
-    {
-        $this->brand = $brand;
-
-        return $this;
-    }
-
     public function getCategory(): ?Category
     {
         return $this->category;
@@ -209,6 +180,18 @@ class Car
     public function setDateRegistration(\DateTimeInterface $date_registration): self
     {
         $this->date_registration = $date_registration;
+
+        return $this;
+    }
+
+    public function getModel(): ?Model
+    {
+        return $this->model;
+    }
+
+    public function setModel(?Model $model): self
+    {
+        $this->model = $model;
 
         return $this;
     }

@@ -27,18 +27,12 @@ class Brand
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Car::class, mappedBy="brand", orphanRemoval=true)
-     */
-    private $car;
-
-    /**
      * @ORM\OneToMany(targetEntity=Model::class, mappedBy="brand", orphanRemoval=true)
      */
     private $models;
 
     public function __construct()
     {
-        $this->car = new ArrayCollection();
         $this->models = new ArrayCollection();
     }
 
@@ -55,36 +49,6 @@ class Brand
     public function setName(string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Car[]
-     */
-    public function getCar(): Collection
-    {
-        return $this->car;
-    }
-
-    public function addCar(Car $car): self
-    {
-        if (!$this->car->contains($car)) {
-            $this->car[] = $car;
-            $car->setBrand($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCar(Car $car): self
-    {
-        if ($this->car->removeElement($car)) {
-            // set the owning side to null (unless already changed)
-            if ($car->getBrand() === $this) {
-                $car->setBrand(null);
-            }
-        }
 
         return $this;
     }

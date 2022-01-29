@@ -11,7 +11,10 @@ services:
         - /app/node_modules
       networks:
         - user_all-network
+        - car_all-network
 
 networks:
   user_all-network:
+    external: true
+  car_all-network:
     external: true
