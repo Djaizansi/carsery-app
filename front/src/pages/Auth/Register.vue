@@ -63,7 +63,7 @@
             </b-radio>
           </div>
         </div>
-        <div class="" v-else>
+        <div class="" v-else-if="roles === 'ROLE_PRO'">
           <div class="flex space-x-3">
             <b-field
                 label="Entreprise"

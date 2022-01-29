@@ -82,7 +82,7 @@ export default {
                 message: 'Connecté',
                 type: 'is-success'
               })
-              this.$router.push('/');
+              if(this.$route.name !== 'home') this.$router.push('/');
             }
           })
           .catch(e => console.log(e));

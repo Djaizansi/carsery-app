@@ -12,7 +12,15 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 #[ApiResource(
     collectionOperations: ['get','post'],
-    itemOperations: ['get'],
+    itemOperations: [
+        'get',
+        'put' => [
+            'security' => "is_granted('edit_address',object)",
+            'security_message' => "Modification impossible"
+        ]
+    ],
+    denormalizationContext: ['groups' => 'addresses:post'],
+    normalizationContext: ['groups' => 'addresses:get']
 )]
 class Address
 {
@@ -21,36 +29,37 @@ class Address
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[Groups(['user:get'])]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get','addresses:post'])]
     private $city;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get','addresses:post'])]
     private $postalCode;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get','addresses:post'])]
     private $street;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get','addresses:post'])]
     private $region;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get','addresses:post'])]
     private $country;
 
     /**

@@ -50,8 +50,14 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     denormalizationContext: ['groups' => ['users:post']],
     itemOperations: [
-        'get',
-        'patch'
+        'get' => [
+            "normalization_context" => ["groups" => ['user:get']]
+        ],
+        'put' => [
+            "security" => "is_granted('edit',object)",
+            "security_message" => "Modification impossible",
+            "denormalization_context" => ['groups' => ['user:put','users:post']]
+        ]
     ]
 )]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
@@ -69,7 +75,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
      * @ORM\Column(type="string", length=180, unique=true)
      * @Assert\Email(message="Votre email est invalide")
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get'])]
     private $email;
 
     /**
@@ -82,7 +88,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
     /**
      * @var string The hashed password
      * @ORM\Column(type="string")
-     * @Assert\Regex("/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/", message=" Votre mot de passe doit contenir : Min 8 caractères | Min 1 chifffre | Min caractère majuscule et minuscule")
      */
     #[Groups(['users:post'])]
     private $password;
@@ -96,7 +101,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
      *      maxMessage = "Votre prénom doit contenir minimum {{ limit }} caractères"
      * )
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get'])]
     private $firstname;
 
     /**
@@ -108,20 +113,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
      *      maxMessage = "Votre nom doit contenir maximum {{ limit }} caractères"
      * )
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get'])]
     private $lastname;
 
     /**
      * @ORM\Column(type="string", length=1, nullable=true)
      * @Assert\Choice(choices=User::GENDER, message="Choisissez un genre valide")
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get'])]
     private $gender;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(
+     *     min = 2,
+     *     minMessage="Le nom de l'entreprise ne peut pas être inférieur à 2 caractères"
+     * )
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get'])]
     private $company;
 
     /**
@@ -132,7 +141,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
      *     exactMessage="Le numéro de siret doit comporter exactement 14 chiffres"
      * )
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get'])]
     private $siret;
 
 
@@ -150,11 +159,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
     /**
      * @ORM\OneToOne(targetEntity=Address::class, inversedBy="user", cascade={"persist", "remove"})
      */
-    #[Groups(['users:post','address:post'])]
+    #[Groups(['users:post','address:post','user:get'])]
     private $address;
 
+    /**
+     * @Assert\Regex("/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/", message=" Votre mot de passe doit contenir : Min 8 caractères | Min 1 chifffre | Min caractère majuscule et minuscule")
+     */
     #[Groups(['users:post'])]
     private $plainPassword;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    #[Groups(['user:put'])]
+    private $oldPassword;
 
     public function __construct(){
         $this->createdAt = new \DateTime();
@@ -365,6 +383,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
     public function setPlainPassword(?string $plainPassword): self
     {
         $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
+
+    public function getOldPassword(): ?string
+    {
+        return $this->oldPassword;
+    }
+
+    public function setOldPassword(?string $oldPassword): self
+    {
+        $this->oldPassword = $oldPassword;
 
         return $this;
     }
