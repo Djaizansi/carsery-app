@@ -7,11 +7,15 @@ use App\Repository\BrandRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=BrandRepository::class)
  */
-#[ApiResource]
+#[ApiResource(
+    attributes: ["pagination_items_per_page" => 100],
+    normalizationContext: ['groups' => ['brands:get']]
+)]
 class Brand
 {
     /**
@@ -19,16 +23,19 @@ class Brand
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[Groups(['brands:get'])]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[Groups(['brands:get'])]
     private $name;
 
     /**
      * @ORM\OneToMany(targetEntity=Model::class, mappedBy="brand", orphanRemoval=true)
      */
+    #[Groups(['brands:get'])]
     private $models;
 
     public function __construct()

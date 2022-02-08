@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CarRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CarRepository::class)
@@ -21,26 +22,36 @@ class Car
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Regex("/^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/", message="Le code couleur ne correspond pas")
      */
     private $color;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\GreaterThan(3, message="Le kilométrage du véhicule ne peut pas être inférieur à 3km")
      */
     private $kilometer;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
      */
     private $numberplate;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(
+     *      min = 3,
+     *      max = 1500,
+     *      minMessage = "La puissance du véhicule ne peut pas être inférieur à {{ limit }}	 CH",
+     *      maxMessage = "La puissance du véhicule ne peut pas être supérieur à {{ limit }}	 CH"
+     * )
      */
     private $power;
 
     /**
      * @ORM\Column(type="float")
+     * @Assert\GreaterThan(10,message="Le prix de la location ne peut pas être inférieur à {{ value }} €")
      */
     private $price;
 
@@ -50,9 +61,9 @@ class Car
     private $status;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string",length=100)
      */
-    private $user_id;
+    private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="car")
@@ -62,6 +73,7 @@ class Car
 
     /**
      * @ORM\Column(type="date")
+     * @Assert\NotBlank
      */
     private $date_registration;
 
@@ -70,6 +82,11 @@ class Car
      * @ORM\JoinColumn(nullable=false)
      */
     private $model;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $statusAdminCar;
 
     public function getId(): ?int
     {
@@ -148,14 +165,14 @@ class Car
         return $this;
     }
 
-    public function getUserId(): ?int
+    public function getUser(): ?string
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(int $user_id): self
+    public function setUser(string $user): self
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
 
         return $this;
     }
@@ -192,6 +209,18 @@ class Car
     public function setModel(?Model $model): self
     {
         $this->model = $model;
+
+        return $this;
+    }
+
+    public function getStatusAdminCar(): ?string
+    {
+        return $this->statusAdminCar;
+    }
+
+    public function setStatusAdminCar(string $statusAdminCar): self
+    {
+        $this->statusAdminCar = $statusAdminCar;
 
         return $this;
     }

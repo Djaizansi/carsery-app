@@ -7,11 +7,12 @@ use App\Repository\ModelRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ModelRepository::class)
  */
-#[ApiResource]
+#[ApiResource(formats: ['json', 'jsonld'])]
 class Model
 {
     /**
@@ -19,11 +20,13 @@ class Model
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[Groups(['brands:get'])]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
+    #[Groups(['brands:get'])]
     private $name;
 
     /**

@@ -19,8 +19,8 @@ export default function(router){
 
     axios.interceptors.request.use(
         config => {
-            config.headers['Content-Type'] = 'application/json';
-            config.headers.Accept = 'application/json';
+            config.headers['Content-Type'] = config.data instanceof FormData ? 'multipart/form-data' : 'application/json';
+            config.headers.Accept = config.data instanceof FormData ? 'multipart/form-data' : 'application/json';
             config.headers['x-refresh-token'] = VueCookie.get('refresh_token');
             config.headers.Authorization = 'Bearer ' + VueCookie.get('token');
             return config;

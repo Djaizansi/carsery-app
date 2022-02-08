@@ -12,9 +12,12 @@ services:
       networks:
         - user_all-network
         - car_all-network
+        - aws_all-network
 
 networks:
   user_all-network:
     external: true
   car_all-network:
+    external: true
+  aws_all-network:
     external: true

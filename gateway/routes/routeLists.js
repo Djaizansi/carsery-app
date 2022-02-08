@@ -6,6 +6,8 @@ module.exports = {
     cars: "http://car-nginx/cars",
     brands: "http://car-nginx/brands",
     models: "http://car-nginx/models",
+    awsUpload: "http://aws-nginx/upload",
+    awsDownload: "http://aws-nginx/download/list",
     categories: "http://car-nginx/categories",
     refreshToken: "http://user-nginx/token/refresh",
     activationAccount: "http://user-nginx/activation/account"
