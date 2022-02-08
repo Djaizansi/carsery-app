@@ -47,9 +47,10 @@ class AmazonService {
     public function listAllObjectFunc($path){
         try {
             $array = [];
-            $data = $this->s3Client->listObjects([
+            $data = $this->s3Client->listObjectsV2([
                 'Bucket' => $_ENV['AWS_BUCKET'],
-                'Key' => $path
+                'Key' => $path,
+                'Prefix' => $path
             ]);
 
             foreach($data->get('Contents') as $content){

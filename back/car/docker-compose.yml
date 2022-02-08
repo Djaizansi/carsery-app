@@ -15,6 +15,8 @@ services:
     ports:
       - 3306:3306
     restart: always
+    networks:
+      - all-network
 
   car-php:
     image: ${PHP_IMAGE:-car/php}
@@ -26,6 +28,8 @@ services:
       - ./app:/srv/app:rw
       - ./app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
       - car-app-sf-cache:/srv/app/var
+    networks:
+      - all-network
 
   car-nginx:
     image: ${NGINX_IMAGE:-car/nginx}
@@ -39,6 +43,12 @@ services:
       - ./app/public:/srv/app/public:ro
     ports:
       - 8081:80
+    networks:
+      - all-network
+
+networks:
+  all-network:
+    driver: bridge
 
 volumes:
   car-db-data: {}

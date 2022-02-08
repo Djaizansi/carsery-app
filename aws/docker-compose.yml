@@ -17,6 +17,8 @@ services:
       - ./:/srv/app:rw
       - ./docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
       - aws-app-sf-cache:/srv/app/var
+    networks:
+      - all-network
 
   aws-nginx:
     image: ${NGINX_IMAGE:-aws/nginx}
@@ -31,6 +33,12 @@ services:
       - ./public:/srv/app/public:ro
     ports:
       - 8300:80
+    networks:
+      - all-network
+
+networks:
+  all-network:
+    driver: bridge
 
 volumes:
   aws-db-data: {}

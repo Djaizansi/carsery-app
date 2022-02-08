@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\CarRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CarRepository::class)
@@ -21,31 +22,36 @@ class Car
 
     /**
      * @ORM\Column(type="string", length=255)
-     */
-    private $name;
-
-    /**
-     * @ORM\Column(type="string", length=255)
+     * @Assert\Regex("/^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/", message="Le code couleur ne correspond pas")
      */
     private $color;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\GreaterThan(3, message="Le kilométrage du véhicule ne peut pas être inférieur à 3km")
      */
     private $kilometer;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
      */
     private $numberplate;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(
+     *      min = 3,
+     *      max = 1500,
+     *      minMessage = "La puissance du véhicule ne peut pas être inférieur à {{ limit }}	 CH",
+     *      maxMessage = "La puissance du véhicule ne peut pas être supérieur à {{ limit }}	 CH"
+     * )
      */
     private $power;
 
     /**
      * @ORM\Column(type="float")
+     * @Assert\GreaterThan(10,message="Le prix de la location ne peut pas être inférieur à {{ value }} €")
      */
     private $price;
 
@@ -55,15 +61,9 @@ class Car
     private $status;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string",length=100)
      */
-    private $user_id;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Brand::class, inversedBy="car")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $brand;
+    private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="car")
@@ -73,24 +73,24 @@ class Car
 
     /**
      * @ORM\Column(type="date")
+     * @Assert\NotBlank
      */
     private $date_registration;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Model::class, inversedBy="cars")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $model;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $statusAdminCar;
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-
-        return $this;
     }
 
     public function getColor(): ?string
@@ -165,26 +165,14 @@ class Car
         return $this;
     }
 
-    public function getUserId(): ?int
+    public function getUser(): ?string
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(int $user_id): self
+    public function setUser(string $user): self
     {
-        $this->user_id = $user_id;
-
-        return $this;
-    }
-
-    public function getBrand(): ?Brand
-    {
-        return $this->brand;
-    }
-
-    public function setBrand(?Brand $brand): self
-    {
-        $this->brand = $brand;
+        $this->user = $user;
 
         return $this;
     }
@@ -209,6 +197,30 @@ class Car
     public function setDateRegistration(\DateTimeInterface $date_registration): self
     {
         $this->date_registration = $date_registration;
+
+        return $this;
+    }
+
+    public function getModel(): ?Model
+    {
+        return $this->model;
+    }
+
+    public function setModel(?Model $model): self
+    {
+        $this->model = $model;
+
+        return $this;
+    }
+
+    public function getStatusAdminCar(): ?string
+    {
+        return $this->statusAdminCar;
+    }
+
+    public function setStatusAdminCar(string $statusAdminCar): self
+    {
+        $this->statusAdminCar = $statusAdminCar;
 
         return $this;
     }

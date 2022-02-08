@@ -12,17 +12,21 @@ class UploadController {
 
     public function __invoke(Request $request, AmazonService $client)
     {
-        $uploadedFile = $request->files->get('file');
+        $uploadedFiles = $request->request->get('file');
         $path = $request->request->get('path');
-        if (!$uploadedFile) {
-            throw new BadRequestHttpException('"file" is required');
+        $returnSucces = new JsonResponse("Une erreur est survenue",500);
+        foreach ($uploadedFiles as $file) {
+            if (!$file) {
+                throw new BadRequestHttpException('"file" is required');
+            }
+            $fp = fopen($file,'r');
+            $meta = mime_content_type($fp);
+            $extension = explode('/',$meta)[1];
+            $uniqName   = uniqid().'.'.$extension;
+            $pathFinal = $path.'/'.$uniqName;
+            $data = $client->putObjectFunc($pathFinal,$file);
+            $returnSucces = $data ? new JsonResponse('Upload réussi',201) : new JsonResponse(`Une erreur est survenue :${data}`,404);
         }
-
-        $mime = new MimeTypes();
-        $typeFile = $mime->getExtensions($uploadedFile->getMimeType())[0];
-        $uniqName   = uniqid().'.'.$typeFile;
-        $pathFinal = $path.$uniqName;
-        $data = $client->putObjectFunc($pathFinal,$uploadedFile);
-        return ($data ? new JsonResponse('Upload réussi',201) : new JsonResponse(`Une erreur est survenue :${data}`,201));
+        return $returnSucces;
     }
 }
