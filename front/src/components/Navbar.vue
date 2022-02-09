@@ -16,6 +16,9 @@
       <b-navbar-item v-if="user && (user.roles.includes('ROLE_PRO') || user.roles.includes('ROLE_ADMIN'))">
         <router-link to="/ajouter-vehicule">Ajouter un véhicule</router-link>
       </b-navbar-item>
+      <b-navbar-item v-if="user && (user.roles.includes('ROLE_PRO') || user.roles.includes('ROLE_ADMIN'))">
+        <router-link to="/mes-voitures">Mes véhicules</router-link>
+      </b-navbar-item>
     </template>
 
     <template #end>

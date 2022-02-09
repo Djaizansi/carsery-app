@@ -7,6 +7,7 @@ import Profile from "./pages/Profile";
 import AddCars from "./pages/AddCars";
 import store from "./store";
 import VueCookie from "vue-cookie";
+import ShowCarUser from "./pages/ShowCarUser";
 
 export default [
   {
@@ -28,6 +29,17 @@ export default [
     path: "/ajouter-vehicule",
     component: AddCars,
     name: "addCars",
+    beforeEnter: (to, from, next) => {
+      if(store.state.user === undefined || store.state.user.roles.includes('ROLE_CLIENT') || VueCookie.get('user_get') === null){
+        next({name: 'home'});
+      }
+      next();
+    }
+  },
+  {
+    path: "/mes-voitures",
+    component: ShowCarUser,
+    name: "showCarUser",
     beforeEnter: (to, from, next) => {
       if(store.state.user === undefined || store.state.user.roles.includes('ROLE_CLIENT') || VueCookie.get('user_get') === null){
         next({name: 'home'});

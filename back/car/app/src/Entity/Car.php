@@ -2,15 +2,21 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\CarRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CarRepository::class)
  */
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ["groups" => ["cars:get"]]
+)]
+#[ApiFilter(SearchFilter::class,properties: ["user" => "exact"])]
 class Car
 {
     /**
@@ -18,24 +24,28 @@ class Car
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[Groups(["cars:get"])]
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\Regex("/^#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/", message="Le code couleur ne correspond pas")
      */
+    #[Groups(["cars:get"])]
     private $color;
 
     /**
      * @ORM\Column(type="integer")
      * @Assert\GreaterThan(3, message="Le kilométrage du véhicule ne peut pas être inférieur à 3km")
      */
+    #[Groups(["cars:get"])]
     private $kilometer;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
      */
+    #[Groups(["cars:get"])]
     private $numberplate;
 
     /**
@@ -47,21 +57,24 @@ class Car
      *      maxMessage = "La puissance du véhicule ne peut pas être supérieur à {{ limit }}	 CH"
      * )
      */
+    #[Groups(["cars:get"])]
     private $power;
 
     /**
      * @ORM\Column(type="float")
      * @Assert\GreaterThan(10,message="Le prix de la location ne peut pas être inférieur à {{ value }} €")
      */
+    #[Groups(["cars:get"])]
     private $price;
 
     /**
      * @ORM\Column(type="boolean")
      */
+    #[Groups(["cars:get"])]
     private $status;
 
     /**
-     * @ORM\Column(type="string",length=100)
+     * @ORM\Column(type="integer")
      */
     private $user;
 
@@ -69,23 +82,27 @@ class Car
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="car")
      * @ORM\JoinColumn(nullable=false)
      */
+    #[Groups(["cars:get"])]
     private $category;
 
     /**
      * @ORM\Column(type="date")
      * @Assert\NotBlank
      */
+    #[Groups(["cars:get"])]
     private $date_registration;
 
     /**
      * @ORM\ManyToOne(targetEntity=Model::class, inversedBy="cars")
      * @ORM\JoinColumn(nullable=false)
      */
+    #[Groups(["cars:get"])]
     private $model;
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true)
      */
+    #[Groups(["cars:get"])]
     private $statusAdminCar;
 
     public function getId(): ?int
@@ -165,12 +182,12 @@ class Car
         return $this;
     }
 
-    public function getUser(): ?string
+    public function getUser(): ?int
     {
         return $this->user;
     }
 
-    public function setUser(string $user): self
+    public function setUser(int $user): self
     {
         $this->user = $user;
 
@@ -189,12 +206,12 @@ class Car
         return $this;
     }
 
-    public function getDateRegistration(): ?\DateTimeInterface
+    public function getDateRegistration(): ?\DateTime
     {
         return $this->date_registration;
     }
 
-    public function setDateRegistration(\DateTimeInterface $date_registration): self
+    public function setDateRegistration(\DateTime $date_registration): self
     {
         $this->date_registration = $date_registration;
 
