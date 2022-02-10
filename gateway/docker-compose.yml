@@ -13,6 +13,9 @@ services:
         - user_all-network
         - car_all-network
         - aws_all-network
+        - booking_all-network
+        - order_all-network
+        - payment_all-network
 
 networks:
   user_all-network:
@@ -20,4 +23,10 @@ networks:
   car_all-network:
     external: true
   aws_all-network:
+    external: true
+  booking_all-network:
+    external: true
+  order_all-network:
+    external: true
+  payment_all-network:
     external: true

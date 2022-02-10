@@ -17,6 +17,7 @@ services:
     restart: always
     networks:
       - mailer_mailer
+      - all-network
 
   payment-php:
     image: ${PHP_IMAGE:-payment/php}
@@ -30,6 +31,7 @@ services:
       - payment-app-sf-cache:/srv/app/var
     networks:
       - mailer_mailer
+      - all-network
 
   payment-nginx:
     image: ${NGINX_IMAGE:-payment/nginx}
@@ -45,10 +47,13 @@ services:
       - 8098:80
     networks:
       - mailer_mailer
+      - all-network
 
 networks:
   mailer_mailer:
     external: true
+  all-network:
+    driver: bridge
 
 
 volumes:
