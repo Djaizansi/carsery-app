@@ -61,7 +61,7 @@ export default {
             'gender': this.user.gender
           },
           icon: "account",
-          displayed: this.roles.includes('ROLE_CLIENT'),
+          displayed: this.roles.includes('ROLE_CLIENT') || this.roles.includes('ROLE_ADMIN'),
         },
         {
           id: 'company',
@@ -73,7 +73,7 @@ export default {
             "siret": this.user.siret
           },
           icon: "domain",
-          displayed: this.roles.includes('ROLE_PRO'),
+          displayed: this.roles.includes('ROLE_PRO') || this.roles.includes('ROLE_ADMIN'),
         },
         {
           id: 'password',

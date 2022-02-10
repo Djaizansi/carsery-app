@@ -7,6 +7,9 @@ import Profile from "./pages/Profile";
 import AddCars from "./pages/AddCars";
 import store from "./store";
 import VueCookie from "vue-cookie";
+import ShowCarUser from "./pages/ShowCarUser";
+import ManageMarketPlace from "./pages/ManageMarketPlace";
+import GestionCarsUser from "./pages/GestionCarsUser";
 
 export default [
   {
@@ -31,6 +34,39 @@ export default [
     beforeEnter: (to, from, next) => {
       if(store.state.user === undefined || store.state.user.roles.includes('ROLE_CLIENT') || VueCookie.get('user_get') === null){
         next({name: 'home'});
+      }
+      next();
+    }
+  },
+  {
+    path: "/mes-voitures",
+    component: ShowCarUser,
+    name: "showCarUser",
+    beforeEnter: (to, from, next) => {
+      if(store.state.user === undefined || store.state.user.roles.includes('ROLE_CLIENT') || VueCookie.get('user_get') === null){
+        next({name: 'home'});
+      }
+      next();
+    }
+  },
+  {
+    path: "/gestion-marketplace",
+    component: ManageMarketPlace,
+    name: "ManageMarketPlace",
+    beforeEnter: (to, from, next) => {
+      if(store.state.user === undefined || !store.state.user.roles.includes('ROLE_ADMIN') || VueCookie.get('user_get') === null){
+        next({name: 'home'});
+      }
+      next();
+    }
+  },
+  {
+    path: "/gestion-marketplace/cars",
+    component: GestionCarsUser,
+    name: "gestionMarketPlaceByCarsUser",
+    beforeEnter: (to, from, next) => {
+      if(store.state.user === undefined || !store.state.user.roles.includes('ROLE_ADMIN') || VueCookie.get('user_get') === null || to.params.user === undefined){
+        next({name: 'ManageMarketPlace'});
       }
       next();
     }

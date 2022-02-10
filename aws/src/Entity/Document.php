@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\DeleteFileController;
 use App\Controller\DownloadController;
 use App\Controller\UploadController;
 use Doctrine\ORM\Mapping as ORM;
@@ -28,11 +29,19 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         ],
         'getImg' => [
             'method' => 'POST',
-            'path' => '/download/list',
+            'path' => '/aws/download',
             'controller' => DownloadController::class,
             'write' => false,
             'read' => false,
             'denormalization_context' => ['groups' => ['aws_search_list:post']]
+        ],
+        'deleteImg' => [
+            'method' => 'POST',
+            'path' => '/aws/delete',
+            'controller' => DeleteFileController::class,
+            'write' => false,
+            'read' => false,
+            'denormalization_context' => ['groups' => ['aws_search_list:delete']]
         ],
     ],
     itemOperations: []
@@ -60,7 +69,7 @@ class Document
      *
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    #[Groups(['aws_search_list:post'])]
+    #[Groups(['aws_search_list:post','aws_search_list:delete'])]
     private $filePath;
 
     /**

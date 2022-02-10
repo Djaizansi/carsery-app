@@ -28,7 +28,7 @@ class Category
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups(['categories:get'])]
+    #[Groups(['categories:get','cars:get'])]
     private $name;
 
     /**

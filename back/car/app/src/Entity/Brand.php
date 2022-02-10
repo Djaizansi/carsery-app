@@ -29,7 +29,7 @@ class Brand
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups(['brands:get'])]
+    #[Groups(['brands:get','cars:get'])]
     private $name;
 
     /**

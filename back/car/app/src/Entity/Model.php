@@ -26,13 +26,14 @@ class Model
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups(['brands:get'])]
+    #[Groups(['brands:get','cars:get'])]
     private $name;
 
     /**
      * @ORM\ManyToOne(targetEntity=Brand::class, inversedBy="models")
      * @ORM\JoinColumn(nullable=false)
      */
+    #[Groups(['cars:get'])]
     private $brand;
 
     /**
