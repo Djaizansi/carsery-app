@@ -1,7 +1,7 @@
 <template>
   <section class="flex flex-col items-center">
-    <h1 class="text-center text-3xl font-bold mb-5">Mes véhicules</h1>
-    <info-card-market/>
+    <h1 class="text-center text-3xl font-bold mb-5">Voiture de {{user.company}}</h1>
+    <info-card-market />
     <div class="w-full px-10">
       <table-custom :is-empty="isEmpty" :is-loading="isLoading" :data="data">
         <template v-for="(column,index) in columns">
@@ -25,12 +25,21 @@
               <div v-else-if="column.field === 'brand'">
                 {{props.row.model[column.field].name}}
               </div>
-              <div v-else-if="column.field === 'statusAdmin' && user.roles.includes('ROLE_PRO')">
-                <div v-if="props.row.statusAdminCar ==='waiting' || props.row.statusAdminCar === 'raise'">
-                  <p>En attente</p>
+              <div v-else-if="column.field === 'statusAdmin'">
+                <div v-if="props.row.statusAdminCar ==='waiting'">
+                  <div class="flex space-x-2">
+                    <b-button type="is-success" icon-left="check" @click="updateStatusAdmin(props.row.statusAdminCar,'success', props.row.id)"/>
+                    <b-button type="is-danger" icon-left="close-thick" @click="updateStatusAdmin(props.row.statusAdminCar,'reject', props.row.id)"/>
+                  </div>
                 </div>
-                <div v-else-if="props.row.statusAdminCar ==='notFavorable'">
-                  <b-button type="is-warning" @click="updateStatusAdmin(props.row.statusAdminCar,'raise',  props.row.id)">Relance</b-button>
+                <div v-if="props.row.statusAdminCar ==='notFavorable'">
+                  <p>En cours</p>
+                </div>
+                <div v-else-if="props.row.statusAdminCar ==='raise'">
+                  <div class="flex space-x-2">
+                    <b-button type="is-success" icon-left="check" @click="updateStatusAdmin(props.row.statusAdminCar,'success', props.row.id)"/>
+                    <b-button type="is-danger" icon-left="delete" @click="updateStatusAdmin(props.row.statusAdminCar,'delete', props.row.id)"/>
+                  </div>
                 </div>
                 <div v-else-if="props.row.statusAdminCar ==='validate'">
                   <b-icon
@@ -52,41 +61,39 @@
 </template>
 
 <script>
-import axios from "axios";
 import InfoCardMarket from "../components/InfoCardMarket";
 import TableCustom from "../components/TableCustom";
 import TableColumnCar from "../Entity/Car/TableColumnCar";
+import axios from "axios";
 
 export default {
-  name: "ShowCarUser",
+  name: "GestionCarsUser",
   components: {TableCustom, InfoCardMarket},
-  created() {
-    this.user = this.$store.state.user;
-  },
   mounted() {
     this.isLoading = true;
-    axios.get(`http://localhost:3000/cars?user=${this.user.id}`)
-        .then(res => {
-          if (res.data.length !== 0) {
-            res.data.map(car => this.data.push(car))
-          }
-          this.isLoading = false;
-        });
+    this.user = this.$route.params.user;
+    setTimeout(() => {
+      this.user.cars.map(car => this.data.push(car));
+      this.isLoading = false;
+    }, 1000);
   },
-  data: () => ({
-    data: [],
-    isEmpty: false,
-    isLoading: false,
-    user: {},
+  data: () =>  ({
+    data:[],
+    isEmpty:false,
+    isLoading:false,
+    user:{},
     columns: TableColumnCar
   }),
   methods: {
     updateStatusAdmin(status,type,id){
-      if(status === "notFavorable") this.axiosUpdateStatus('raise',id);
+      if(status === "waiting" && type === "reject") this.axiosUpdateStatus('notFavorable',id);
+      else if(status === "raise" && type === "delete")this.axiosDeleteCar(id);
+      else this.axiosUpdateStatus('validate',id);
     },
     axiosUpdateStatus(status,id){
       axios.put("http://localhost:3000/cars/"+id,{
-        statusAdminCar: status
+        statusAdminCar: status,
+        status: status === "validate" && true
       })
           .then(res => {
             this.notification('Demande enregistré !','is-success');
@@ -97,6 +104,10 @@ export default {
               }
             })
           });
+    },
+    axiosDeleteCar(id){
+      axios.delete("http://localhost:3000/cars/"+id)
+          .then(res => res.status === 204 && this.data.filter(car => car.id === id));
     },
     notification(message,type) {
       if(type === "is-success") this.loading = false;

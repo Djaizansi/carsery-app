@@ -215,6 +215,7 @@ export default {
 
         //Send data
         try {
+          User.type = User.roles.includes('ROLE_CLIENT') ? 'customer' : 'pro';
           const res = await fetch("http://localhost:3000/users", {
             method: "POST",
             headers: {

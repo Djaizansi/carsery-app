@@ -32,6 +32,18 @@ class AmazonService {
         }
     }
 
+    public function deleteObjectFun($path){
+        try {
+            $this->s3Client->deleteObject([
+                'Bucket' => $_ENV['AWS_BUCKET'],
+                'Key' => $path
+            ]);
+            return 1;
+        }catch(S3Exception $e){
+            return $e->getMessage();
+        }
+    }
+
     public function getObjectFunc($path,$nameFile){
         try {
             $data = $this->s3Client->getObject([

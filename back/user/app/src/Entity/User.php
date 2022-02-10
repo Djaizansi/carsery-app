@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Controller\ActivationAccount;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -60,10 +62,12 @@ use Symfony\Component\Validator\Constraints as Assert;
         ]
     ]
 )]
+#[ApiFilter(SearchFilter::class,properties: ["type" => "exact"])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
 {
     const ROLES = [['ROLE_CLIENT'],['ROLE_PRO']];
     const GENDER = ['M', 'F'];
+    const TYPES = ['customer','pro','admin'];
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -173,6 +177,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
      */
     #[Groups(['user:put'])]
     private $oldPassword;
+
+    /**
+     * @ORM\Column(type="string", length=20)
+     * @Assert\Choice(choices=User::TYPES, message="Choisissez un type valide")
+     */
+    private $type;
 
     public function __construct(){
         $this->createdAt = new \DateTime();
@@ -395,6 +405,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
     public function setOldPassword(?string $oldPassword): self
     {
         $this->oldPassword = $oldPassword;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type): self
+    {
+        $this->type = $type;
 
         return $this;
     }

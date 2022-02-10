@@ -201,9 +201,11 @@ export default {
       this.dropFiles.splice(index, 1)
     },
     handleSubmit(){
-      Car.user = `${this.$store.state.user.id}`;
+      Car.user = this.$store.state.user.id;
       Car.status = this.$store.state.user.roles.includes("ROLE_ADMIN") && true;
-      Car.statusAdminCar = this.$store.state.user.roles.includes("ROLE_PRO") ? "waiting" : null;
+      if(this.$store.state.user.roles.includes("ROLE_PRO")){
+        Car.statusAdminCar = "waiting";
+      }
       Car.dateRegistration = dateFormat(this.dateRegistration,"en");
       Car.model = `/models/${this.model}`;
       Car.category = `/categories/${this.category}`;
@@ -232,15 +234,14 @@ export default {
               }else if(res.status === 201){
                 if(this.dropFiles.length === 0) {
                   this.notification(
-                      `Véhicule enregistré avec succés.${this.$store.state.user.roles.includes("ROLE_PRO") && '\n Vous recevrez par mail la mise sur le marché de la part de notre équipe !'}`
-                      ,'is-success')
+                      `Véhicule enregistré avec succés.`,'is-success')
                   this.resetAttribute();
                 }
                 this.path = `voiture/${res.data.id}`;
                 this.createBase64Image(this.dropFiles);
               }
             }else if(image !== null) {
-              this.notification(`Véhicule enregistré avec succés.${this.$store.state.user.roles.includes("ROLE_PRO") && ' \n Vous recevrez par mail une réponse pour la mise sur le marché de la part de notre équipe !'}`,'is-success');
+              this.notification(`Véhicule enregistré avec succés.`,'is-success');
               this.resetAttribute();
             }
           });

@@ -6,6 +6,7 @@ const authJwt = require('./middleware/authJwt');
 const login = require('./routes/login');
 const activationAccount = require('./routes/activationAccount');
 const addCar = require('./routes/addCar');
+const getAllCarByPro = require('./routes/getAllCarByPro');
 const fileUpload = require('express-fileupload');
 
 var indexRouter = require('./routes/index');
@@ -27,6 +28,7 @@ app.use((req,res,next) => {
 app.use('/login',login);
 app.use('/activation',activationAccount);
 app.use('/addCar',authJwt,addCar);
+app.use('/getAllCarByPro',authJwt,getAllCarByPro);
 app.use('/', authJwt, indexRouter);
 
 module.exports = app;
