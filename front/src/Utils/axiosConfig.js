@@ -12,6 +12,7 @@ export default function(router){
         if (error.response.status === 401 && error.response.data.message === "Expired JWT Token") {
             ['user_get','token','refresh_token'].map(cookie => VueCookie.delete(cookie));
             store.commit('SET_USER','');
+            localStorage.removeItem('rent');
             return router.push('/');
         }
         return Promise.resolve(error.response);

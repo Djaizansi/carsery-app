@@ -5,12 +5,18 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\OrderRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use App\Helpers\RandomNumberSize;
 
 /**
  * @ORM\Entity(repositoryClass=OrderRepository::class)
  * @ORM\Table(name="`order`")
  */
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups'=> ['orders:getAndPost','orders:id']],
+    denormalizationContext: ['groups' => ['orders:getAndPost']],
+    itemOperations: ['get']
+)]
 class Order
 {
     /**
@@ -18,55 +24,64 @@ class Order
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[Groups(['orders:id'])]
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string",length=20)
      */
+    #[Groups(['orders:getAndPost'])]
     private $num;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $booking_id;
+    #[Groups(['orders:getAndPost'])]
+    private $booking;
 
     /**
      * @ORM\Column(type="integer")
      */
+    #[Groups(['orders:getAndPost'])]
     private $amount;
+
+    public function __construct()
+    {
+        $this->num = "FR-CAR-".RandomNumberSize::getNumberRandom(7);
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getNum(): ?int
+    public function getNum(): ?string
     {
         return $this->num;
     }
 
-    public function setNum(int $num): self
+    public function setNum(string $num): self
     {
         $this->num = $num;
 
         return $this;
     }
 
-    public function getBookingId(): ?int
+    public function getBooking(): ?int
     {
-        return $this->booking_id;
+        return $this->booking;
     }
 
-    public function setBookingId(int $booking_id): self
+    public function setBooking(int $booking): self
     {
-        $this->booking_id = $booking_id;
+        $this->booking = $booking;
 
         return $this;
     }
 
     public function getAmount(): ?int
     {
-        return $this->amount;
+        return ($this->amount/100);
     }
 
     public function setAmount(int $amount): self

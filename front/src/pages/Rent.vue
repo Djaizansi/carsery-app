@@ -18,7 +18,7 @@
     <div v-if="!loading" class="mb-10 p-5 flex justify-center flex-wrap">
       <div v-if="cars.length !== 0" class="flex flex-wrap justify-center gap-4">
         <div v-for="[key, value] of Object.entries(cars)" :key="key">
-          <Card :car="value"/>
+          <Card :car="value" :dates="dateFormat" type="rent"/>
         </div>
       </div>
     </div>
@@ -35,7 +35,7 @@ import axios from "axios";
 
 export default {
   components: {Card},
-  data: () => ({dates: [], cars: [], loading: false, message: "",unselectableDates: [new Date(Date.now() - 8640000)]}),
+  data: () => ({dates: [], cars: [], loading: false, message: "", unselectableDates: [new Date(Date.now() - 8640000)], dateFormat:[]}),
   methods: {
     async handleSubmit() {
       if (this.dates.length === 0) {
@@ -48,8 +48,8 @@ export default {
         })
       } else {
         this.loading = true;
-        const myDates = this.dates.map(date => dateFormat(date,'en'));
-        const [dateStart, dateEnd] = myDates;
+        this.dateFormat = this.dates.map(date => dateFormat(date,'en'));
+        const [dateStart, dateEnd] = this.dateFormat;
         axios.get(`http://localhost:3000/getCarByDateBooking?startDate=${dateStart}&endDate=${dateEnd}`)
             .then(res => {
               this.loading = false;

@@ -8,7 +8,7 @@ const axios = require("axios");
 router.get('/', async function(req, res) {
     const cars = routesList.cars+"?status=true";
     const aws = routesList.aws+'/download';
-    const routeBookings = routesList.booking;
+    const routeBookings = routesList.bookings;
 
     const bookings = await getBookings(routeBookings,req,res);
     let getCars = await getCar(cars,aws,req,res);

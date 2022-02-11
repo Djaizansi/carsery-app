@@ -86,7 +86,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
      * @ORM\Column(type="json")
      * @Assert\Choice(choices=User::ROLES, message="Choisissez un role valide")
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:get'])]
     private $roles = [];
 
     /**

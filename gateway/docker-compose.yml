@@ -16,6 +16,8 @@ services:
         - booking_all-network
         - order_all-network
         - payment_all-network
+        - stripe_all-network
+        - mailer_mailer
 
 networks:
   user_all-network:
@@ -29,4 +31,8 @@ networks:
   order_all-network:
     external: true
   payment_all-network:
+    external: true
+  stripe_all-network:
+    external: true
+  mailer_mailer:
     external: true
