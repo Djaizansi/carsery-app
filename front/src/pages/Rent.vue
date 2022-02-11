@@ -31,6 +31,7 @@
 <script>
 import dateFormat from '../Utils/dateFormat';
 import Card from '../components/Card';
+import axios from "axios";
 
 export default {
   components: {Card},
@@ -47,49 +48,13 @@ export default {
         })
       } else {
         this.loading = true;
-        const myDates = this.dates.map(date => dateFormat(date));
-        // eslint-disable-next-line no-unused-vars
+        const myDates = this.dates.map(date => dateFormat(date,'en'));
         const [dateStart, dateEnd] = myDates;
-        setTimeout(() => {
-          this.loading = false
-          this.cars.push({
-            brand: "Bmw",
-            model: "Serie 1",
-            category: "berline",
-            power: "150",
-            color: "blue",
-            kilometer: "145 000",
-            price: 150,
-            date_registration: "15/12/2017"
-          },{
-            brand: "Bmw",
-            model: "Serie 1",
-            category: "berline",
-            power: "150",
-            color: "blue",
-            kilometer: "145 000",
-            price: 150,
-            date_registration: "15/12/2017"
-          },{
-            brand: "Bmw",
-            model: "Serie 1",
-            category: "berline",
-            power: "150",
-            color: "blue",
-            kilometer: "145 000",
-            price: 150,
-            date_registration: "15/12/2017"
-          },{
-            brand: "Bmw",
-            model: "Serie 1",
-            category: "berline",
-            power: "150",
-            color: "blue",
-            kilometer: "145 000",
-            price: 150,
-            date_registration: "15/12/2017"
-          });
-        }, 10 * 300)
+        axios.get(`http://localhost:3000/getCarByDateBooking?startDate=${dateStart}&endDate=${dateEnd}`)
+            .then(res => {
+              this.loading = false;
+              this.cars = res.data;
+            });
       }
     }
   }

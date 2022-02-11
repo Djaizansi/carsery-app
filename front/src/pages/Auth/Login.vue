@@ -82,7 +82,7 @@ export default {
                 message: 'Connecté',
                 type: 'is-success'
               })
-              if(this.$route.name !== 'home') this.$router.push('/');
+              if(this.$route.name !== 'home' && this.$store.state.user.roles.includes('ROLE_ADMIN')) this.$router.push('/');
             }
           })
           .catch(e => console.log(e));

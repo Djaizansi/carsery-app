@@ -2,14 +2,23 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use App\Repository\BookingRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=BookingRepository::class)
  */
-#[ApiResource]
+#[ApiResource(
+    itemOperations: ['get'],
+    normalizationContext: ['groups' => ['bookings','bookings:get']],
+    denormalizationContext: ['groups' => ['bookings']],
+    collectionOperations: ['get','post']
+)]
+#[ApiFilter(DateFilter::class,properties: ['startDate','endDate'])]
 class Booking
 {
     /**
@@ -17,77 +26,82 @@ class Booking
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[Groups(['bookings:get'])]
     private $id;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $user_id;
+    #[Groups(['bookings'])]
+    private $user;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $car_id;
+    #[Groups(['bookings'])]
+    private $car;
 
     /**
      * @ORM\Column(type="date")
      */
-    private $start_date;
+    #[Groups(['bookings'])]
+    private $startDate;
 
     /**
      * @ORM\Column(type="date")
      */
-    private $end_date;
+    #[Groups(['bookings'])]
+    private $endDate;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUserId(): ?int
+    public function getUser(): ?int
     {
-        return $this->user_id;
+        return $this->user;
     }
 
-    public function setUserId(int $user_id): self
+    public function setUser(int $user): self
     {
-        $this->user_id = $user_id;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getCarId(): ?int
+    public function getCar(): ?int
     {
-        return $this->car_id;
+        return $this->car;
     }
 
-    public function setCarId(int $car_id): self
+    public function setCar(int $car): self
     {
-        $this->car_id = $car_id;
+        $this->car = $car;
 
         return $this;
     }
 
     public function getStartDate(): ?\DateTimeInterface
     {
-        return $this->start_date;
+        return $this->startDate;
     }
 
-    public function setStartDate(\DateTimeInterface $start_date): self
+    public function setStartDate(\DateTimeInterface $startDate): self
     {
-        $this->start_date = $start_date;
+        $this->startDate = $startDate;
 
         return $this;
     }
 
     public function getEndDate(): ?\DateTimeInterface
     {
-        return $this->end_date;
+        return $this->endDate;
     }
 
-    public function setEndDate(\DateTimeInterface $end_date): self
+    public function setEndDate(\DateTimeInterface $endDate): self
     {
-        $this->end_date = $end_date;
+        $this->endDate = $endDate;
 
         return $this;
     }

@@ -10,8 +10,8 @@
       </b-navbar-item>
     </template>
     <template #start>
-      <b-navbar-item>
-        <router-link to="/louer">Louer</router-link>
+      <b-navbar-item v-if="user === '' || (!user.roles.includes('ROLE_ADMIN'))">
+        <router-link  to="/louer">Louer</router-link>
       </b-navbar-item>
       <b-navbar-item v-if="user && (user.roles.includes('ROLE_PRO') || user.roles.includes('ROLE_ADMIN'))">
         <router-link to="/ajouter-vehicule">Ajouter un véhicule</router-link>

@@ -21,6 +21,18 @@ export default [
     path: "/louer",
     component: Rent,
     name: "rent",
+    beforeEnter: (to, from, next) => {
+      if(store.state.user !== '' && store.state.user.roles.includes('ROLE_ADMIN')){
+        next({name: 'home'});
+      }
+      next();
+    },
+    afterEnter: (to, from, next) => {
+      if(store.state.user !== '' && store.state.user.roles.includes('ROLE_ADMIN')){
+        next({name: 'home'});
+      }
+      next();
+    },
   },
   {
     path: "/activation/:token",

@@ -7,7 +7,7 @@ const axiosRequest = require("../middleware/axiosRequest");
 
 /* POST AddCar */
 router.post('/', function(req, res) {
-    const urlUpload = routesList.awsUpload;
+    const aws = routesList.aws+'/upload';
     const carRouter = routesList.cars;
     const formData = new FormData();
 
@@ -15,7 +15,7 @@ router.post('/', function(req, res) {
         const {image,path} = req.body;
         formData.append('file[]', image);
         formData.append('path', path);
-        fetch(urlUpload, {
+        fetch(aws, {
             method: 'POST',
             body: formData
         })

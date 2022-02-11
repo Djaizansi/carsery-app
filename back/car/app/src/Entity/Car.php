@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\BooleanFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\CarRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -17,6 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ["groups" => ["cars:get"]]
 )]
 #[ApiFilter(SearchFilter::class,properties: ["user" => "exact"])]
+#[ApiFilter(BooleanFilter::class, properties: ['status'])]
 class Car
 {
     /**
@@ -76,6 +78,7 @@ class Car
     /**
      * @ORM\Column(type="integer")
      */
+    #[Groups(["cars:get"])]
     private $user;
 
     /**
@@ -104,6 +107,12 @@ class Car
      */
     #[Groups(["cars:get"])]
     private $statusAdminCar;
+
+    /**
+     * @ORM\Column(type="string", length=20)
+     */
+    #[Groups(["cars:get"])]
+    private $typeCarUser;
 
     public function getId(): ?int
     {
@@ -238,6 +247,18 @@ class Car
     public function setStatusAdminCar(string $statusAdminCar): self
     {
         $this->statusAdminCar = $statusAdminCar;
+
+        return $this;
+    }
+
+    public function getTypeCarUser(): ?string
+    {
+        return $this->typeCarUser;
+    }
+
+    public function setTypeCarUser(string $typeCarUser): self
+    {
+        $this->typeCarUser = $typeCarUser;
 
         return $this;
     }
