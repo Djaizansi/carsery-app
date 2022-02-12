@@ -8,6 +8,8 @@ use App\Entity\Category;
 
 class CategoryFixtures extends Fixture
 {
+    public const CATEGORY_REFERENCE = 'category-ref';
+
     public function load(ObjectManager $manager): void
     {
         $categories = ['SUV','Familiale','Citadine','Cabriolet','Compacte','Break','Berline','Coupé'];
@@ -18,5 +20,6 @@ class CategoryFixtures extends Fixture
             $manager->persist($categoryObj);
         }
         $manager->flush();
+        $this->setReference(self::CATEGORY_REFERENCE, $categoryObj);
     }
 }
