@@ -19,6 +19,9 @@
       <b-navbar-item v-if="user && (user.roles.includes('ROLE_PRO') || user.roles.includes('ROLE_ADMIN'))">
         <router-link to="/mes-voitures">Mes véhicules</router-link>
       </b-navbar-item>
+      <b-navbar-item v-if="user && (user.roles.includes('ROLE_PRO') || user.roles.includes('ROLE_CLIENT'))">
+        <router-link to="/mes-locations">Mes locations</router-link>
+      </b-navbar-item>
       <b-navbar-item v-if="user && user.roles.includes('ROLE_ADMIN')">
         <router-link to="/gestion-marketplace">Gestion Marketplace</router-link>
       </b-navbar-item>

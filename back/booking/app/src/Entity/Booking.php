@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\BookingRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -19,6 +20,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     collectionOperations: ['get','post']
 )]
 #[ApiFilter(DateFilter::class,properties: ['startDate','endDate'])]
+#[ApiFilter(SearchFilter::class,properties: ['user'])]
 class Booking
 {
     /**

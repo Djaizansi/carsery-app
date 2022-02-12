@@ -1,6 +1,6 @@
 <template>
   <b-table
-      :data="isEmpty ? [] : data"
+      :data="isEmpty ? [] : updateCars"
       :striped="true"
       :hoverable="true"
       :loading="isLoading"
@@ -22,6 +22,11 @@ export default {
     isEmpty: Boolean,
     data: Array,
     isLoading: Boolean
+  },
+  computed: {
+    updateCars() {
+      return this.data;
+    }
   }
 }
 </script>

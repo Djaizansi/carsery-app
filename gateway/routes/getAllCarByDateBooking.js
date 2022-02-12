@@ -56,6 +56,7 @@ async function getBookings(url,req,res){
         }
         return allBookings;
     }
+    return allBookings;
 }
 
 module.exports = router;

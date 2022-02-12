@@ -8,6 +8,8 @@ const activationAccount = require('./routes/activationAccount');
 const addCar = require('./routes/addCar');
 const getAllCarByPro = require('./routes/getAllCarByPro');
 const getAllCarByDateBooking = require('./routes/getAllCarByDateBooking');
+const getAllCarByUserByBooking = require('./routes/getAllCarByUserByBooking');
+const getAllInfoOfBooking = require('./routes/getAllInfoOfBooking');
 const addPaymentRent = require('./routes/addPaymentRent');
 const fileUpload = require('express-fileupload');
 
@@ -33,6 +35,8 @@ app.use('/getCarByDateBooking',getAllCarByDateBooking);
 app.use('/addPaymentRent',authJwt,addPaymentRent);
 app.use('/addCar',authJwt,addCar);
 app.use('/getAllCarByPro',authJwt,getAllCarByPro);
+app.use('/getAllInfoOfBooking',authJwt,getAllInfoOfBooking);
+app.use('/getCarsByUserByBooking',authJwt,getAllCarByUserByBooking);
 app.use('/', authJwt, indexRouter);
 
 module.exports = app;
