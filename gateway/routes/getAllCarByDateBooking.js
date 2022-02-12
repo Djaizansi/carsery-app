@@ -12,13 +12,14 @@ router.get('/', async function(req, res) {
 
     const bookings = await getBookings(routeBookings,req,res);
     let getCars = await getCar(cars,aws,req,res);
-    if(bookings.length > 0 && getCars.length > 0){
+    if(bookings.length > 0 && getCars.length > 0 && !getCars.includes('')){
         bookings.map(booking => {
             getCars = getCars.filter(car => car.id !== booking.car);
         });
+        getCars = getCars.length === 0 ? [''] : getCars;
         res.json(getCars);
         res.status(200);
-    }else{
+    }else {
         res.json(getCars);
         res.status(200);
     }
@@ -35,6 +36,8 @@ async function getCar(url,urlImage,req,res){
             allCars.push(car);
         }
         return allCars;
+    }else{
+        return [""];
     }
 }
 

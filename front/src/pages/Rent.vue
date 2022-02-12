@@ -16,10 +16,13 @@
       </div>
     </form>
     <div v-if="!loading" class="mb-10 p-5 flex justify-center flex-wrap">
-      <div v-if="cars.length !== 0" class="flex flex-wrap justify-center gap-4">
+      <div v-if="cars.length !== 0 && !cars.includes('')" class="flex flex-wrap justify-center gap-4">
         <div v-for="[key, value] of Object.entries(cars)" :key="key">
           <Card :car="value" :dates="dateFormat" type="rent"/>
         </div>
+      </div>
+      <div v-else-if="cars.includes('')">
+        <p>Aucun résultat</p>
       </div>
     </div>
     <div v-else class="is-flex is-justify-content-center w-full" ref="element">

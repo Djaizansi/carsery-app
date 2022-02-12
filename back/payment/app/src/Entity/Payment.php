@@ -5,11 +5,17 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\PaymentRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=PaymentRepository::class)
  */
-#[ApiResource]
+#[ApiResource(
+    collectionOperations: ['post'],
+    normalizationContext: ['groups' => 'payments:post','payments:get'],
+    denormalizationContext: ['groups' => 'payments:post'],
+    itemOperations: ['get']
+)]
 class Payment
 {
     /**
@@ -17,17 +23,20 @@ class Payment
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
+    #[Groups(['payments:get'])]
     private $id;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $order_id;
+    #[Groups(['payments:post'])]
+    private $orderId;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string",length=30)
      */
-    private $cb_transaction_stripe_id;
+    #[Groups(['payments:post'])]
+    private $cbTransactionStripe;
 
     public function getId(): ?int
     {
@@ -36,24 +45,24 @@ class Payment
 
     public function getOrderId(): ?int
     {
-        return $this->order_id;
+        return $this->orderId;
     }
 
-    public function setOrderId(int $order_id): self
+    public function setOrderId(int $orderId): self
     {
-        $this->order_id = $order_id;
+        $this->orderId = $orderId;
 
         return $this;
     }
 
-    public function getCbTransactionStripeId(): ?int
+    public function getCbTransactionStripe(): ?string
     {
-        return $this->cb_transaction_stripe_id;
+        return $this->cbTransactionStripe;
     }
 
-    public function setCbTransactionStripeId(int $cb_transaction_stripe_id): self
+    public function setCbTransactionStripe(string $cbTransactionStripe): self
     {
-        $this->cb_transaction_stripe_id = $cb_transaction_stripe_id;
+        $this->cbTransactionStripe = $cbTransactionStripe;
 
         return $this;
     }

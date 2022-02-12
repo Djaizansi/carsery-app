@@ -1,11 +1,11 @@
 module.exports = {
-    // USER MICROSERVICE
     login: "http://user-nginx/login",
     users: "http://user-nginx/users",
     addresses: "http://user-nginx/addresses",
     cars: "http://car-nginx/cars",
     brands: "http://car-nginx/brands",
     bookings: "http://booking-nginx/bookings",
+    payments: "http://payment-nginx/payments",
     orders: "http://order-nginx/orders",
     mail: "http://mailer-nginx/mail",
     models: "http://car-nginx/models",

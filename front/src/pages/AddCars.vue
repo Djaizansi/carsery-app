@@ -203,12 +203,11 @@ export default {
     handleSubmit(){
       Car.user = this.$store.state.user.id;
       Car.status = this.$store.state.user.roles.includes("ROLE_ADMIN") && true;
-      if(this.$store.state.user.roles.includes("ROLE_PRO")){
-        Car.statusAdminCar = "waiting";
-      }
+      Car.statusAdminCar = this.$store.state.user.roles.includes("ROLE_PRO") ? "waiting" : "admin";
       Car.dateRegistration = dateFormat(this.dateRegistration,"en");
       Car.model = `/models/${this.model}`;
       Car.category = `/categories/${this.category}`;
+      Car.typeCarUser = this.$store.state.user.roles.includes("ROLE_PRO") ? 'pro': 'admin';
       this.upload(Car);
     },
     createBase64Image(filesObject) {
@@ -256,7 +255,7 @@ export default {
     },
     resetAttribute(){
       Object.keys(Car).map(car => {
-        Car[car] = Car[car] === "color" ? "#000000" : null;
+        Car[car] = car === "color" ? "#000000" : null;
         this.brand = null;
         this.model = null;
         this.category = null;

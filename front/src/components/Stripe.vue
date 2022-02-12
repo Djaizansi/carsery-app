@@ -77,8 +77,8 @@ export default {
     async handleSubmit() {
       try {
         this.loading = true;
-        const user = await axios.get('http://localhost:3000/users/'+this.$store.state.user.id);
-        const response = await axios.post("http://localhost:3000/stripe/intent",JSON.stringify({price: this.price}));
+        const user = await axios.get('http://localhost:3000/users/' + this.$store.state.user.id);
+        const response = await axios.post("http://localhost:3000/stripe/intent", JSON.stringify({price: this.price}));
         const secret = await response.data;
         const getInfoUser = await user.data;
         const billingDetails = {
@@ -92,7 +92,7 @@ export default {
           }
         };
         const paymentMethodReq = await this.paymentMethodReq(billingDetails);
-        await this.confirmPayment(paymentMethodReq,secret);
+        await this.confirmPayment(paymentMethodReq, secret);
 
         //router.push("/success");
       } catch (error) {
@@ -100,14 +100,14 @@ export default {
       }
     },
 
-    async paymentMethodReq(billingDetails){
+    async paymentMethodReq(billingDetails) {
       const paymentMethodReq = await this.stripe.createPaymentMethod({
         type: "card",
         card: this.cardNumber,
         billing_details: billingDetails
       });
 
-      if(paymentMethodReq.error){
+      if (paymentMethodReq.error) {
         this.loading = false;
         this.error = paymentMethodReq.error.message;
         return 0;
@@ -116,52 +116,31 @@ export default {
       return paymentMethodReq;
     },
 
-    async confirmPayment(paymentMethodReq,secret){
+    async confirmPayment(paymentMethodReq, secret) {
       const responseConfirmPayment = await this.stripe.confirmCardPayment(secret, {
         payment_method: paymentMethodReq.paymentMethod.id
       });
 
-      if(responseConfirmPayment.error){
+      if (responseConfirmPayment.error) {
         this.loading = false;
         this.error = responseConfirmPayment.error.message;
         return 0;
-      }else if(responseConfirmPayment.paymentIntent) {
-        await this.paymentSuccess(responseConfirmPayment.paymentIntent.amount);
+      } else if (responseConfirmPayment.paymentIntent) {
+        await this.paymentSuccess(responseConfirmPayment.paymentIntent);
       }
     },
 
-    async paymentSuccess(amount){
+    async paymentSuccess(paymentIntent) {
       const rent = JSON.parse(localStorage.getItem('rent'));
-      const bookingCreate = await axios.post('http://localhost:3000/bookings',{
-        startDate: rent.chooseDate[0],
-        endDate: rent.chooseDate[1],
-        user: this.$store.state.user.id,
-        car: rent.id
+      const addPaymentRent = await axios.post("http://localhost:3000/addPaymentRent", {
+        rent: rent,
+        user: this.$store.state.user,
+        paymentIntent: paymentIntent,
       });
-      if(bookingCreate.status === 201){
-        const order = await axios.post('http://localhost:3000/orders',{
-          booking: bookingCreate.data.id,
-          amount: amount
-        });
-        if(order.status === 201){
-          const mailer = await this.sendMailConfirm(rent,amount,order.data.num);
-          if(mailer.status === 200){
-            this.loading = false;
-            this.$router.push({name:'thanks',params:{check:true}});
-          }
-        }
+      if (addPaymentRent) {
+        this.loading = false;
+        this.$router.push({name: 'thanks', params: {check: true}});
       }
-    },
-
-    async sendMailConfirm(data,amount,numRef){
-      return await axios.post('http://localhost:3000/mail/send',{
-        email: this.$store.state.user.username,
-        subject: 'Votre location',
-        template: 'recap_car',
-        data: {
-          car: {...data,amount:amount,ref:numRef}
-        }
-      })
     }
   }
 };

@@ -182,6 +182,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
      * @ORM\Column(type="string", length=20)
      * @Assert\Choice(choices=User::TYPES, message="Choisissez un type valide")
      */
+    #[Groups(['users:post'])]
     private $type;
 
     public function __construct(){
