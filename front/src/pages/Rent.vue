@@ -16,10 +16,13 @@
       </div>
     </form>
     <div v-if="!loading" class="mb-10 p-5 flex justify-center flex-wrap">
-      <div v-if="cars.length !== 0" class="flex flex-wrap justify-center gap-4">
+      <div v-if="cars.length !== 0 && !cars.includes('')" class="flex flex-wrap justify-center gap-4">
         <div v-for="[key, value] of Object.entries(cars)" :key="key">
-          <Card :car="value"/>
+          <Card :car="value" :dates="dateFormat" type="rent"/>
         </div>
+      </div>
+      <div v-else-if="cars.includes('')">
+        <p>Aucun résultat</p>
       </div>
     </div>
     <div v-else class="is-flex is-justify-content-center w-full" ref="element">
@@ -31,10 +34,11 @@
 <script>
 import dateFormat from '../Utils/dateFormat';
 import Card from '../components/Card';
+import axios from "axios";
 
 export default {
   components: {Card},
-  data: () => ({dates: [], cars: [], loading: false, message: "",unselectableDates: [new Date(Date.now() - 8640000)]}),
+  data: () => ({dates: [], cars: [], loading: false, message: "", unselectableDates: [new Date(Date.now() - 8640000)], dateFormat:[]}),
   methods: {
     async handleSubmit() {
       if (this.dates.length === 0) {
@@ -47,49 +51,13 @@ export default {
         })
       } else {
         this.loading = true;
-        const myDates = this.dates.map(date => dateFormat(date));
-        // eslint-disable-next-line no-unused-vars
-        const [dateStart, dateEnd] = myDates;
-        setTimeout(() => {
-          this.loading = false
-          this.cars.push({
-            brand: "Bmw",
-            model: "Serie 1",
-            category: "berline",
-            power: "150",
-            color: "blue",
-            kilometer: "145 000",
-            price: 150,
-            date_registration: "15/12/2017"
-          },{
-            brand: "Bmw",
-            model: "Serie 1",
-            category: "berline",
-            power: "150",
-            color: "blue",
-            kilometer: "145 000",
-            price: 150,
-            date_registration: "15/12/2017"
-          },{
-            brand: "Bmw",
-            model: "Serie 1",
-            category: "berline",
-            power: "150",
-            color: "blue",
-            kilometer: "145 000",
-            price: 150,
-            date_registration: "15/12/2017"
-          },{
-            brand: "Bmw",
-            model: "Serie 1",
-            category: "berline",
-            power: "150",
-            color: "blue",
-            kilometer: "145 000",
-            price: 150,
-            date_registration: "15/12/2017"
-          });
-        }, 10 * 300)
+        this.dateFormat = this.dates.map(date => dateFormat(date,'en'));
+        const [dateStart, dateEnd] = this.dateFormat;
+        axios.get(`http://localhost:3000/getCarByDateBooking?startDate=${dateStart}&endDate=${dateEnd}`)
+            .then(res => {
+              this.loading = false;
+              this.cars = res.data;
+            });
       }
     }
   }

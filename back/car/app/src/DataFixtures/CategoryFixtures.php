@@ -10,7 +10,7 @@ class CategoryFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        $categories = ['SUV','Familiale','Citadine','Cabriolet','Compacte','Break','Berline'];
+        $categories = ['SUV','Familiale','Citadine','Cabriolet','Compacte','Break','Berline','Coupé'];
         shuffle($categories);
         foreach($categories as $category){
             $categoryObj = new Category();

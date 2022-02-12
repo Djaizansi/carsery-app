@@ -2,21 +2,20 @@ version: '3.6'
 services:
 
   payment-db:
-    platform: linux/x86_64
-    image: mysql:5.7
+    platform: linux/amd64
     container_name: payment-db
+    image: mysql:5.7
     environment:
       MYSQL_DATABASE: 'payment'
-      MYSQL_payment: 'payment'
+      MYSQL_USER: 'payment'
       MYSQL_ROOT_PASSWORD: 'root'
       MYSQL_PASSWORD: 'pwd'
     volumes:
       - payment-db-data:/var/lib/mysql
     ports:
-      - 3312:3306
+      - 3315:3306
     restart: always
     networks:
-      - mailer_mailer
       - all-network
 
   payment-php:
@@ -30,7 +29,6 @@ services:
       - ./app/docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
       - payment-app-sf-cache:/srv/app/var
     networks:
-      - mailer_mailer
       - all-network
 
   payment-nginx:
@@ -46,17 +44,12 @@ services:
     ports:
       - 8098:80
     networks:
-      - mailer_mailer
       - all-network
 
 networks:
-  mailer_mailer:
-    external: true
   all-network:
     driver: bridge
 
-
 volumes:
-  payment-db-data: { }
-  payment-app-sf-cache: { }
-
+  payment-db-data: {}
+  payment-app-sf-cache: {}

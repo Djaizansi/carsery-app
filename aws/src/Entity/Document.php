@@ -23,7 +23,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
     collectionOperations: [
         'upload' => [
             'method' => 'POST',
-            'path' => '/upload',
+            'path' => '/aws/upload',
             'controller' => UploadController::class,
             'deserialize' => false,
         ],

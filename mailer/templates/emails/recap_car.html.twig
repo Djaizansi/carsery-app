@@ -1,0 +1,15 @@
+<h1>N° Facture : #{{ data['car']['ref'] }}</h1>
+
+<h2>Recapitulatif de votre commande</h2>
+
+<div style="border: solid;margin-bottom: 30px;padding: 10px">
+    <p style="font-size: 16px">Véhicule : <b>{{ data['car']['model']['brand']['name']~' '~data['car']['model']['name']}}</b></p>
+    <p style="font-size: 16px">Puissance : <b>{{ data['car']['power']}} CH</b></p>
+    <p style="font-size: 16px">Plaque d'immatriculation : <b>{{ data['car']['numberplate']}}</b></p>
+    <p style="font-size: 16px">Du <b>{{ data['car']['chooseDate'][0]|date("d/m/Y") }}</b> au <b>{{ data['car']['chooseDate'][1]|date("d/m/Y") }}</b></p>
+    <p style="font-size: 16px">Prix total payé : <b>{{ data['car']['amount'] / 100}} €</b></p>
+</div>
+
+<p style="font-size: 16px">Merci pour votre confiance. Vous pouvez venir récuperer le véhicule grâce à cette facture (cf n°facture) !</p>
+
+<p style="font-size: 16px;margin-top: 30px">L'équipe Carsery</p>

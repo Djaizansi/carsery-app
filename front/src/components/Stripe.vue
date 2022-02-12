@@ -1,135 +1,147 @@
 <template>
-    <div>
-        <!-- TODO : Modifier le style et mettre un state loading pour modifier certains changement de texte et/ou d'affichage -->
-        <form @submit.prevent="handleSubmit">
-            <div class="flex flex-col w-1/2 mx-auto">
-                <input class="" placeholder="Jallali" type="text" name="name"/>
-                <input placeholder="youcef.jallali@gmail.com" type="email" name="email"/>
-                <input placeholder="10 rue de paris" type="text" name="address"/>
-                <input placeholder="Montreuil" type="text" name="city"/>
-                <input placeholder="France" type="text" name="state"/>
-                <input placeholder="93100" type="text" name="zip"/>
-            </div>
-
-            <br>
-
-            <label>Numéro de carte</label>
-            <div id="card-number"></div>
-            <label>Expiration de carte</label>
-            <div id="card-expiry"></div>
+  <div class="w-full">
+    <form @submit.prevent="handleSubmit">
+      <div class="border rounded p-5">
+        <label>Numéro de carte</label>
+        <div id="card-number" class="mb-2 border rounded p-3"></div>
+        <div class="flex space-x-4">
+          <div class="w-1/2">
+            <label>Exp carte</label>
+            <div id="card-expiry" class="mb-2 border rounded p-3"></div>
+          </div>
+          <div class="w-1/2">
             <label>CVC</label>
-            <div id="card-cvc"></div>
-            <div id="card-error"></div>
-            <button type="submit" id="custom-button" >Payer</button>
-        </form>
-    </div>
+            <div id="card-cvc" class="mb-2 border rounded p-3"></div>
+          </div>
+        </div>
+        <b-button v-if="!loading" native-type="submit" type="is-primary" class="w-full">Payer {{price}} €</b-button>
+        <b-button v-else
+                  loading
+                  type="is-primary"
+                  class="w-full mb-5"
+        />
+        <div class="text-red-500">{{error}}</div>
+      </div>
+    </form>
+  </div>
 </template>
 
 <script>
-    export default {
-        data () {
-            return {
-                cardNumber: null,
-                cardExpiry: null,
-                cardCvc: null,
-            };
-        },
-        computed: {
-            stripeElements () {
-                return this.$stripe.elements();
-            },
+import axios from "axios";
 
-            stripe () {
-                return this.$stripe;
-            }
+export default {
+  props: {
+    price: {
+      type: Number,
+      required: true
+    }
+  },
+  data: () => ({cardNumber: null, cardExpiry: null, cardCvc: null,error: null,loading: false}),
+  computed: {
+    stripeElements() {
+      return this.$stripe.elements();
+    },
+    stripe() {
+      return this.$stripe;
+    }
+  },
+  mounted() {
+    const style = {
+      base: {
+        color: 'black',
+        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+        fontSmoothing: 'antialiased',
+        fontSize: '16px',
+        '::placeholder': {
+          color: '#aab7c4',
         },
-        mounted () {
-            const style = {
-                base: {
-                    color: 'black',
-                    fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-                    fontSmoothing: 'antialiased',
-                    fontSize: '14px',
-                    '::placeholder': {
-                    color: '#aab7c4',
-                    },
-                },
-                invalid: {
-                    color: '#fa755a',
-                    iconColor: '#fa755a',
-                },
-            };
-            this.cardNumber = this.stripeElements.create('cardNumber', { style });
-            this.cardNumber.mount('#card-number');
-            this.cardExpiry = this.stripeElements.create('cardExpiry', { style });
-            this.cardExpiry.mount('#card-expiry');
-            this.cardCvc = this.stripeElements.create('cardCvc', { style });
-            this.cardCvc.mount('#card-cvc');
-        },
-        beforeDestroy () {
-            this.cardNumber.destroy();
-            this.cardExpiry.destroy();
-            this.cardCvc.destroy();
-        },
-        methods: {
-            async handleSubmit(event) {
-                //TODO : Essayer de voir si on peut pas récupèrer les informations de l'utilisateur directement au lieu de les rentrer. A VOIR
-                const { name, email, address, city, state, zip } = Object.fromEntries(
-                    new FormData(event.target)
-                );
-                const billingDetails = {
-                    name,
-                    email,
-                    address: {
-                        city,
-                        line1: address,
-                        state,
-                        postal_code: zip
-                    }
-                };
-                console.log(billingDetails);
-                try {
-                    const response = await fetch("http://localhost:8110/stripe/intent", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ price: 20 })
-                    });
-
-                    const secret = await response.json();
-                    const paymentMethodReq = await this.stripe.createPaymentMethod({
-                        type: "card",
-                        card: this.cardNumber,
-                        billing_details: billingDetails
-                    });
-                    console.log("error?", paymentMethodReq);
-                    
-                    const { error } = await this.stripe.confirmCardPayment(secret, {
-                        payment_method: paymentMethodReq.paymentMethod.id
-                    });
-
-                    console.log("error?", error);
-                    //router.push("/success");
-                } catch (error) {
-                    console.log("error", error);
-                }
-            }
-        }
+      },
+      invalid: {
+        color: '#fa755a',
+        iconColor: '#fa755a',
+      },
     };
+    this.cardNumber = this.stripeElements.create('cardNumber', {style});
+    this.cardNumber.mount('#card-number');
+    this.cardExpiry = this.stripeElements.create('cardExpiry', {style});
+    this.cardExpiry.mount('#card-expiry');
+    this.cardCvc = this.stripeElements.create('cardCvc', {style});
+    this.cardCvc.mount('#card-cvc');
+  },
+  beforeDestroy() {
+    this.cardNumber.destroy();
+    this.cardExpiry.destroy();
+    this.cardCvc.destroy();
+  },
+  methods: {
+    async handleSubmit() {
+      try {
+        this.loading = true;
+        const user = await axios.get('http://localhost:3000/users/' + this.$store.state.user.id);
+        const response = await axios.post("http://localhost:3000/stripe/intent", JSON.stringify({price: this.price}));
+        const secret = await response.data;
+        const getInfoUser = await user.data;
+        const billingDetails = {
+          name: getInfoUser.roles.includes('ROLE_PRO') ? getInfoUser.company : getInfoUser.firstname + ' ' + getInfoUser.lastname,
+          email: getInfoUser.email,
+          address: {
+            city: getInfoUser.address.city,
+            line1: getInfoUser.address.street,
+            state: getInfoUser.address.country,
+            postal_code: getInfoUser.address.postalCode
+          }
+        };
+        const paymentMethodReq = await this.paymentMethodReq(billingDetails);
+        await this.confirmPayment(paymentMethodReq, secret);
+
+        //router.push("/success");
+      } catch (error) {
+        console.log("error", error);
+      }
+    },
+
+    async paymentMethodReq(billingDetails) {
+      const paymentMethodReq = await this.stripe.createPaymentMethod({
+        type: "card",
+        card: this.cardNumber,
+        billing_details: billingDetails
+      });
+
+      if (paymentMethodReq.error) {
+        this.loading = false;
+        this.error = paymentMethodReq.error.message;
+        return 0;
+      }
+
+      return paymentMethodReq;
+    },
+
+    async confirmPayment(paymentMethodReq, secret) {
+      const responseConfirmPayment = await this.stripe.confirmCardPayment(secret, {
+        payment_method: paymentMethodReq.paymentMethod.id
+      });
+
+      if (responseConfirmPayment.error) {
+        this.loading = false;
+        this.error = responseConfirmPayment.error.message;
+        return 0;
+      } else if (responseConfirmPayment.paymentIntent) {
+        await this.paymentSuccess(responseConfirmPayment.paymentIntent);
+      }
+    },
+
+    async paymentSuccess(paymentIntent) {
+      const rent = JSON.parse(localStorage.getItem('rent'));
+      const addPaymentRent = await axios.post("http://localhost:3000/addPaymentRent", {
+        rent: rent,
+        user: this.$store.state.user,
+        paymentIntent: paymentIntent,
+      });
+      if (addPaymentRent) {
+        this.loading = false;
+        this.$router.push({name: 'thanks', params: {check: true}});
+      }
+    }
+  }
+};
 </script>
-
-<style scoped>
-    /* TODO : Mettre en place avec tailwindcss et supprimer ca */
-    #custom-button {
-        height: 30px;
-        outline: 1px solid grey;
-        background-color: green;
-        padding: 5px;
-        color: white;
-    }
-
-    #card-error {
-        color: red;
-    }
-</style>

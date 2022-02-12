@@ -10,6 +10,7 @@ import VueCookie from "vue-cookie";
 import ShowCarUser from "./pages/ShowCarUser";
 import ManageMarketPlace from "./pages/ManageMarketPlace";
 import GestionCarsUser from "./pages/GestionCarsUser";
+import Thanks from "./pages/Thanks";
 
 export default [
   {
@@ -21,6 +22,12 @@ export default [
     path: "/louer",
     component: Rent,
     name: "rent",
+    beforeEnter: (to, from, next) => {
+      if(store.state.user !== '' && store.state.user.roles.includes('ROLE_ADMIN')){
+        next({name: 'home'});
+      }
+      next();
+    }
   },
   {
     path: "/activation/:token",
@@ -32,7 +39,8 @@ export default [
     component: AddCars,
     name: "addCars",
     beforeEnter: (to, from, next) => {
-      if(store.state.user === undefined || store.state.user.roles.includes('ROLE_CLIENT') || VueCookie.get('user_get') === null){
+      if(store.state.user === undefined || store.state.user.roles.includes('ROLE_CLIENT') || VueCookie.get('user_get') === null || VueCookie.get('token') === 'undefined'){
+        checkTokenValid(next);
         next({name: 'home'});
       }
       next();
@@ -43,7 +51,8 @@ export default [
     component: ShowCarUser,
     name: "showCarUser",
     beforeEnter: (to, from, next) => {
-      if(store.state.user === undefined || store.state.user.roles.includes('ROLE_CLIENT') || VueCookie.get('user_get') === null){
+      if(store.state.user === undefined || store.state.user.roles.includes('ROLE_CLIENT') || VueCookie.get('user_get') === null || VueCookie.get('token') === 'undefined'){
+        checkTokenValid(next);
         next({name: 'home'});
       }
       next();
@@ -54,7 +63,8 @@ export default [
     component: ManageMarketPlace,
     name: "ManageMarketPlace",
     beforeEnter: (to, from, next) => {
-      if(store.state.user === undefined || !store.state.user.roles.includes('ROLE_ADMIN') || VueCookie.get('user_get') === null){
+      if(store.state.user === undefined || !store.state.user.roles.includes('ROLE_ADMIN') || VueCookie.get('user_get') === null || VueCookie.get('token') === 'undefined'){
+        checkTokenValid(next);
         next({name: 'home'});
       }
       next();
@@ -65,7 +75,8 @@ export default [
     component: GestionCarsUser,
     name: "gestionMarketPlaceByCarsUser",
     beforeEnter: (to, from, next) => {
-      if(store.state.user === undefined || !store.state.user.roles.includes('ROLE_ADMIN') || VueCookie.get('user_get') === null || to.params.user === undefined){
+      if(store.state.user === undefined || !store.state.user.roles.includes('ROLE_ADMIN') || VueCookie.get('user_get') === null || to.params.user === undefined || VueCookie.get('token') === 'undefined'){
+        checkTokenValid(next);
         next({name: 'ManageMarketPlace'});
       }
       next();
@@ -76,7 +87,8 @@ export default [
     component: Profile,
     name: "profile",
     beforeEnter: (to, from, next) => {
-      if(store.state.user === undefined || VueCookie.get('user_get') === null){
+      if(store.state.user === undefined || VueCookie.get('user_get') === null || VueCookie.get('token') === 'undefined'){
+        checkTokenValid(next);
         next({name: 'home'});
       }
       next();
@@ -85,9 +97,37 @@ export default [
   {
     path: "/payment",
     component: Payment,
+    name: "payment",
+    beforeEnter: (to, from, next) => {
+      if(store.state.user === undefined || VueCookie.get('user_get') === null){
+        next({name: 'home'});
+      }
+      next();
+    }
+  },
+  {
+    path: "/merci",
+    component: Thanks,
+    name: "thanks",
+    beforeEnter: (to, from, next) => {
+      if(store.state.user === undefined || VueCookie.get('user_get') === null || to.params.check === undefined){
+        checkTokenValid(next);
+        next({name: 'home'});
+      }
+      next();
+    }
   },
   {
     path: "*",
     component: NotFound,
   },
 ];
+
+function checkTokenValid(next){
+  if(VueCookie.get('token') === 'undefined'){
+    ['user_get','token','refresh_token'].map(cookie => VueCookie.delete(cookie));
+    store.commit('SET_USER','');
+    localStorage.removeItem('rent');
+    next({name: 'home'});
+  }
+}

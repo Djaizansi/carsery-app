@@ -10,6 +10,8 @@ services:
       - ./:/srv/app:rw
       - ./docker/php/conf.d/api-platform.dev.ini/:/usr/local/etc/php/conf.d/api-platform.ini
       - app-sf-cache:/srv/app/var
+    networks:
+      - all-network
 
   stripe-nginx:
     image: ${NGINX_IMAGE:-stripe/nginx}
@@ -23,6 +25,12 @@ services:
       - ./public:/srv/app/public:ro
     ports:
       - 8110:80
+    networks:
+      - all-network
+
+networks:
+  all-network:
+    driver: bridge
 
 volumes:
   app-sf-cache: {}
