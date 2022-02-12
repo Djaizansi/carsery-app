@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\StripeController;
+use App\Controller\StripeGetInfoController;
 
 #[ApiResource(
     collectionOperations: [
@@ -38,6 +39,44 @@ use App\Controller\StripeController;
                                 'schema' => [
                                     'type' => 'string',
                                     'example' => 'pi_3JteEiAO5vDzLaAV0xeDJHEv_secret_XBVeuQGNdzZYDtMfjdizzIXGmGwaaaasz'
+                                ]
+                            ]
+                        ],
+                    ],
+                    '201' => null
+                ]
+            ]
+        ],
+        'stripe_get_payment' => [
+            'method' => 'POST',
+            'path' => '/stripe/info',
+            'controller' => StripeGetInfoController::class,
+            'read' => false,
+            'write' => false,
+            'pagination_enabled' => false,
+            'openapi_context' => [
+                'summary' => "Permet de récupèrer les infos de paiement grâce à l'id de paiement",
+                'requestBody' => [
+                    'required' => true,
+                    'content' => [
+                        'application/json' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'idChargeStripe' => ['type' => 'string']
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                'responses' => [
+                    '200' => [
+                        'description' => 'OK',
+                        'content' => [
+                            'application/json' => [
+                                'schema' => [
+                                    'type' => 'string',
+                                    'example' => '{PaymentIntent}'
                                 ]
                             ]
                         ],

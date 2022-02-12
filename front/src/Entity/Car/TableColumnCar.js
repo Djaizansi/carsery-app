@@ -4,31 +4,38 @@ module.exports= [
     },
     {
         field: 'category',
-        label: 'Categorie'
+        label: 'Categorie',
+        role: 'all'
     },
     {
         field: 'brand',
-        label: 'Marque'
+        label: 'Marque',
+        role: 'all'
     },
     {
         field: 'model',
-        label: 'Modèle'
+        label: 'Modèle',
+        role: 'all'
     },
     {
         field: 'color',
-        label: 'Couleur'
+        label: 'Couleur',
+        role: 'all'
     },
     {
         field: 'kilometer',
-        label: 'Kilomètrage (Km)'
+        label: 'Kilomètrage (Km)',
+        role: 'all'
     },
     {
         field: 'numberplate',
-        label: "Plaque d'immatriculation"
+        label: "Plaque d'immatriculation",
+        role: 'all'
     },
     {
         field: 'power',
-        label: "Puissance (CH)"
+        label: "Puissance (CH)",
+        role: 'all'
     },
     {
         field: 'date',

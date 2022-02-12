@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Stripe\Exception\ApiErrorException;
 use Stripe\PaymentIntent;
+use Stripe\PaymentMethod;
 
 class StripeService
 {
@@ -31,5 +32,16 @@ class StripeService
             'description' => 'Location de voiture',
             'payment_method_types' => ['card']
         ]);
+    }
+
+    /**
+     * @param $id
+     * @return PaymentMethod
+     * @throws ApiErrorException
+     */
+    public function paymentMethod($id): PaymentMethod
+    {
+        \Stripe\Stripe::setApiKey($this->privateKey);
+        return PaymentMethod::retrieve($id,[]);
     }
 }

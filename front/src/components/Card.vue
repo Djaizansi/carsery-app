@@ -32,6 +32,8 @@
         <p class="font-bold text-lg mb-4"> Total : {{numberDays * car.price}} €</p>
         <Stripe :price="numberDays * car.price"/>
       </div>
+      <div v-else>
+      </div>
     </div>
   </div>
 </template>
