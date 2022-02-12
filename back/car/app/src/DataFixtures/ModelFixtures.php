@@ -10,6 +10,8 @@ use Doctrine\Persistence\ObjectManager;
 
 class ModelFixtures extends Fixture implements DependentFixtureInterface
 {
+    public const MODEL_REFERENCE = 'model-ref';
+
     public function load(ObjectManager $manager): void
     {
         $modelCsv = fopen("public/csv/modeles.csv", "r");
@@ -24,6 +26,7 @@ class ModelFixtures extends Fixture implements DependentFixtureInterface
             $model->setBrand($brand);
             $manager->persist($model);
         }
+        $this->setReference(self::MODEL_REFERENCE, $model);
         $manager->flush();
     }
 
