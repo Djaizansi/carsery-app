@@ -1,12 +1,12 @@
 <template>
-    <section class="p-6">
-      <div class="scene">
-        <div class="text">Erreur 404</div>
-        <div class="text">La page que vous venez de chercher n'existe pas &#128531;</div>
-        <br><br>
-        <a class="button" href="/">Retour à l'accueil</a>
-        <br><br>
-        <div class="sheep">
+  <section class="p-6 section">
+    <div class="scene">
+      <div class="text">Erreur 404</div>
+      <div class="text">La page que vous venez de chercher n'existe pas &#128531;</div>
+      <br><br>
+      <a class="button" href="/">Retour à l'accueil</a>
+      <br><br>
+      <div class="sheep">
     <span class="top">
       <div class="body"></div>
       <div class="head">
@@ -16,21 +16,20 @@
         <div class="ear two"></div>
       </div>
     </span>
-          <div class="legs">
-            <div class="leg"></div>
-            <div class="leg"></div>
-            <div class="leg"></div>
-            <div class="leg"></div>
-          </div>
+        <div class="legs">
+          <div class="leg"></div>
+          <div class="leg"></div>
+          <div class="leg"></div>
+          <div class="leg"></div>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 </template>
+
 <script>
 
-export default ({
-
-})
+export default ({})
 </script>
 
 <style>
@@ -42,13 +41,14 @@ export default ({
     top: 0.2em;
   }
 }
-section {
-  background: #7957d5;
+
+.section {
   vertical-align: middle;
   text-align: center;
   transform: translate3d(0, 0, 0);
 }
-section:before {
+
+.section:before {
   content: '';
   display: inline-block;
   height: 100%;
@@ -62,7 +62,6 @@ section:before {
 }
 
 .text {
-  color: white;
   font-size: 2em;
   font-weight: bold;
 }
@@ -72,27 +71,34 @@ section:before {
   position: relative;
   font-size: 1em;
 }
+
 .sheep * {
   transition: transform 0.3s;
 }
+
 .sheep .top {
   position: relative;
   top: 0;
   animation: bob 1s infinite;
 }
+
 .sheep:hover .head {
   transform: rotate(0deg);
 }
+
 .sheep:hover .head .eye {
   width: 1.25em;
   height: 1.25em;
 }
+
 .sheep:hover .head .eye:before {
   right: 30%;
 }
+
 .sheep:hover .top {
   animation-play-state: paused;
 }
+
 .sheep .head {
   display: inline-block;
   width: 5em;
@@ -104,6 +110,7 @@ section:before {
   top: 1em;
   transform: rotate(30deg);
 }
+
 .sheep .head:before {
   content: '';
   display: inline-block;
@@ -115,9 +122,11 @@ section:before {
   right: -10%;
   border-radius: 50% 40%;
 }
+
 .sheep .head:hover .ear.one, .sheep .head:hover .ear.two {
   transform: rotate(0deg);
 }
+
 .sheep .head .eye {
   display: inline-block;
   width: 1em;
@@ -127,6 +136,7 @@ section:before {
   position: absolute;
   overflow: hidden;
 }
+
 .sheep .head .eye:before {
   content: '';
   display: inline-block;
@@ -139,14 +149,17 @@ section:before {
   bottom: 10%;
   transition: all 0.3s;
 }
+
 .sheep .head .eye.one {
   right: -2%;
   top: 1.7em;
 }
+
 .sheep .head .eye.two {
   right: 2.5em;
   top: 1.7em;
 }
+
 .sheep .head .ear {
   background: #211e21;
   width: 50%;
@@ -154,26 +167,30 @@ section:before {
   border-radius: 100%;
   position: absolute;
 }
+
 .sheep .head .ear.one {
   left: -10%;
   top: 5%;
   transform: rotate(-30deg);
 }
+
 .sheep .head .ear.two {
   top: 2%;
   right: -5%;
   transform: rotate(20deg);
 }
+
 .sheep .body {
   display: inline-block;
   width: 7em;
   height: 7em;
   border-radius: 100%;
-  background: white;
+  background: #7957d5;
   position: relative;
   vertical-align: middle;
   margin-right: -3em;
 }
+
 .sheep .legs {
   display: inline-block;
   position: absolute;
@@ -181,6 +198,7 @@ section:before {
   left: 10%;
   z-index: -1;
 }
+
 .sheep .legs .leg {
   display: inline-block;
   background: #141214;
@@ -188,6 +206,7 @@ section:before {
   height: 2.5em;
   margin: 0.2em;
 }
+
 .sheep:before {
   content: '';
   display: inline-block;
