@@ -61,7 +61,8 @@ export default {
     axios.get('http://localhost:3000/getAllInfoOfBooking/'+this.$route.params.id)
         .then(res => {
           this.allInfo = res.data;
-          console.log(this.allInfo);
+          this.allInfo.car.price = this.allInfo.booking.price;
+          this.allInfo.car.kilometer = this.allInfo.booking.kilometer;
           this.isLoading = false;
         });
   }

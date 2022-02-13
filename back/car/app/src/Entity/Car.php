@@ -15,7 +15,15 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass=CarRepository::class)
  */
 #[ApiResource(
-    normalizationContext: ["groups" => ["cars:get"]]
+    collectionOperations: ['get','post'],
+    normalizationContext: ["groups" => ["cars:get"]],
+    denormalizationContext: ["groups"=> ["cars:get"]],
+    itemOperations: [
+        'get',
+        'put' => [
+            'denormalization_context' => ['groups' => ['cars:put']],
+        ]
+    ]
 )]
 #[ApiFilter(SearchFilter::class,properties: ["user" => "exact"])]
 #[ApiFilter(BooleanFilter::class, properties: ['status'])]
@@ -40,14 +48,14 @@ class Car
      * @ORM\Column(type="integer")
      * @Assert\GreaterThan(3, message="Le kilométrage du véhicule ne peut pas être inférieur à 3km")
      */
-    #[Groups(["cars:get"])]
+    #[Groups(["cars:get","cars:put"])]
     private $kilometer;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank
      */
-    #[Groups(["cars:get"])]
+    #[Groups(["cars:get","cars:put"])]
     private $numberplate;
 
     /**
@@ -66,13 +74,13 @@ class Car
      * @ORM\Column(type="float")
      * @Assert\GreaterThan(10,message="Le prix de la location ne peut pas être inférieur à {{ value }} €")
      */
-    #[Groups(["cars:get"])]
+    #[Groups(["cars:get","cars:put"])]
     private $price;
 
     /**
      * @ORM\Column(type="boolean")
      */
-    #[Groups(["cars:get"])]
+    #[Groups(["cars:get","cars:put"])]
     private $status;
 
     /**
@@ -113,6 +121,17 @@ class Car
      */
     #[Groups(["cars:get"])]
     private $typeCarUser;
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    #[Groups(["cars:get","cars:put"])]
+    private $rent;
+
+    public function __construct()
+    {
+        $this->rent = false;
+    }
 
     public function getId(): ?int
     {
@@ -259,6 +278,18 @@ class Car
     public function setTypeCarUser(string $typeCarUser): self
     {
         $this->typeCarUser = $typeCarUser;
+
+        return $this;
+    }
+
+    public function getRent(): ?bool
+    {
+        return $this->rent;
+    }
+
+    public function setRent(bool $rent): self
+    {
+        $this->rent = $rent;
 
         return $this;
     }

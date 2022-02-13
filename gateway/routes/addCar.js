@@ -32,7 +32,10 @@ router.post('/', function(req, res) {
                 res.status(response.status);
                 res.json(response.data);
             })
-            .catch(err => console.log(err))
+            .catch(err => {
+                res.status(err.response.status);
+                return res.json(err.response.data);
+            })
     }
 });
 

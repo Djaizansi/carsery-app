@@ -40,7 +40,7 @@ router.get('/:id', async function(req, res) {
             payment: payments.data[0]
         });
     }else{
-        res.status(404);
+        res.status(401);
         res.json('Une erreur est survenue');
     }
 
