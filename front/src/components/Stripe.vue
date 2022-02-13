@@ -140,7 +140,7 @@ export default {
       });
       if (addPaymentRent) {
         this.loading = false;
-        this.$router.push({name: 'thanks', params: {check: true}});
+        await this.$router.push({name: 'thanks', params: {check: true}});
       }
     }
   }

@@ -21,8 +21,10 @@ use Symfony\Component\Validator\Constraints as Assert;
     itemOperations: [
         'get',
         'put' => [
+//            "security" => "is_granted('ROLE_ADMIN') or is_granted('edit_car',object)",
+//            "security_message" => "Vous ne pouvez pas modifier ce véhicule",
             'denormalization_context' => ['groups' => ['cars:put']],
-        ]
+        ],
     ]
 )]
 #[ApiFilter(SearchFilter::class,properties: ["user" => "exact"])]

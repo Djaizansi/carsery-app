@@ -19,20 +19,32 @@ router.post('/', async function(req, res) {
             car: req.body.rent.id,
             price: req.body.rent.price,
             kilometer: req.body.rent.kilometer
-        });
+        },{headers: {
+                'authorization': req.headers.authorization,
+                'Content-Type': 'application/json'
+            }});
         if(bookingCreate.status === 201){
             const order = await axios.post(orderRoute,{
                 booking: bookingCreate.data.id,
                 amount: req.body.paymentIntent.amount
-            });
+            },{headers: {
+                    'authorization': req.headers.authorization,
+                    'Content-Type': 'application/json'
+                }});
             if(order.status === 201){
                 const payment = await axios.post(paymentRoute,{
                     orderId: parseInt(order.data.id),
                     cbTransactionStripe: req.body.paymentIntent.id,
                     cbTransactionMethodStripe: req.body.paymentMethod.id
-                });
+                },{headers: {
+                        'authorization': req.headers.authorization,
+                        'Content-Type': 'application/json'
+                    }});
                 if(payment.status === 201){
-                    const rentCarStatus = await axios.put(carsRoute+'/'+req.body.rent.id,{rent: true});
+                    await axios.put(carsRoute+'/'+req.body.rent.id,{rent: true},{headers: {
+                            'authorization': req.headers.authorization,
+                            'Content-Type': 'application/json'
+                        }});
                     const mailer = await sendMail(req.body.user.username,'Votre location','recap_car',{
                         car: {
                             ...req.body.rent,

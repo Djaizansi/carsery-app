@@ -13,8 +13,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass=BrandRepository::class)
  */
 #[ApiResource(
-    attributes: ["pagination_items_per_page" => 100],
-    normalizationContext: ['groups' => ['brands:get']]
+    attributes: ["pagination_items_per_page" => 200],
+    denormalizationContext: ['groups' => ['brands:post']],
+    normalizationContext: ['groups' => ['brands:get']],
+    collectionOperations: [
+        'post' => [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Vous ne pouvez pas ajouter de marque",
+        ],
+        'get'
+    ],
+    itemOperations: ['get']
 )]
 class Brand
 {
@@ -29,13 +38,13 @@ class Brand
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups(['brands:get','cars:get'])]
+    #[Groups(['brands:get','cars:get','brands:post'])]
     private $name;
 
     /**
-     * @ORM\OneToMany(targetEntity=Model::class, mappedBy="brand", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=Model::class, mappedBy="brand", orphanRemoval=true, cascade={"persist", "remove"})
      */
-    #[Groups(['brands:get'])]
+    #[Groups(['brands:get','brands:post'])]
     private $models;
 
     public function __construct()

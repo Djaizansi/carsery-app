@@ -25,14 +25,14 @@
               <div v-else-if="column.field === 'brand'">
                 {{props.row.model[column.field].name}}
               </div>
-              <div v-else-if="column.field === 'statusAdmin' && user.roles.includes('ROLE_PRO')">
+              <div v-else-if="column.field === 'statusAdmin' && (user.roles.includes('ROLE_PRO') || user.roles.includes('ROLE_ADMIN'))">
                 <div v-if="props.row.statusAdminCar ==='waiting' || props.row.statusAdminCar === 'raise'">
                   <p>En attente</p>
                 </div>
                 <div v-else-if="props.row.statusAdminCar ==='notFavorable'">
                   <b-button type="is-warning" @click="updateStatusAdmin(props.row.statusAdminCar,'raise',  props.row.id)">Relance</b-button>
                 </div>
-                <div v-else-if="props.row.statusAdminCar ==='validate'">
+                <div v-else-if="props.row.statusAdminCar ==='validate' || props.row.statusAdminCar ==='admin'">
                   <div v-if="!props.row.rent">
                     <b-button icon-left="pencil" type="is-warning" @click="updateCar(props.row)">Modifier</b-button>
                   </div>

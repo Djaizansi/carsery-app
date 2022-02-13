@@ -13,6 +13,7 @@ import GestionCarsUser from "./pages/GestionCarsUser";
 import Thanks from "./pages/Thanks";
 import ShowRentUser from "./pages/ShowRentUser";
 import ShowRentUserByCar from "./pages/ShowRentUserByCar";
+import CreateBrandAndModelCar from "./pages/CreateBrandAndModelCar";
 
 export default [
   {
@@ -43,6 +44,17 @@ export default [
     beforeEnter: (to, from, next) => {
       if(store.state.user === undefined || store.state.user.roles.includes('ROLE_CLIENT') || VueCookie.get('user_get') === null){
         //checkTokenValid(next);
+        next({name: 'home'});
+      }
+      next();
+    }
+  },
+  {
+    path: "/ajouter-vehicule/type",
+    component: CreateBrandAndModelCar,
+    name: "createBrandAndModelCar",
+    beforeEnter: (to, from, next) => {
+      if(store.state.user === undefined || !store.state.user.roles.includes('ROLE_ADMIN') || VueCookie.get('user_get') === null){
         next({name: 'home'});
       }
       next();

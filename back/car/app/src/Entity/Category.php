@@ -13,7 +13,16 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
  */
 #[ApiResource(
-    normalizationContext: ['groups' => ['categories:get']]
+    normalizationContext: ['groups' => ['categories:get']],
+    collectionOperations:
+    [
+        'post' => [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Vous ne pouvez pas ajouter de catégorie",
+        ],
+        'get'
+    ],
+    itemOperations: ['get']
 )]
 class Category
 {

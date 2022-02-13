@@ -56,7 +56,7 @@
               label="Couleur du véhicule"
               label-position="on-border"
               :type="errorData.color ? 'is-danger' : ''"
-              :message="errorData.color ? errorData.kilometer : ''"
+              :message="errorData.color ? errorData.color : ''"
           >
             <b-input
                 type="color"
