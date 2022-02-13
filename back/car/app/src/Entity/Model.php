@@ -12,7 +12,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass=ModelRepository::class)
  */
-#[ApiResource(formats: ['json', 'jsonld'])]
+#[ApiResource(
+    formats: ['json', 'jsonld'],
+    attributes: ["pagination_items_per_page" => 200],
+    collectionOperations: [
+        'get',
+        'post' => [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "Vous ne pouvez pas ajouter de modèle",
+        ],
+    ],
+    itemOperations: ['get']
+)]
 class Model
 {
     /**
@@ -26,7 +37,7 @@ class Model
     /**
      * @ORM\Column(type="string", length=255)
      */
-    #[Groups(['brands:get','cars:get'])]
+    #[Groups(['brands:get','cars:get','brands:post'])]
     private $name;
 
     /**

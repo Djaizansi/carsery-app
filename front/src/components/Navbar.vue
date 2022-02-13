@@ -11,18 +11,49 @@
     </template>
     <template #start>
       <b-navbar-item v-if="user === '' || (!user.roles.includes('ROLE_ADMIN'))">
+        <b-icon icon="shopping"></b-icon>
         <router-link  to="/louer">Louer</router-link>
       </b-navbar-item>
-      <b-navbar-item v-if="user && (user.roles.includes('ROLE_PRO') || user.roles.includes('ROLE_ADMIN'))">
-        <router-link to="/ajouter-vehicule">Ajouter un véhicule</router-link>
-      </b-navbar-item>
-      <b-navbar-item v-if="user && (user.roles.includes('ROLE_PRO') || user.roles.includes('ROLE_ADMIN'))">
-        <router-link to="/mes-voitures">Mes véhicules</router-link>
-      </b-navbar-item>
+      <b-dropdown
+          append-to-body
+          aria-role="menu"
+          scrollable
+          max-height="200"
+          trap-focus
+          v-if="user && (user.roles.includes('ROLE_PRO') || user.roles.includes('ROLE_ADMIN'))"
+      >
+        <template #trigger>
+          <a
+              class="navbar-item"
+              role="button">
+            <b-icon icon="car"></b-icon>
+            <span>Véhicule</span>
+            <b-icon icon="menu-down"></b-icon>
+          </a>
+        </template>
+        <b-dropdown-item class="space-x-1" v-if="user && (user.roles.includes('ROLE_PRO') || user.roles.includes('ROLE_ADMIN'))">
+          <b-icon icon="car-2-plus"></b-icon>
+          <router-link to="/ajouter-vehicule">Ajouter un véhicule</router-link>
+        </b-dropdown-item>
+
+        <b-dropdown-item class="space-x-1" v-if="user && (user.roles.includes('ROLE_ADMIN'))">
+          <b-icon icon="car-settings"></b-icon>
+          <router-link to="/ajouter-vehicule/type">Ajouter un véhicule type</router-link>
+        </b-dropdown-item>
+
+        <b-dropdown-item class="space-x-1" v-if="user && (user.roles.includes('ROLE_PRO') || user.roles.includes('ROLE_ADMIN'))">
+          <b-icon icon="car-cog"></b-icon>
+          <router-link to="/mes-voitures">Mes véhicules</router-link>
+        </b-dropdown-item>
+      </b-dropdown>
+
       <b-navbar-item v-if="user && (user.roles.includes('ROLE_PRO') || user.roles.includes('ROLE_CLIENT'))">
+        <b-icon icon="car-key"></b-icon>
         <router-link to="/mes-locations">Mes locations</router-link>
       </b-navbar-item>
+
       <b-navbar-item v-if="user && user.roles.includes('ROLE_ADMIN')">
+        <b-icon icon="car-multiple"></b-icon>
         <router-link to="/gestion-marketplace">Gestion Marketplace</router-link>
       </b-navbar-item>
     </template>

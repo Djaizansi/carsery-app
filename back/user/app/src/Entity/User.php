@@ -58,14 +58,14 @@ use Symfony\Component\Validator\Constraints as Assert;
         'put' => [
             "security" => "is_granted('edit',object)",
             "security_message" => "Modification impossible",
-            "denormalization_context" => ['groups' => ['user:put','users:post']]
+            "denormalization_context" => ['groups' => ['user:put']]
         ]
     ]
 )]
 #[ApiFilter(SearchFilter::class,properties: ["type" => "exact"])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUserInterface
 {
-    const ROLES = [['ROLE_CLIENT'],['ROLE_PRO']];
+    const ROLES = [['ROLE_CLIENT'],['ROLE_PRO'],['ROLE_ADMIN']];
     const GENDER = ['M', 'F'];
     const TYPES = ['customer','pro','admin'];
     /**
@@ -93,7 +93,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
      * @var string The hashed password
      * @ORM\Column(type="string")
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:put'])]
     private $password;
 
     /**
@@ -105,7 +105,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
      *      maxMessage = "Votre prénom doit contenir minimum {{ limit }} caractères"
      * )
      */
-    #[Groups(['users:post','user:get'])]
+    #[Groups(['users:post','user:get','user:put'])]
     private $firstname;
 
     /**
@@ -117,14 +117,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
      *      maxMessage = "Votre nom doit contenir maximum {{ limit }} caractères"
      * )
      */
-    #[Groups(['users:post','user:get'])]
+    #[Groups(['users:post','user:get','user:put'])]
     private $lastname;
 
     /**
      * @ORM\Column(type="string", length=1, nullable=true)
      * @Assert\Choice(choices=User::GENDER, message="Choisissez un genre valide")
      */
-    #[Groups(['users:post','user:get'])]
+    #[Groups(['users:post','user:get','user:put'])]
     private $gender;
 
     /**
@@ -134,7 +134,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
      *     minMessage="Le nom de l'entreprise ne peut pas être inférieur à 2 caractères"
      * )
      */
-    #[Groups(['users:post','user:get'])]
+    #[Groups(['users:post','user:get','user:put'])]
     private $company;
 
     /**
@@ -145,7 +145,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
      *     exactMessage="Le numéro de siret doit comporter exactement 14 chiffres"
      * )
      */
-    #[Groups(['users:post','user:get'])]
+    #[Groups(['users:post','user:get','user:put'])]
     private $siret;
 
 
@@ -163,13 +163,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
     /**
      * @ORM\OneToOne(targetEntity=Address::class, inversedBy="user", cascade={"persist", "remove"})
      */
-    #[Groups(['users:post','address:post','user:get'])]
+    #[Groups(['users:post','address:post','user:get','user:put'])]
     private $address;
 
     /**
      * @Assert\Regex("/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/", message=" Votre mot de passe doit contenir : Min 8 caractères | Min 1 chifffre | Min caractère majuscule et minuscule")
      */
-    #[Groups(['users:post'])]
+    #[Groups(['users:post','user:put'])]
     private $plainPassword;
 
     /**
@@ -219,7 +219,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, JWTUser
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (int) $this->id;
     }
 
     /**

@@ -56,7 +56,7 @@
               label="Couleur du véhicule"
               label-position="on-border"
               :type="errorData.color ? 'is-danger' : ''"
-              :message="errorData.color ? errorData.kilometer : ''"
+              :message="errorData.color ? errorData.color : ''"
           >
             <b-input
                 type="color"
@@ -185,7 +185,7 @@ export default {
       .catch(e => console.log(e));
 
     //Get all Brands
-    axios.get('http://localhost:3000/brands')
+    axios.get('http://localhost:3000/brands?order%5Bname%5D=asc')
         .then(res => res.data)
         .then(data => {
           this.brands = data;
@@ -204,10 +204,12 @@ export default {
       Car.user = this.$store.state.user.id;
       Car.status = this.$store.state.user.roles.includes("ROLE_ADMIN") && true;
       Car.statusAdminCar = this.$store.state.user.roles.includes("ROLE_PRO") ? "waiting" : "admin";
+      Car.rent = false;
       Car.dateRegistration = dateFormat(this.dateRegistration,"en");
       Car.model = `/models/${this.model}`;
       Car.category = `/categories/${this.category}`;
       Car.typeCarUser = this.$store.state.user.roles.includes("ROLE_PRO") ? 'pro': 'admin';
+      console.log(Car);
       this.upload(Car);
     },
     createBase64Image(filesObject) {
@@ -229,6 +231,7 @@ export default {
             this.errorData = [];
             if(obj !== null){
               if(res.status === 422){
+                this.loading = false;
                 res.data['violations'].forEach(err => this.errorData[err.propertyPath] = err.message);
               }else if(res.status === 201){
                 if(this.dropFiles.length === 0) {
@@ -238,6 +241,9 @@ export default {
                 }
                 this.path = `voiture/${res.data.id}`;
                 this.createBase64Image(this.dropFiles);
+              }else if (res.status === 500){
+                this.loading = false;
+                this.notification(`Une erreur est survenue. Veuillez réessayez plus tard`,'is-danger');
               }
             }else if(image !== null) {
               this.notification(`Véhicule enregistré avec succés.`,'is-success');
@@ -248,7 +254,7 @@ export default {
     notification(message,type) {
       if(type === "is-success") this.loading = false;
       this.$buefy.toast.open({
-        duration: 7000,
+        duration: 4000,
         message: message,
         type: type
       })

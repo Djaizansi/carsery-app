@@ -239,7 +239,7 @@ export default {
         }
       } else {
         this.loading = false;
-        this.errorData['password'] = 'Les mots de passe ne correspondent pas. Veuillez réessayez';
+        this.errorData['plainPassword'] = 'Les mots de passe ne correspondent pas. Veuillez réessayez';
       }
     },
     getAddressData: function (addressData) {

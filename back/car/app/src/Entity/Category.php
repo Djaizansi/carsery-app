@@ -13,7 +13,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
  */
 #[ApiResource(
-    normalizationContext: ['groups' => ['categories:get']]
+    normalizationContext: ['groups' => ['categories:get']],
+    collectionOperations: ['get'],
+    itemOperations: ['get']
 )]
 class Category
 {

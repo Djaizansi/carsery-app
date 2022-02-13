@@ -17,7 +17,7 @@
                 </div>
               </div>
               <div v-else-if="column.field === 'date'">
-                <span class="tag is-success">{{ new Date(props.row.date_registration).toLocaleDateString() }}</span>
+                <span class="tag is-success">{{ new Date(props.row.dateRegistration).toLocaleDateString() }}</span>
               </div>
               <div v-else-if="column.field === 'category' || column.field === 'model'">
                 {{props.row[column.field].name}}
@@ -96,6 +96,7 @@ export default {
         status: status === "validate" && true
       })
           .then(res => {
+            console.log(res);
             this.notification('Demande enregistré !','is-success');
             this.data.map(car => {
               if(car.id === res.data.id){
@@ -107,7 +108,17 @@ export default {
     },
     axiosDeleteCar(id){
       axios.delete("http://localhost:3000/cars/"+id)
-          .then(res => res.status === 204 && this.data.filter(car => car.id === id));
+          .then(res => {
+            console.log(res);
+            if(res.status === 204){
+              this.notification('Suppression du véhicule réussi !','is-success');
+              this.data.map((car,index) => {
+                if(car.id === id){
+                  this.data.splice(index,1);
+                }
+              });
+            }
+          });
     },
     notification(message,type) {
       if(type === "is-success") this.loading = false;
