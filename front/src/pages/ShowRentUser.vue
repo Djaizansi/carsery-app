@@ -89,6 +89,7 @@ export default {
         this.activeTabsCar(tabs.id)
             .then(data => {
               tabs.cars = data;
+              console.log(data);
               this.isLoading = false;
             });
       }else{

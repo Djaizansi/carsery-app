@@ -17,7 +17,10 @@ router.get('/', function(req, res) {
             })
             hasCar(userPro,req,res);
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            res.json(err.response.status);
+            return res.json(err.response.data);
+        });
 
 });
 
@@ -34,7 +37,10 @@ function hasCar(userPro,req,res){
                     res.json(usersGetCars);
                 }
             })
-            .catch(err => console.log(err));
+            .catch(err => {
+                res.json(err.response.status);
+                return res.json(err.response.data);
+            });
     })
 }
 

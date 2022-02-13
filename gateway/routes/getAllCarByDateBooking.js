@@ -49,7 +49,12 @@ async function getBookings(url,req,res){
         for(let booking of bookings.data["hydra:member"]){
             const startBooking = booking.startDate;
             const endBooking = booking.endDate;
-            if((startBooking <= startDate || startBooking >= endDate) && (endBooking >= startDate || endBooking <= endDate) && (startBooking >= startDate || endBooking <= endDate)){
+            const condition = (startBooking <= startDate || startBooking >= endDate) &&
+                (startBooking >= startDate || startBooking <= endDate) &&
+                (endBooking >= startDate || endBooking <= endDate) &&
+                (endBooking <= startDate || endBooking >= endDate) &&
+                (startBooking >= startDate || endBooking <= endDate)
+            if(condition){
             }else{
                 allBookings.push(booking);
             }

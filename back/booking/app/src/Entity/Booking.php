@@ -55,6 +55,18 @@ class Booking
     #[Groups(['bookings'])]
     private $endDate;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    #[Groups(['bookings'])]
+    private $price;
+
+    /**
+     * @ORM\Column(type="integer")
+     */
+    #[Groups(['bookings'])]
+    private $kilometer;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -104,6 +116,30 @@ class Booking
     public function setEndDate(\DateTimeInterface $endDate): self
     {
         $this->endDate = $endDate;
+
+        return $this;
+    }
+
+    public function getPrice(): ?int
+    {
+        return $this->price;
+    }
+
+    public function setPrice(int $price): self
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    public function getKilometer(): ?int
+    {
+        return $this->kilometer;
+    }
+
+    public function setKilometer(int $kilometer): self
+    {
+        $this->kilometer = $kilometer;
 
         return $this;
     }

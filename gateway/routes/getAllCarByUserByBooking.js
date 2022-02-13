@@ -19,6 +19,7 @@ router.get('/:id', async function(req, res) {
                 const objCars = cars.data;
                 objCars.datesRent = [new Date(booking.startDate),new Date(booking.endDate)];
                 objCars.idBooking = booking.id;
+                objCars.kilometer = booking.kilometer;
                 allCars.push(objCars);
             }
         }

@@ -126,16 +126,17 @@ export default {
         this.error = responseConfirmPayment.error.message;
         return 0;
       } else if (responseConfirmPayment.paymentIntent) {
-        await this.paymentSuccess(responseConfirmPayment.paymentIntent);
+        await this.paymentSuccess(responseConfirmPayment.paymentIntent,paymentMethodReq);
       }
     },
 
-    async paymentSuccess(paymentIntent) {
+    async paymentSuccess(paymentIntent,paymentMethod) {
       const rent = JSON.parse(localStorage.getItem('rent'));
       const addPaymentRent = await axios.post("http://localhost:3000/addPaymentRent", {
         rent: rent,
         user: this.$store.state.user,
         paymentIntent: paymentIntent,
+        paymentMethod: paymentMethod.paymentMethod
       });
       if (addPaymentRent) {
         this.loading = false;

@@ -41,8 +41,8 @@ export default [
     component: AddCars,
     name: "addCars",
     beforeEnter: (to, from, next) => {
-      if(store.state.user === undefined || store.state.user.roles.includes('ROLE_CLIENT') || VueCookie.get('user_get') === null || VueCookie.get('token') === 'undefined'){
-        checkTokenValid(next);
+      if(store.state.user === undefined || store.state.user.roles.includes('ROLE_CLIENT') || VueCookie.get('user_get') === null){
+        //checkTokenValid(next);
         next({name: 'home'});
       }
       next();
@@ -53,8 +53,8 @@ export default [
     component: ShowCarUser,
     name: "showCarUser",
     beforeEnter: (to, from, next) => {
-      if(store.state.user === undefined || store.state.user.roles.includes('ROLE_CLIENT') || VueCookie.get('user_get') === null || VueCookie.get('token') === 'undefined'){
-        checkTokenValid(next);
+      if(store.state.user === undefined || store.state.user.roles.includes('ROLE_CLIENT') || VueCookie.get('user_get') === null){
+        //checkTokenValid(next);
         next({name: 'home'});
       }
       next();
@@ -76,8 +76,8 @@ export default [
     component: ShowRentUserByCar,
     name: "showRentUser",
     beforeEnter: (to, from, next) => {
-      if(store.state.user === undefined || store.state.user.roles.includes('ROLE_ADMIN') || VueCookie.get('user_get') === null || VueCookie.get('token') === 'undefined'){
-        checkTokenValid(next);
+      if(store.state.user === undefined || store.state.user.roles.includes('ROLE_ADMIN') || VueCookie.get('user_get') === null){
+        //checkTokenValid(next);
         next({name: 'home'});
       }
       next();
@@ -88,8 +88,8 @@ export default [
     component: ManageMarketPlace,
     name: "ManageMarketPlace",
     beforeEnter: (to, from, next) => {
-      if(store.state.user === undefined || !store.state.user.roles.includes('ROLE_ADMIN') || VueCookie.get('user_get') === null || VueCookie.get('token') === 'undefined'){
-        checkTokenValid(next);
+      if(store.state.user === undefined || !store.state.user.roles.includes('ROLE_ADMIN') || VueCookie.get('user_get') === null){
+        //checkTokenValid(next);
         next({name: 'home'});
       }
       next();
@@ -100,8 +100,8 @@ export default [
     component: GestionCarsUser,
     name: "gestionMarketPlaceByCarsUser",
     beforeEnter: (to, from, next) => {
-      if(store.state.user === undefined || !store.state.user.roles.includes('ROLE_ADMIN') || VueCookie.get('user_get') === null || to.params.user === undefined || VueCookie.get('token') === 'undefined'){
-        checkTokenValid(next);
+      if(store.state.user === undefined || !store.state.user.roles.includes('ROLE_ADMIN') || VueCookie.get('user_get') === null || to.params.user === undefined){
+        //checkTokenValid(next);
         next({name: 'ManageMarketPlace'});
       }
       next();
@@ -112,8 +112,8 @@ export default [
     component: Profile,
     name: "profile",
     beforeEnter: (to, from, next) => {
-      if(store.state.user === undefined || VueCookie.get('user_get') === null || VueCookie.get('token') === 'undefined'){
-        checkTokenValid(next);
+      if(store.state.user === undefined || VueCookie.get('user_get') === null){
+        //checkTokenValid(next);
         next({name: 'home'});
       }
       next();
@@ -136,7 +136,7 @@ export default [
     name: "thanks",
     beforeEnter: (to, from, next) => {
       if(store.state.user === undefined || VueCookie.get('user_get') === null || to.params.check === undefined){
-        checkTokenValid(next);
+        //checkTokenValid(next);
         next({name: 'home'});
       }
       next();

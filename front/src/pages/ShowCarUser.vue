@@ -33,11 +33,10 @@
                   <b-button type="is-warning" @click="updateStatusAdmin(props.row.statusAdminCar,'raise',  props.row.id)">Relance</b-button>
                 </div>
                 <div v-else-if="props.row.statusAdminCar ==='validate'">
-                  <b-icon
-                      icon="check-bold"
-                      size="is-medium"
-                      type="is-success">
-                  </b-icon>
+                  <div v-if="!props.row.rent">
+                    <b-button icon-left="pencil" type="is-warning" @click="updateCar(props.row)">Modifier</b-button>
+                  </div>
+                  <b-button v-else icon-left="key" type="is-info" @click="updateCarRent(props)">Rendu ?</b-button>
                 </div>
               </div>
               <div v-else>
@@ -56,6 +55,7 @@ import axios from "axios";
 import InfoCardMarket from "../components/InfoCardMarket";
 import TableCustom from "../components/TableCustom";
 import TableColumnCar from "../Entity/Car/TableColumnCar";
+import UpdateCar from "./UpdateCar";
 
 export default {
   name: "ShowCarUser",
@@ -78,7 +78,8 @@ export default {
     isEmpty: false,
     isLoading: false,
     user: {},
-    columns: TableColumnCar
+    columns: TableColumnCar,
+    isComponentModalActive: false,
   }),
   methods: {
     updateStatusAdmin(status,type,id){
@@ -105,6 +106,32 @@ export default {
         type: type
       })
     },
+    updateCar(car){
+      this.$buefy.modal.open({
+        parent: this,
+        props:{car: car},
+        component: UpdateCar,
+        hasModalCard: true,
+        customClass: 'custom-class custom-class-2',
+        trapFocus: true
+      })
+    },
+    updateCarRent(props){
+      this.$buefy.dialog.confirm({
+        title: 'Rendu du véhicule',
+        cancelText: 'Non',
+        confirmText: 'Oui',
+        type: 'is-success',
+        message: `Le véhicule a t-il été rendu ?`,
+        onConfirm: () => {
+          axios.put('http://localhost:3000/cars/'+props.row.id,{rent:false})
+              .then(res => {
+                props.row.rent = res.data.rent;
+                this.notification('Le véhicule a été rendu !','is-success');
+              });
+        },
+      })
+    }
   }
 }
 </script>
