@@ -2,12 +2,15 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 use App\Repository\BrandRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=BrandRepository::class)
@@ -25,6 +28,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     itemOperations: ['get']
 )]
+#[ApiFilter(OrderFilter::class, properties: ['name'])]
 class Brand
 {
     /**
@@ -37,12 +41,14 @@ class Brand
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
      */
     #[Groups(['brands:get','cars:get','brands:post'])]
     private $name;
 
     /**
      * @ORM\OneToMany(targetEntity=Model::class, mappedBy="brand", orphanRemoval=true, cascade={"persist", "remove"})
+     * @Assert\NotBlank
      */
     #[Groups(['brands:get','brands:post'])]
     private $models;

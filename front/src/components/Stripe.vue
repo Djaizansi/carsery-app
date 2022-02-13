@@ -138,9 +138,14 @@ export default {
         paymentIntent: paymentIntent,
         paymentMethod: paymentMethod.paymentMethod
       });
-      if (addPaymentRent) {
+      if (addPaymentRent.status === 200) {
         this.loading = false;
         await this.$router.push({name: 'thanks', params: {check: true}});
+        // eslint-disable-next-line no-empty
+      }else if(addPaymentRent.status === 401) {
+      }else{
+        this.error = 'Une erreur est survenue. Réessayez';
+        this.loading = false;
       }
     }
   }

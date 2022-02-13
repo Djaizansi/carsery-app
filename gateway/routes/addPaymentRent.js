@@ -41,11 +41,11 @@ router.post('/', async function(req, res) {
                         'Content-Type': 'application/json'
                     }});
                 if(payment.status === 201){
-                    await axios.put(carsRoute+'/'+req.body.rent.id,{rent: true},{headers: {
+                    await axios.patch(carsRoute+'/'+req.body.rent.id,{rent: true},{headers: {
                             'authorization': req.headers.authorization,
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/merge-patch+json'
                         }});
-                    const mailer = await sendMail(req.body.user.username,'Votre location','recap_car',{
+                    const mailer = await sendMail(req.body.user.email,'Votre location','recap_car',{
                         car: {
                             ...req.body.rent,
                             amount: req.body.paymentIntent.amount,
@@ -60,6 +60,7 @@ router.post('/', async function(req, res) {
             }
         }
     }catch(e){
+        console.log(e);
         res.status(e.response.status);
         return res.json(e.response.data);
     }

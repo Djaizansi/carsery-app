@@ -17,7 +17,7 @@ use App\Helpers\RandomNumberSize;
 #[ApiResource(
     normalizationContext: ['groups'=> ['orders:getAndPost','orders:id']],
     denormalizationContext: ['groups' => ['orders:getAndPost']],
-    itemOperations: ['get']
+    collectionOperations: ['post','get']
 )]
 #[ApiFilter(SearchFilter::class,properties: ["booking" => "exact"])]
 class Order

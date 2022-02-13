@@ -9,15 +9,26 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\BookingRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=BookingRepository::class)
  */
 #[ApiResource(
-    itemOperations: ['get'],
     normalizationContext: ['groups' => ['bookings','bookings:get']],
     denormalizationContext: ['groups' => ['bookings']],
-    collectionOperations: ['get','post']
+    collectionOperations: ['get',
+        'post' => [
+            "security" => "is_granted('ROLE_CLIENT') or is_granted('ROLE_PRO')",
+            "security_message" => "Vous ne pouvez pas ajouter de réservation",
+        ]
+    ],
+    itemOperations: [
+        'get' => [
+            "security" => "is_granted('view_booking',object)",
+            "security_message" => "Vous ne pouvez pas afficher cette reservation",
+        ]
+    ],
 )]
 #[ApiFilter(DateFilter::class,properties: ['startDate','endDate'])]
 #[ApiFilter(SearchFilter::class,properties: ['user'])]
@@ -33,36 +44,42 @@ class Booking
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank
      */
     #[Groups(['bookings'])]
     private $user;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank
      */
     #[Groups(['bookings'])]
     private $car;
 
     /**
      * @ORM\Column(type="date")
+     * @Assert\NotBlank
      */
     #[Groups(['bookings'])]
     private $startDate;
 
     /**
      * @ORM\Column(type="date")
+     * @Assert\NotBlank
      */
     #[Groups(['bookings'])]
     private $endDate;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\GreaterThan(10,message="Le prix de la location ne peut pas être inférieur à {{ value }} €")
      */
     #[Groups(['bookings'])]
     private $price;
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\GreaterThan(3, message="Le kilométrage du véhicule ne peut pas être inférieur à 3km")
      */
     #[Groups(['bookings'])]
     private $kilometer;

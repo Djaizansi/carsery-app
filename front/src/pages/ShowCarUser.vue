@@ -17,7 +17,7 @@
                 </div>
               </div>
               <div v-else-if="column.field === 'date'">
-                <span class="tag is-success">{{ new Date(props.row.date_registration).toLocaleDateString() }}</span>
+                <span class="tag is-success">{{ new Date(props.row.dateRegistration).toLocaleDateString() }}</span>
               </div>
               <div v-else-if="column.field === 'category' || column.field === 'model'">
                 {{props.row[column.field].name}}

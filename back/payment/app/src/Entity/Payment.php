@@ -8,15 +8,16 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\PaymentRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=PaymentRepository::class)
  */
 #[ApiResource(
     collectionOperations: ['post','get'],
+    itemOperations: ['get'],
     normalizationContext: ['groups' => 'payments:post','payments:get'],
     denormalizationContext: ['groups' => 'payments:post'],
-    itemOperations: ['get']
 )]
 #[ApiFilter(SearchFilter::class,properties: ["orderId" => "exact"])]
 class Payment
@@ -31,18 +32,21 @@ class Payment
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank
      */
     #[Groups(['payments:post'])]
     private $orderId;
 
     /**
      * @ORM\Column(type="string",length=30)
+     * @Assert\NotBlank
      */
     #[Groups(['payments:post'])]
     private $cbTransactionStripe;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
      */
     #[Groups(['payments:post'])]
     private $cbTransactionMethodStripe;

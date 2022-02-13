@@ -37,6 +37,7 @@ export default {
         .then(res => {
           if(res.data.length !== 0){
             this.data = res.data;
+            console.log(this.data);
           }
           this.isLoading = false;
         });

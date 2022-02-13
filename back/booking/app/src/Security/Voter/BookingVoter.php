@@ -2,16 +2,16 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\Car;
+use App\Entity\Booking;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 use Symfony\Component\Security\Core\Security;
 
-class CarVoter extends Voter
+class BookingVoter extends Voter
 {
     // these strings are just invented: you can use anything
-    const VIEW = 'view_car';
-    const EDIT = 'edit_car';
+    const VIEW = 'view_booking';
+    const EDIT = 'edit_booking';
 
     public function __construct(private Security $security){}
     protected function supports(string $attribute, $subject): bool
@@ -21,8 +21,8 @@ class CarVoter extends Voter
             return false;
         }
 
-        // only vote on `Car` objects
-        if (!$subject instanceof Car) {
+        // only vote on `Booking` objects
+        if (!$subject instanceof Booking) {
             return false;
         }
 
@@ -33,31 +33,31 @@ class CarVoter extends Voter
     {
         $user = (int)$this->security->getToken()->getUserIdentifier();
         // you know $subject is a User object, thanks to `supports()`
-        /** @var Car $car */
-        $carObject = $subject;
+        /** @var Booking $booking */
+        $bookingObject = $subject;
 
         switch ($attribute) {
             case self::VIEW:
-                return $this->canView($carObject, $user);
+                return $this->canView($bookingObject, $user);
             case self::EDIT:
-                return $this->canEdit($carObject, $user);
+                return $this->canEdit($bookingObject, $user);
         }
 
         throw new \LogicException('This code should not be reached!');
     }
 
-    private function canView(Car $carObject, $user): bool
+    private function canView(Booking $bookingObject, $user): bool
     {
         // if they can edit, they can view
-        if ($this->canEdit($carObject, $user)) {
+        if ($this->canEdit($bookingObject, $user)) {
             return true;
         }
         return false;
     }
 
-    private function canEdit(Car $carObject, $user): bool
+    private function canEdit(Booking $bookingObject, $user): bool
     {
         // this assumes that the User object has a `getOwner()` method
-        return $user === $carObject->getUser();
+        return $user === $bookingObject->getUser();
     }
 }

@@ -14,7 +14,8 @@ class JWTSubscriber implements EventSubscriberInterface
         $user = $event->getUser();
         if ($user instanceof User) {
             $data['id'] = $user->getId();
-            $data['username'] = $event->getUser()->getUsername();
+            $data['email'] = $user->getEmail();
+            $data['username'] = $event->getUser()->getUserIdentifier();
             if (in_array('ROLE_CLIENT', $data['roles'])) {
                 $data['firstname'] = $user->getFirstname();
                 $data['lastname'] = $user->getLastname();

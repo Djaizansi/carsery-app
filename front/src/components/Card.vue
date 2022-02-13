@@ -23,7 +23,7 @@
         <p class="m-0"><span class="mdi mdi-car-back"></span> {{ car.category.name }}</p>
         <p class="m-0 flex justify-end"><span class="mdi mdi-car-shift-pattern"></span> {{ car.power }} CH</p>
         <p class="m-0"><span class="mdi mdi-car-cog"></span> {{ car.kilometer }} km</p>
-        <p class="m-0 flex justify-end space-x-2"><span class="mdi mdi-calendar-range"></span> <b-tag type="is-success">{{ new Date(car.date_registration).toLocaleDateString() }}</b-tag></p>
+        <p class="m-0 flex justify-end space-x-2"><span class="mdi mdi-calendar-range"></span> <b-tag type="is-success">{{ new Date(car.dateRegistration).toLocaleDateString() }}</b-tag></p>
       </div>
       <b-button v-if="type === 'rent'" label="Réserver" @click="rentThisCar" type="is-primary" class="w-full"/>
       <div v-else-if="type === 'payment'" class="flex flex-col items-center">

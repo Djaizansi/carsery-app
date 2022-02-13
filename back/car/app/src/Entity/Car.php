@@ -16,21 +16,33 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 #[ApiResource(
     collectionOperations: ['get','post'],
-    normalizationContext: ["groups" => ["cars:get"]],
-    denormalizationContext: ["groups"=> ["cars:get"]],
     itemOperations: [
         'get',
         'put' => [
-//            "security" => "is_granted('ROLE_ADMIN') or is_granted('edit_car',object)",
-//            "security_message" => "Vous ne pouvez pas modifier ce véhicule",
+            "security" => "is_granted('ROLE_ADMIN') or is_granted('edit_car',object)",
+            "security_message" => "Vous ne pouvez pas modifier ce véhicule",
             'denormalization_context' => ['groups' => ['cars:put']],
         ],
-    ]
+        'patch' => [
+            "security" => "is_granted('ROLE_CLIENT') or is_granted('ROLE_PRO')",
+            "security_message" => "Vous ne pouvez pas modifier ce véhicule",
+            'denormalization_context' => ['groups' => ['cars:patch']],
+        ],
+        'delete' => [
+            "security" => "is_granted('ROLE_ADMIN') or is_granted('edit_car',object)",
+            "security_message" => "Vous ne pouvez pas supprimer ce véhicule"
+        ]
+    ],
+    denormalizationContext: ["groups"=> ["cars:get"]],
+    normalizationContext: ["groups" => ["cars:get"]]
 )]
 #[ApiFilter(SearchFilter::class,properties: ["user" => "exact"])]
 #[ApiFilter(BooleanFilter::class, properties: ['status'])]
 class Car
 {
+    const TYPECARUSER = ['pro', 'admin'];
+    const STATUSADMINCAR = ['waiting', 'raise', 'notFavorable', 'admin', 'validate'];
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -73,7 +85,7 @@ class Car
     private $power;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="integer")
      * @Assert\GreaterThan(10,message="Le prix de la location ne peut pas être inférieur à {{ value }} €")
      */
     #[Groups(["cars:get","cars:put"])]
@@ -87,6 +99,7 @@ class Car
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\NotBlank
      */
     #[Groups(["cars:get"])]
     private $user;
@@ -94,16 +107,16 @@ class Car
     /**
      * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="car")
      * @ORM\JoinColumn(nullable=false)
+     * @Assert\NotBlank
      */
     #[Groups(["cars:get"])]
     private $category;
 
     /**
      * @ORM\Column(type="date")
-     * @Assert\NotBlank
      */
     #[Groups(["cars:get"])]
-    private $date_registration;
+    private $dateRegistration;
 
     /**
      * @ORM\ManyToOne(targetEntity=Model::class, inversedBy="cars")
@@ -114,12 +127,14 @@ class Car
 
     /**
      * @ORM\Column(type="string", length=20, nullable=true)
+     * @Assert\Choice(choices=Car::STATUSADMINCAR, message="Choisissez un status valide")
      */
-    #[Groups(["cars:get"])]
+    #[Groups(["cars:get",'cars:put'])]
     private $statusAdminCar;
 
     /**
      * @ORM\Column(type="string", length=20)
+     * @Assert\Choice(choices=Car::TYPECARUSER, message="Choisissez un type d'user valide pour le véhicule")
      */
     #[Groups(["cars:get"])]
     private $typeCarUser;
@@ -127,7 +142,7 @@ class Car
     /**
      * @ORM\Column(type="boolean")
      */
-    #[Groups(["cars:get","cars:put"])]
+    #[Groups(["cars:get","cars:put","cars:patch"])]
     private $rent;
 
     public function __construct()
@@ -238,12 +253,12 @@ class Car
 
     public function getDateRegistration(): ?\DateTime
     {
-        return $this->date_registration;
+        return $this->dateRegistration;
     }
 
-    public function setDateRegistration(\DateTime $date_registration): self
+    public function setDateRegistration(\DateTime $dateRegistration): self
     {
-        $this->date_registration = $date_registration;
+        $this->dateRegistration = $dateRegistration;
 
         return $this;
     }
